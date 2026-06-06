@@ -32,6 +32,16 @@ const home: Page = {
       },
     },
     {
+      layout: "faq",
+      data: {
+        heading: "Frequently asked",
+        items: [
+          { question: "Placeholder question one?", answer: "Each Q&A answers a practical objection from the brief — the block ships FAQPage JSON-LD automatically." },
+          { question: "Placeholder question two?", answer: "Keep answers to one or two plain sentences with a number or mechanism." },
+        ],
+      },
+    },
+    {
       layout: "process_steps",
       data: {
         heading: "How it works",
@@ -42,6 +52,14 @@ const home: Page = {
         ],
       },
     },
+    {
+      layout: "cta_banner",
+      data: {
+        heading: "Closing ask — repeat the single conversion.",
+        cta_label: "Primary action",
+        cta_url: "/#contact",
+      },
+    },
   ],
 };
 
@@ -49,4 +67,8 @@ const pages: Record<string, Page> = { home };
 
 export function getFallbackPage(slug: string): Page | null {
   return pages[slug] ?? null;
+}
+
+export function getAllFallbackPages(): Page[] {
+  return Object.values(pages);
 }

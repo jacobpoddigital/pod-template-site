@@ -90,6 +90,76 @@
               }
             ]
           },
+          "layout_pod_faq": {
+            "key": "layout_pod_faq",
+            "name": "faq",
+            "label": "FAQ",
+            "display": "block",
+            "sub_fields": [
+              {
+                "key": "field_pod_faq_heading",
+                "label": "Heading",
+                "name": "heading",
+                "type": "text",
+                "required": 0
+              },
+              {
+                "key": "field_pod_faq_items",
+                "label": "Items",
+                "name": "items",
+                "type": "repeater",
+                "layout": "block",
+                "button_label": "Add question",
+                "sub_fields": [
+                  {
+                    "key": "field_pod_faq_question",
+                    "label": "Question",
+                    "name": "question",
+                    "type": "text",
+                    "required": 1
+                  },
+                  {
+                    "key": "field_pod_faq_answer",
+                    "label": "Answer",
+                    "name": "answer",
+                    "type": "textarea",
+                    "rows": 3,
+                    "required": 1
+                  }
+                ]
+              }
+            ]
+          },
+          "layout_pod_cta_banner": {
+            "key": "layout_pod_cta_banner",
+            "name": "cta_banner",
+            "label": "CTA banner",
+            "display": "block",
+            "sub_fields": [
+              {
+                "key": "field_pod_cta_banner_heading",
+                "label": "Heading",
+                "name": "heading",
+                "type": "text",
+                "required": 1
+              },
+              {
+                "key": "field_pod_cta_banner_label",
+                "label": "CTA label",
+                "name": "cta_label",
+                "type": "text",
+                "required": 1
+              },
+              {
+                "key": "field_pod_cta_banner_url",
+                "label": "CTA URL",
+                "name": "cta_url",
+                "type": "text",
+                "instructions": "Relative paths allowed, e.g. /#contact",
+                "required": 1
+              }
+            ]
+          },
           "layout_pod_card_grid": {
             "key": "layout_pod_card_grid",
             "name": "card_grid",
