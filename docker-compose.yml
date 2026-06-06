@@ -1,0 +1,59 @@
+# Local headless WordPress for development (workflow/01 §Phase 4).
+# These credentials are LOCAL-ONLY throwaways — production WP is hosted
+# elsewhere and its secrets never live on disk (workflow/10).
+#
+#   docker compose up -d   → WP admin at http://localhost:8081/wp-admin
+#   First run: complete the install wizard, then see README "Connect WordPress".
+
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+      MYSQL_RANDOM_ROOT_PASSWORD: "1"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "wordpress", "-pwordpress"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  wordpress:
+    image: wordpress:6
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8081:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+    volumes:
+      - wp_data:/var/www/html
+
+  # WP-CLI sidecar for scripted provisioning (wp/provision.sh) — not started by
+  # default; invoked via `docker compose run --rm cli …`.
+  cli:
+    image: wordpress:cli
+    profiles: ["cli"]
+    user: "33:33"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+    volumes:
+      - wp_data:/var/www/html
+      - ./wp:/opt/pod-wp:ro
+
+volumes:
+  db_data:
+  wp_data:

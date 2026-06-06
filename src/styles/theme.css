@@ -1,0 +1,26 @@
+/* Tailwind v4 @theme tokens — THE only per-client styling file (ADR 0004, workflow/02).
+   Components use semantic tokens only (bg-brand, rounded-card) — never raw palette values.
+   Rebrand = edit this file, nothing else. */
+
+@theme {
+  /* Brand palette */
+  --color-brand: oklch(0.45 0.15 255);
+  --color-brand-dark: oklch(0.35 0.13 255);
+  --color-brand-light: oklch(0.92 0.04 255);
+  --color-accent: oklch(0.75 0.16 70);
+
+  /* Surfaces & text */
+  --color-surface: oklch(1 0 0);
+  --color-surface-muted: oklch(0.97 0.005 255);
+  --color-ink: oklch(0.22 0.02 255);
+  --color-ink-muted: oklch(0.45 0.02 255);
+  --color-on-brand: oklch(0.99 0 0);
+
+  /* Type */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+
+  /* Shape & rhythm */
+  --radius-card: 1rem;
+  --radius-button: 9999px;
+  --spacing-section: 5rem;
+}
