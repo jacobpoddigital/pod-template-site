@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
 # PostToolUse audit logger — the "what changed, when" trail (workflow/06).
-# Payload shape mirrors the hub events schema (workflow/03):
-#   { ts, project_id, actor, event_type, payload, trace_id }
-# Phase 2: appends to local JSONL. Phase 3: switch SINK to the hub URL — same shape, zero changes.
+# Event shape: workflow/15 §1. Local JSONL always; hub sink when configured
+# (see lib-sink.sh).
 set -euo pipefail
 
-INPUT=$(cat)
-AUDIT_DIR="$CLAUDE_PROJECT_DIR/.claude/audit"   # gitignored
-SINK="$AUDIT_DIR/log.jsonl"
-mkdir -p "$AUDIT_DIR"
+# shellcheck disable=SC1091
+source "$(dirname "${BASH_SOURCE[0]}")/lib-sink.sh"
 
-printf '%s' "$INPUT" | jq -c '{
+INPUT=$(cat)
+
+EVENT=$(printf '%s' "$INPUT" | jq -c '{
   ts: (now | todate),
   project_id: (env.POD_PROJECT_ID // "unset"),
   actor: "agent",
@@ -21,6 +20,8 @@ printf '%s' "$INPUT" | jq -c '{
     command: (.tool_input.command // null)
   },
   trace_id: (.session_id // null)
-}' >> "$SINK"
+}')
+
+emit_event "$EVENT"
 
 exit 0

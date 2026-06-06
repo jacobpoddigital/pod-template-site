@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 # SessionStart/SessionEnd telemetry — emits session.started / session.ended
-# events (workflow/15 registry, Phase 2). Same shape and sink as the
-# PostToolUse audit hook; Phase 3 swaps SINK to the hub URL, nothing else.
+# events (workflow/15 registry). Local JSONL always; hub sink when configured
+# (see lib-sink.sh).
 set -euo pipefail
 
 EVENT_TYPE="${1:?usage: session-telemetry.sh session.started|session.ended}"
 
-INPUT=$(cat)
-AUDIT_DIR="$CLAUDE_PROJECT_DIR/.claude/audit"   # gitignored
-SINK="$AUDIT_DIR/log.jsonl"
-mkdir -p "$AUDIT_DIR"
+# shellcheck disable=SC1091
+source "$(dirname "${BASH_SOURCE[0]}")/lib-sink.sh"
 
-printf '%s' "$INPUT" | jq -c --arg et "$EVENT_TYPE" '{
+INPUT=$(cat)
+
+EVENT=$(printf '%s' "$INPUT" | jq -c --arg et "$EVENT_TYPE" '{
   ts: (now | todate),
   project_id: (env.POD_PROJECT_ID // "unset"),
   actor: "agent",
@@ -21,6 +21,8 @@ printf '%s' "$INPUT" | jq -c --arg et "$EVENT_TYPE" '{
     cwd: (.cwd // null)
   },
   trace_id: (.session_id // null)
-}' >> "$SINK"
+}')
+
+emit_event "$EVENT"
 
 exit 0
