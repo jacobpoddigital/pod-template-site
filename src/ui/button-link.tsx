@@ -1,25 +1,19 @@
 import Link from "next/link";
+import { buttonVariants } from "@/ui/button";
+import { cn } from "@/lib/utils";
+import type { VariantProps } from "class-variance-authority";
 
-// FRAMEWORK primitive — no CMS knowledge. Semantic tokens only.
+// FRAMEWORK primitive — no CMS knowledge. Delegates variant logic to buttonVariants.
 
-const variants = {
-  primary: "bg-accent text-on-accent hover:bg-accent-hover",
-  secondary: "bg-accent-surface text-accent hover:bg-accent hover:text-on-accent",
-} as const;
-
-interface ButtonLinkProps {
+interface ButtonLinkProps extends VariantProps<typeof buttonVariants> {
   href: string;
-  variant?: keyof typeof variants;
   children: React.ReactNode;
   className?: string;
 }
 
-export function ButtonLink({ href, variant = "primary", children, className = "" }: ButtonLinkProps) {
+export function ButtonLink({ href, variant = "primary", size = "md", children, className }: ButtonLinkProps) {
   return (
-    <Link
-      href={href}
-      className={`inline-block rounded-button px-6 py-3 font-semibold outline-none motion-safe:transition-colors focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${variants[variant]} ${className}`}
-    >
+    <Link href={href} className={cn(buttonVariants({ variant, size }), className)}>
       {children}
     </Link>
   );
