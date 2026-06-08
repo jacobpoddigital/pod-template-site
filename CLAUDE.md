@@ -33,3 +33,19 @@ Client site built on the Pod Digital framework. Headless WordPress + Next.js App
 ## Process
 
 The canonical workflow lives in the HQ repo: `web-ai-automation/workflow/`. Pipeline: brief (`brief/`) → wireframe (`wireframe/`) → blocks → copy (`content/`) → standards pass → PR.
+
+## Knowledge Base
+
+Pod Digital's knowledge base lives at `/Users/jacobhedges/Projects/web-ai-automation/knowledge-base/`. Read the relevant docs at the start of each task type — do not load all of them every session.
+
+| Task | Read before starting |
+|---|---|
+| Any design work (wireframe, Figma, visual decisions) | `01-design-language.md`, `07a-taste-product-agency-sites.md`, `07b-taste-awwwards-soty.md`, `08-designer-voices.md` |
+| Building a new block or component | `01-design-language.md`, `03-code-and-components.md` |
+| Motion, hover states, transitions | `02-motion-and-interaction.md` |
+| WordPress data layer, ISR, caching | `04-performance-and-architecture.md` |
+| QA pass, accessibility, testing | `05-quality-and-testing.md` |
+| Page structure, CTAs, copy, photography brief | `06-content-and-conversion.md` |
+| Design critique or taste judgment | `07a-taste-product-agency-sites.md`, `07b-taste-awwwards-soty.md`, `08-designer-voices.md` |
+
+The knowledge base encodes industry best practice + Pod Digital conventions. It is the source of truth for design and build decisions — not your own training defaults. When in doubt about a design or code decision, read the relevant KB doc before proceeding.
