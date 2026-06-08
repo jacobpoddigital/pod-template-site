@@ -1,27 +1,29 @@
-/* Tailwind v4 @theme tokens — THE only per-client styling file (ADR 0004, workflow/02).
-   Components use semantic tokens only (bg-brand, rounded-card) — never raw palette values.
+/* Tailwind v4 @theme tokens — THE only per-client styling file.
+   Components use semantic tokens only — never raw palette values.
    Rebrand = edit this file, nothing else.
-   TEMPLATE: replace all values below with the client's brand. */
+   TEMPLATE: replace all values with the client's brand. */
 
 @theme {
-  /* Brand palette — replace per brand (see KB 01 §Colour) */
-  --color-brand:       oklch(0.45 0.15 255);  /* primary CTA / interactive */
-  --color-brand-dark:  oklch(0.35 0.13 255);  /* hover state */
-  --color-brand-light: oklch(0.92 0.04 255);  /* tinted surface */
-  --color-accent:      oklch(0.75 0.16 70);   /* secondary highlight — replace */
+  /* Accent / interactive — REPLACE with client brand colour */
+  --color-accent:         oklch(0.45 0.15 255);  /* primary CTA / interactive */
+  --color-accent-hover:   oklch(0.35 0.13 255);  /* hover state */
+  --color-accent-surface: oklch(0.92 0.04 255);  /* tinted background */
+  --color-on-accent:      oklch(0.99 0 0);        /* text on accent backgrounds */
 
   /* Surfaces & text */
-  --color-surface:       oklch(1 0 0);         /* page background — white */
-  --color-surface-muted: oklch(0.97 0 0);      /* off-white panels */
-  --color-ink:           oklch(0.15 0 0);      /* near-black body text */
-  --color-ink-muted:     oklch(0.50 0 0);      /* secondary / supporting text */
-  --color-on-brand:      oklch(0.99 0 0);      /* text on brand-coloured backgrounds */
+  --color-surface:        oklch(1 0 0);           /* page background — white */
+  --color-surface-muted:  oklch(0.97 0 0);        /* off-white panels / cards */
+  --color-ink:            oklch(0.15 0 0);         /* near-black body text */
+  --color-ink-muted:      oklch(0.50 0 0);         /* secondary / supporting text */
 
-  /* Type — replace per brand (see KB 01 §Font selection) */
+  /* Typography — REPLACE with client typeface (set in app/layout.tsx too) */
   --font-sans: ui-sans-serif, system-ui, sans-serif;
+  /* --font-display: 'Client Display Font', serif; */
 
-  /* Shape & rhythm */
-  --radius-card:     0;        /* sharp default — set to e.g. 0.5rem for rounded */
-  --radius-button:   0;        /* sharp default — set to 9999px for pill buttons */
+  /* Shape — set to match brand personality */
+  --radius-card:     0;        /* 0 = sharp; 0.5rem = rounded */
+  --radius-button:   0;        /* 0 = sharp; 9999px = pill */
+
+  /* Rhythm */
   --spacing-section: 5rem;
 }

@@ -1,13 +1,13 @@
 # Local headless WordPress for development (workflow/01 §Phase 4).
-# These credentials are LOCAL-ONLY throwaways — production WP is hosted
-# elsewhere and its secrets never live on disk (workflow/10).
+# TEMPLATE: set WP_PORT in .env or export before running.
+# These credentials are LOCAL-ONLY throwaways — production secrets never live here.
 #
-#   docker compose up -d   → WP admin at http://localhost:8081/wp-admin
-#   First run: complete the install wizard, then see README "Connect WordPress".
+#   docker compose up -d   → WP admin at http://localhost:${WP_PORT:-8081}/wp-admin
+#   ACF_PRO_ZIP=~/path/acf-pro.zip docker compose run --rm --user root --entrypoint bash cli -c "bash /wp/provision.sh"
 
 services:
   db:
-    image: mysql:8.0
+    image: mariadb:11.4
     environment:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
@@ -16,7 +16,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "wordpress", "-pwordpress"]
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "wordpress", "-pwordpress"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -27,7 +27,7 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "8081:80"
+      - "${WP_PORT:-8081}:80"
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_NAME: wordpress
@@ -36,12 +36,11 @@ services:
     volumes:
       - wp_data:/var/www/html
 
-  # WP-CLI sidecar for scripted provisioning (wp/provision.sh) — not started by
-  # default; invoked via `docker compose run --rm cli …`.
+  # WP-CLI sidecar — invoked via provision.sh, not started by default.
+  # Must run as root: volume mounts start root-owned, wp-content/upgrade creation fails otherwise.
   cli:
     image: wordpress:cli
-    profiles: ["cli"]
-    user: "33:33"
+    user: "0:0"
     depends_on:
       db:
         condition: service_healthy
@@ -53,6 +52,7 @@ services:
     volumes:
       - wp_data:/var/www/html
       - ./wp:/opt/pod-wp:ro
+      - ./wp/acf-fields:/opt/pod-wp/acf-fields:ro
 
 volumes:
   db_data:
