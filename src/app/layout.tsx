@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import { Header } from "@/layout/header";
 import { Footer } from "@/layout/footer";
 import { StructuredData } from "./structured-data";
 import { siteConfig } from "../../site.config";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+// TEMPLATE: add the client typeface here before any design work.
+// See KB 01 §Font selection — display serif + grotesque body is the default pair.
+// Load only the weights you use (each weight = separate network request).
+// Example:
+//   import { Inter } from "next/font/google";
+//   const sans = Inter({ variable: "--font-sans", subsets: ["latin"] });
+//   Then pass className={sans.variable} to <html>.
 
 // Canonical/OG URLs point at the FRONTEND domain, never the WP origin.
 export const metadata: Metadata = {
@@ -34,11 +36,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col">
+    <html lang="en" className="h-full antialiased">
+      <body className="flex min-h-full flex-col bg-surface text-ink font-sans">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-button focus:bg-brand focus:px-4 focus:py-2 focus:text-on-brand"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-brand focus:px-4 focus:py-2 focus:text-on-brand"
         >
           Skip to content
         </a>
