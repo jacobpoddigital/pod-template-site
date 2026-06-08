@@ -39,7 +39,7 @@ if ! wpcli core is-installed 2>/dev/null; then
     --title="Website Navigator (local)" \
     --admin_user=admin \
     --admin_password=admin \
-    --admin_email=dev@poddigital.co.uk \
+    --admin_email=jacob@poddigital.co.uk \
     --skip-email
 else
   echo "    already installed"
