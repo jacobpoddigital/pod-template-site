@@ -23,6 +23,7 @@ Client site built on the Pod Digital framework. Headless WordPress + Next.js App
 
 | Task | Read before starting |
 |---|---|
+| Phase 4.5 — token extraction, component catalogue, shadcn setup | KB 10 |
 | Any block | KB 01, KB 02, KB 03, KB 09 |
 | Form block | Above + KB 05 |
 | Hero / pricing / CTA | Above + KB 06 |
