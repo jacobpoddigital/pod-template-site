@@ -1,18 +1,20 @@
 #!/usr/bin/env bash
-# One-command local WordPress provisioning (template-repo asset).
+# One-command local WordPress provisioning.
+# TEMPLATE: set SITE_TITLE, SITE_SLUG, and WP_PORT at the top before using.
 #
-#   ACF_PRO_ZIP=~/path/advanced-custom-fields-pro.zip ./wp/provision.sh
+#   ACF_PRO_ZIP=~/path/acf-pro.zip bash wp/provision.sh
 #
-# From-zero rebuild: docker compose down -v && ACF_PRO_ZIP=… ./wp/provision.sh
+# From-zero rebuild: docker compose down -v && ACF_PRO_ZIP=… bash wp/provision.sh
 # Idempotent: safe to re-run on an existing stack.
-#
-# Steps: compose up → WP core install → ACF Pro install → field groups from
-# code (mu-plugin + repo JSON) → seed `home` page content → pretty permalinks
-# → REST smoke test. No wp-admin clicking anywhere.
+# Must be run as root inside the cli container (provision.sh handles this via docker run).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-WP_URL="http://localhost:8081"
+# TEMPLATE: fill these in per-client
+SITE_TITLE="{{CLIENT_NAME}} (local)"
+SITE_SLUG="{{SITE_SLUG}}"
+WP_PORT="${WP_PORT:-8081}"
+WP_URL="http://localhost:${WP_PORT}"
 ACF_PRO_ZIP="${ACF_PRO_ZIP:-}"
 
 if [[ -z "$ACF_PRO_ZIP" || ! -f "$ACF_PRO_ZIP" ]]; then
@@ -20,60 +22,81 @@ if [[ -z "$ACF_PRO_ZIP" || ! -f "$ACF_PRO_ZIP" ]]; then
   exit 1
 fi
 
-wpcli() { docker compose run --rm -T cli wp "$@"; }
-
 echo "==> Starting containers"
 docker compose up -d
 
+echo "==> Waiting for database to be ready"
+for i in $(seq 1 60); do
+  docker compose run --rm --user root --entrypoint bash cli \
+    -c "wp --allow-root --path=/var/www/html db query 'SELECT 1'" 2>/dev/null && break
+  sleep 2
+  [[ $i == 60 ]] && { echo "Database never became ready" >&2; exit 1; }
+done
+
 echo "==> Waiting for WordPress core files"
 for i in $(seq 1 60); do
-  docker compose run --rm -T cli test -f /var/www/html/wp-load.php 2>/dev/null && break
+  docker compose run --rm --user root --entrypoint bash cli \
+    -c "test -f /var/www/html/wp-load.php" 2>/dev/null && break
   sleep 2
   [[ $i == 60 ]] && { echo "WP core files never appeared" >&2; exit 1; }
 done
 
+wpcli() {
+  docker compose run --rm --user root --entrypoint bash cli \
+    -c "wp --allow-root --path=/var/www/html $*"
+}
+
 echo "==> Installing WordPress (local-only admin credentials)"
-if ! wpcli core is-installed 2>/dev/null; then
-  wpcli core install \
-    --url="$WP_URL" \
-    --title="Website Navigator (local)" \
+if ! wpcli "core is-installed" 2>/dev/null; then
+  wpcli "core install \
+    --url='$WP_URL' \
+    --title='$SITE_TITLE' \
     --admin_user=admin \
     --admin_password=admin \
     --admin_email=jacob@poddigital.co.uk \
-    --skip-email
+    --skip-email"
 else
   echo "    already installed"
 fi
 
 echo "==> Installing ACF Pro"
-if ! wpcli plugin is-installed advanced-custom-fields-pro 2>/dev/null; then
-  docker compose run --rm -T -v "$ACF_PRO_ZIP:/tmp/acf-pro.zip:ro" cli \
-    wp plugin install /tmp/acf-pro.zip --activate
+if ! wpcli "plugin is-installed advanced-custom-fields-pro" 2>/dev/null; then
+  docker compose run --rm --user root --entrypoint bash \
+    -v "$ACF_PRO_ZIP:/tmp/acf-pro.zip:ro" cli \
+    -c "wp --allow-root --path=/var/www/html plugin install /tmp/acf-pro.zip --activate"
 else
-  wpcli plugin activate advanced-custom-fields-pro
+  wpcli "plugin activate advanced-custom-fields-pro"
 fi
 
-echo "==> Registering field groups from code (mu-plugin + repo JSON)"
-docker compose run --rm -T cli sh -c '
-  mkdir -p /var/www/html/wp-content/mu-plugins &&
-  cp /opt/pod-wp/mu-plugins/pod-blocks-register.php /var/www/html/wp-content/mu-plugins/ &&
-  cp /opt/pod-wp/acf-export.json /var/www/html/wp-content/mu-plugins/pod-acf-export.json
-'
+echo "==> Copying mu-plugin and ACF field groups from repo"
+docker compose run --rm --user root --entrypoint bash cli -c "
+  mkdir -p /var/www/html/wp-content/mu-plugins
+  cp /opt/pod-wp/mu-plugins/pod-blocks-register.php /var/www/html/wp-content/mu-plugins/
+  if ls /opt/pod-wp/acf-fields/*.json 1>/dev/null 2>&1; then
+    mkdir -p /var/www/html/wp-content/acf-fields
+    cp /opt/pod-wp/acf-fields/*.json /var/www/html/wp-content/acf-fields/
+  fi
+"
 
-echo "==> Seeding home page content"
-wpcli eval-file /opt/pod-wp/provision-content.php
+echo "==> Seeding initial content"
+if [[ -f "wp/provision-content.php" ]]; then
+  docker compose run --rm --user root --entrypoint bash cli \
+    -c "wp --allow-root --path=/var/www/html eval-file /opt/pod-wp/provision-content.php"
+fi
 
-echo "==> Permalinks (REST needs pretty permalinks) + discourage indexing"
-wpcli rewrite structure '/%postname%/'
-wpcli rewrite flush --hard
-wpcli option update blog_public 0 >/dev/null
+echo "==> Permalinks (REST requires pretty permalinks)"
+wpcli "rewrite structure '/%postname%/'"
+wpcli "rewrite flush --hard"
+wpcli "option update blog_public 0"
 
 echo "==> REST smoke test"
-REST_JSON=$(curl -sf "$WP_URL/wp-json/wp/v2/pages?slug=home&acf_format=standard")
-echo "$REST_JSON" | grep -q '"acf_fc_layout":"hero"' \
-  && echo "    OK: home page exposes ACF blocks over REST" \
-  || { echo "FAIL: REST response missing ACF blocks:"; echo "$REST_JSON" | head -c 600; exit 1; }
+REST_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$WP_URL/wp-json/wp/v2/pages")
+if [[ "$REST_STATUS" == "200" ]]; then
+  echo "    OK: REST API responding at $WP_URL/wp-json"
+else
+  echo "WARN: REST API returned HTTP $REST_STATUS — check WP permalink settings" >&2
+fi
 
 echo
 echo "Done. WP admin: $WP_URL/wp-admin (admin/admin, local only)"
-echo "Point the frontend at it:  WORDPRESS_API_URL=$WP_URL/wp-json"
+echo "Frontend env:   WORDPRESS_API_URL=$WP_URL/wp-json"

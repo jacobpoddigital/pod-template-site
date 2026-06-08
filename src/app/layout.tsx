@@ -5,15 +5,15 @@ import { StructuredData } from "./structured-data";
 import { siteConfig } from "../../site.config";
 import "./globals.css";
 
-// TEMPLATE: add the client typeface here before any design work.
+// TEMPLATE: load the client typeface here.
 // See KB 01 §Font selection — display serif + grotesque body is the default pair.
 // Load only the weights you use (each weight = separate network request).
 // Example:
 //   import { Inter } from "next/font/google";
 //   const sans = Inter({ variable: "--font-sans", subsets: ["latin"] });
-//   Then pass className={sans.variable} to <html>.
+//   Pass className={sans.variable} to <html>.
 
-// Canonical/OG URLs point at the FRONTEND domain, never the WP origin.
+// Canonical/OG URLs always point at the FRONTEND domain, never the WP origin.
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
@@ -21,7 +21,6 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  // Canonicals always point at the FRONTEND domain, never the WP origin (workflow/04 §3).
   alternates: { canonical: "/" },
   openGraph: {
     siteName: siteConfig.name,
@@ -39,13 +38,13 @@ export default function RootLayout({
     <html lang="en" className="h-full antialiased">
       <body className="flex min-h-full flex-col bg-surface text-ink font-sans">
         <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-brand focus:px-4 focus:py-2 focus:text-on-brand"
+          href="#main-content"
+          className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:left-4 focus-visible:top-4 focus-visible:z-50 focus-visible:bg-accent focus-visible:px-4 focus-visible:py-2 focus-visible:text-on-accent focus-visible:outline-none"
         >
           Skip to content
         </a>
         <Header />
-        <main id="main" className="flex-1">
+        <main id="main-content" className="flex-1">
           {children}
         </main>
         <Footer />

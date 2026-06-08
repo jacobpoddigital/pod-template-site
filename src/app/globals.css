@@ -5,7 +5,7 @@ body {
   @apply bg-surface text-ink font-sans;
 }
 
-/* Visible focus for keyboard users on every interactive element (workflow/04 §7) */
+/* Visible focus for keyboard users on every interactive element (KB 05) */
 :focus-visible {
   outline: 3px solid var(--color-accent);
   outline-offset: 2px;
