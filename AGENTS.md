@@ -41,8 +41,22 @@ The brand values in `BUILD-SPEC.md` are **locked** — use the fonts/hex EXACTLY
 Exactly: `src/blocks/<kebab>/` → `schema.ts` (Zod; ACF field names 1:1; **empty ACF repeater = `false` not `[]` → `z.union([z.array(…), z.literal(false)])`**, empty optional = `null` → `.nullish()`) · `<kebab>.tsx` (**Server Component**, props = `z.infer<typeof schema>`, imports `@/ui` only, semantic tokens only, returns `null` for empty content, `data-block="<layout>"` + `aria-labelledby`) · `index.ts` (re-export) · a `defineBlock(schema, dynamic(...))` entry in `registry.tsx` keyed by the ACF layout name. Blocks **never fetch** — they receive validated props.
 
 ## Tokens & components
-- The **shadcn bridge `:root` in `theme.css` is canonical** (the rebrand/handoff drop-in); `globals.css` derives the agency semantics. Use tokens (`bg-primary`, `bg-surface`, `text-ink`, `rounded-card`) — **never raw hex** (lint-enforced). Rebrand = edit `theme.css` only.
-- Build on the **shadcn primitives in `src/ui/`** (Button, Card?, Accordion, Input/Label/Textarea, Badge, Dialog, …). See **`/styleguide`** for the live rendered set. `src/ui/` has **no CMS knowledge**; if a `src/ui` component grows `heading`/`image_url` props, it's a block, not a primitive.
+- **`theme.css` = the per-client BRAND vocabulary** (`--brand-primary`, `--brand-accent`, `--brand-surface(s)`, `--brand-ink(s)`, `--brand-border`, `--brand-error`, radius, fonts) — the handoff `tokens.css` drops in here. **`globals.css` TRANSLATES it to the shadcn bridge** (ADR 0014); that's the only place the brand→shadcn mapping lives. Rebrand = edit `theme.css` only.
+- Use **token utilities, never raw hex** (lint-enforced):
+  - Brand: `bg-primary` / `text-primary` (CTAs, links), `text-primary-foreground` (on primary).
+  - **`bg-brand-accent` / `text-brand-accent`** = the VIBRANT decorative pop (eyebrows, icons, highlights). NOTE: shadcn's `bg-accent` is a *muted hover surface*, not the brand accent.
+  - Surfaces/text: `bg-background` `bg-card` `bg-muted` `text-foreground` `text-muted-foreground` `border-border`. Agency aliases also exist: `bg-surface` `text-ink` `text-ink-muted`.
+- **Section tones** — set `data-tone="muted|inverted|accent"` (via the block's `tone` prop, `src/blocks/tone.ts`) on a `<section className="bg-background text-foreground">` and the whole section + its components re-theme (one attribute remaps the local surface). Default = page surface.
+- **`src/ui/` primitives** (shadcn, copied + owned — compose these, don't hand-roll elements):
+  | primitive | key API |
+  |---|---|
+  | `Button` / `ButtonLink` | `variant`: primary·secondary·outline·ghost·destructive · `size`: sm·md·lg (`ButtonLink` adds `href`) |
+  | `Card` (+ `CardHeader`/`CardTitle`/`CardContent`/`CardFooter`) | composition |
+  | `Accordion` (+ `Item`/`Trigger`/`Content`) | `type="single" collapsible` |
+  | `Input` `Textarea` `Label` `Checkbox` `Select`(+parts) `RadioGroup`(+`Item`) | form controls (label every input) |
+  | `Badge` | `variant`: default·outline |
+  | `Dialog` `Sheet` `Separator` `Skeleton` `Container` `Heading` `VisuallyHidden` | overlays/layout/util |
+  See **`/styleguide`** for the live rendered set + tones. `src/ui/` has **no CMS knowledge**; if a `src/ui` component grows `heading`/`image_url` props, it's a block, not a primitive.
 
 ## Layer boundaries (lint-enforced — `eslint-plugin-boundaries`)
 `ui → ui, lib` · `blocks → blocks, ui, lib, cms-public` · `layout → layout, ui, lib, cms-public` · `app → +blocks +layout` · only `lib/cms/` (cms-internal) sees WordPress shapes. Don't cross these.
