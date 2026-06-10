@@ -33,7 +33,7 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = "SheetOverlay";
 
 const sheetVariants = cva(
-  "fixed z-[--z-modal] bg-[--color-surface] shadow-[--shadow-modal] " +
+  "fixed z-[--z-modal] bg-background shadow-[--shadow-modal] " +
   "data-[state=open]:animate-in data-[state=closed]:animate-out motion-safe:duration-300",
   {
     variants: {
@@ -64,7 +64,7 @@ const SheetContent = React.forwardRef<
       {...props}
     >
       {children}
-      <SheetClose className="absolute right-4 top-4 rounded-sm opacity-70 outline-none motion-safe:transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-[--color-primary] focus-visible:ring-offset-2 disabled:pointer-events-none">
+      <SheetClose className="absolute right-4 top-4 rounded-sm opacity-70 outline-none motion-safe:transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none">
         <X className="h-5 w-5" />
         <span className="sr-only">Close</span>
       </SheetClose>
@@ -84,7 +84,7 @@ const SheetTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Title
     ref={ref}
-    className={cn("text-lg font-semibold text-[--color-ink]", className)}
+    className={cn("text-lg font-semibold text-foreground", className)}
     {...props}
   />
 ));
@@ -96,7 +96,7 @@ const SheetDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Description
     ref={ref}
-    className={cn("text-sm text-[--color-ink-muted]", className)}
+    className={cn("text-sm text-muted-foreground", className)}
     {...props}
   />
 ));
