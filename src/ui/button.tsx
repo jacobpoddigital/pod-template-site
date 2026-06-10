@@ -10,15 +10,15 @@ const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[--radius-button] text-sm font-semibold outline-none " +
   "disabled:pointer-events-none disabled:opacity-50 " +
   "motion-safe:transition-colors " +
-  "focus-visible:ring-2 focus-visible:ring-[--color-primary] focus-visible:ring-offset-2",
+  "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
   {
     variants: {
       variant: {
-        primary:     "bg-[--color-primary] text-[--color-on-accent] hover:bg-[--color-accent-hover]",
-        secondary:   "bg-[--color-accent-surface] text-[--color-primary] hover:bg-[--color-primary] hover:text-[--color-on-accent]",
-        ghost:       "bg-transparent text-[--color-ink] hover:bg-[--color-surface-muted]",
-        destructive: "bg-[--destructive] text-[--destructive-foreground] hover:opacity-90",
-        outline:     "border border-[--color-border] bg-transparent text-[--color-ink] hover:bg-[--color-surface-muted]",
+        primary:     "bg-primary text-primary-foreground hover:bg-primary/90",
+        secondary:   "bg-secondary text-primary hover:bg-primary hover:text-primary-foreground",
+        ghost:       "bg-transparent text-foreground hover:bg-muted",
+        destructive: "bg-destructive text-white hover:opacity-90",
+        outline:     "border border-border bg-transparent text-foreground hover:bg-muted",
       },
       size: {
         sm: "h-8 px-3 text-xs",
