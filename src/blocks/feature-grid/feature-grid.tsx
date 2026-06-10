@@ -22,8 +22,8 @@ export function FeatureGrid({ heading, intro, tone, features }: FeatureGridProps
     <Section dataBlock="feature_grid" tone={tone}>
       {heading || intro ? (
         <div className="mb-12 max-w-2xl">
-          {heading ? <h2 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">{heading}</h2> : null}
-          {intro ? <p className="mt-4 max-w-[65ch] text-lg leading-relaxed text-ink-muted">{intro}</p> : null}
+          {heading ? <h2 className="display-md text-ink">{heading}</h2> : null}
+          {intro ? <p className="mt-4 max-w-[65ch] body-lg text-ink-muted">{intro}</p> : null}
         </div>
       ) : null}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

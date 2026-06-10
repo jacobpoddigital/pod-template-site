@@ -21,7 +21,7 @@ export function Faq({ heading, items, tone }: FaqProps) {
   return (
     <Section dataBlock="faq" tone={tone}>
       {heading ? (
-        <h2 className="mb-8 text-3xl font-bold tracking-tight text-ink sm:text-4xl">{heading}</h2>
+        <h2 className="mb-8 display-md text-ink">{heading}</h2>
       ) : null}
       <Accordion type="single" collapsible className="mx-auto max-w-3xl">
         {list.map((i, idx) => (

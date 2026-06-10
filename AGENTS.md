@@ -48,6 +48,7 @@ Exactly: `src/blocks/<kebab>/` → `schema.ts` (Zod; ACF field names 1:1; **empt
   - Brand: `bg-primary` / `text-primary` (CTAs, links), `text-primary-foreground` (on primary).
   - **`bg-brand-accent` / `text-brand-accent`** = the VIBRANT decorative pop (eyebrows, icons, highlights). NOTE: shadcn's `bg-accent` is a *muted hover surface*, not the brand accent.
   - Surfaces/text: `bg-background` `bg-card` `bg-muted` `text-foreground` `text-muted-foreground` `border-border`. Agency aliases also exist: `bg-surface` `text-ink` `text-ink-muted`.
+  - **Type scale (token-driven, ADR 0015):** use the type classes — `display-xl` `display-lg` `display-md` `display-sm` (headings), `body-lg` `body` `body-sm` (copy), `label` (uppercase eyebrows). Each sets size + line-height + weight + tracking from the brand tokens. **Don't hand-roll `text-3xl font-bold tracking-tight`** — use a scale step. Shadows (`shadow-card`), section rhythm (`py-section`/`spacing-section`), radius, and motion (transition durations) are all brand-driven too — `theme.css` is the full `--brand-*` contract; `globals.css` translates it.
 - **Section tones** — set `data-tone="muted|inverted|accent"` (via the block's `tone` prop, `src/blocks/tone.ts`) on a `<section className="bg-background text-foreground">` and the whole section + its components re-theme (one attribute remaps the local surface). Default = page surface.
 - **`src/ui/` primitives** (shadcn, copied + owned — compose these, don't hand-roll elements):
   | primitive | key API |
