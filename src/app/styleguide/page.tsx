@@ -78,6 +78,22 @@ export default function StyleguidePage() {
             </div>
           </Group>
 
+          <Group title="Section tones">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {(["default", "muted", "inverted", "accent"] as const).map((t) => (
+                <div
+                  key={t}
+                  data-tone={t === "default" ? undefined : t}
+                  className="space-y-3 rounded-card border border-border bg-background p-5 text-foreground"
+                >
+                  <p className="text-sm font-semibold">{t}</p>
+                  <p className="text-sm text-muted-foreground">Body in this tone.</p>
+                  <Button size="sm">Action</Button>
+                </div>
+              ))}
+            </div>
+          </Group>
+
           <Group title="Form controls">
             <div className="max-w-md space-y-4">
               <div className="space-y-1.5">

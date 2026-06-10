@@ -88,3 +88,33 @@
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
+
+/* SECTION TONES — one attribute re-maps the local surface, so a whole section and every
+   component inside it (cards, buttons, text) re-theme automatically (they all read the bridge).
+   Set data-tone="…" on a <section>; default tone = the page surface. */
+[data-tone="muted"] {
+  --background: var(--brand-surface-muted);
+  --card: var(--brand-surface);
+}
+[data-tone="inverted"] {
+  --background: var(--brand-primary);
+  --foreground: var(--brand-primary-ink);
+  --card: color-mix(in oklch, var(--brand-primary) 86%, white);
+  --card-foreground: var(--brand-primary-ink);
+  --muted-foreground: color-mix(in oklch, var(--brand-primary-ink) 72%, transparent);
+  --secondary: color-mix(in oklch, var(--brand-primary-ink) 14%, transparent);
+  --secondary-foreground: var(--brand-primary-ink);
+  --border: color-mix(in oklch, var(--brand-primary-ink) 22%, transparent);
+  --primary: var(--brand-accent); /* CTAs in a dark section pop in the accent */
+  --primary-foreground: var(--brand-accent-ink);
+  --ring: var(--brand-accent);
+}
+[data-tone="accent"] {
+  --background: var(--brand-accent);
+  --foreground: var(--brand-accent-ink);
+  --muted-foreground: color-mix(in oklch, var(--brand-accent-ink) 68%, transparent);
+  --border: color-mix(in oklch, var(--brand-accent-ink) 22%, transparent);
+  --primary: var(--brand-primary);
+  --primary-foreground: var(--brand-primary-ink);
+  --ring: var(--brand-primary);
+}

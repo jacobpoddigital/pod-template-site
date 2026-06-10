@@ -1,0 +1,20 @@
+# pod-template-site
+
+> Pod Digital client-site template: Next.js (App Router, React 19) + headless WordPress
+> + Tailwind v4 + shadcn/ui, on Vercel. Pages are ACF flexible-content blocks → a block
+> registry → typed components. Static-first (SSG/ISR): WordPress down ≠ build down (fallback).
+
+## Start here
+- [AGENTS.md](AGENTS.md): how to build a site here — the flow, the `/project-input/` handoff, the block + token + tone contracts, the non-negotiable gates. Read this first.
+- [docs/standards.md](docs/standards.md): enforceable design/code/performance/a11y/conversion standards (exact thresholds).
+
+## Build
+- [.claude/skills/new-block/SKILL.md](.claude/skills/new-block/SKILL.md): add a block (schema + component + registry + fallback/seed parity).
+- [src/blocks/registry.tsx](src/blocks/registry.tsx): ACF layout → component map (the available blocks).
+- [src/blocks/tone.ts](src/blocks/tone.ts): section colour-scheme tones (default/muted/inverted/accent).
+
+## Design system
+- `/styleguide` (rendered route): shadcn primitives + brand colours + section tones.
+- `/blocks` (rendered route): the shared starter block library.
+- [src/styles/theme.css](src/styles/theme.css): per-client brand tokens (`--brand-*`) — the handoff `tokens.css` drops in here.
+- [src/app/globals.css](src/app/globals.css): the brand → shadcn-bridge translation (ADR 0014).
