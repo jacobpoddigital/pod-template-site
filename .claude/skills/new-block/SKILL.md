@@ -5,7 +5,7 @@ description: Add a new CMS block to a Pod client site (blocks pattern, workflow/
 
 # /new-block — add a block to a Pod client site
 
-First agency skill, extracted 2026-06-06 after 3 manual runs on site #1 (hero, card-grid, process-steps). Canonical copy lives in HQ `skills/`; install into a client repo as `.claude/skills/new-block/`.
+First agency skill, extracted 2026-06-06 after 3 manual runs on site #1 (hero, card-grid, process-steps). **Canonical here** in `pod-template-site` (alongside the code skills); client repos inherit it by cloning the template. Improve it here.
 
 ## ⛔ Stop — read these before writing a single line
 
