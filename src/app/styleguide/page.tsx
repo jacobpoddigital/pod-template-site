@@ -58,6 +58,26 @@ export default function StyleguidePage() {
             </div>
           </Group>
 
+          <Group title="Brand colours">
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="h-10 w-10 rounded-md bg-primary" />
+                <span className="text-sm text-ink-muted">primary (CTAs, links)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-10 w-10 rounded-md bg-brand-accent" />
+                <span className="text-sm text-ink-muted">brand-accent (decorative pop)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-10 w-10 rounded-md bg-accent" />
+                <span className="text-sm text-ink-muted">accent (shadcn muted hover)</span>
+              </div>
+              <span className="text-sm font-semibold uppercase tracking-[0.08em] text-brand-accent">
+                Accent eyebrow
+              </span>
+            </div>
+          </Group>
+
           <Group title="Form controls">
             <div className="max-w-md space-y-4">
               <div className="space-y-1.5">

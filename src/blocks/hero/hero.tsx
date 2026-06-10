@@ -10,7 +10,7 @@ export function Hero({ eyebrow, heading, subheading, cta_label, cta_url, seconda
       <Container>
         <div className="max-w-3xl">
           {eyebrow ? (
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.08em] text-primary">{eyebrow}</p>
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.08em] text-brand-accent">{eyebrow}</p>
           ) : null}
           <h1 className="text-[clamp(2.25rem,5vw+1rem,4.5rem)] font-bold leading-[1.05] tracking-tight text-ink">
             {heading}

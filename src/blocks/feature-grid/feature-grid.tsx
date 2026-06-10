@@ -34,7 +34,7 @@ export function FeatureGrid({ heading, intro, features }: FeatureGridProps) {
               <Card key={f.title}>
                 <CardHeader>
                   {Icon ? (
-                    <span className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-card bg-primary/10 text-primary">
+                    <span className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-card bg-brand-accent/10 text-brand-accent">
                       <Icon className="h-6 w-6" aria-hidden="true" />
                     </span>
                   ) : null}

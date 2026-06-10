@@ -1,11 +1,35 @@
 @import "tailwindcss";
 @import "../styles/theme.css";
 
-/* The FULL shadcn bridge → Tailwind utilities (bg-primary, bg-popover, bg-card, bg-muted,
-   text-muted-foreground, border-input, ring-ring, rounded-md/lg, …) so every shadcn primitive
-   styles. The bridge :root is canonical in theme.css (ADR 0012). Brand = `primary`; `accent`
-   is shadcn's MUTED hover surface (not the brand). A few agency aliases (bg-surface, text-ink)
-   are kept for the blocks — they map onto the same bridge, no per-client edits. */
+/* TRANSLATION LAYER (ADR 0014) — the per-client brand vocabulary (--brand-*, from theme.css)
+   → the shadcn bridge. Owned by the template, because shadcn is a template implementation
+   detail. This is where the vocabulary mismatch is resolved deterministically:
+     • brand `accent` is a VIBRANT decorative pop  → its own --brand-accent (utilities below)
+     • shadcn `accent` is a MUTED hover surface     → derived from the muted surface, NOT the brand accent
+   If the UI library ever changes, only this map changes — the agent's output stays the same. */
+:root {
+  --background: var(--brand-surface);
+  --foreground: var(--brand-ink);
+  --card: var(--brand-surface-raised);
+  --card-foreground: var(--brand-ink);
+  --popover: var(--brand-surface-raised);
+  --popover-foreground: var(--brand-ink);
+  --primary: var(--brand-primary);
+  --primary-foreground: var(--brand-primary-ink);
+  --secondary: var(--brand-surface-muted);
+  --secondary-foreground: var(--brand-ink);
+  --muted: var(--brand-surface-muted);
+  --muted-foreground: var(--brand-ink-muted);
+  --accent: var(--brand-surface-muted); /* shadcn hover surface — muted, NOT the brand accent */
+  --accent-foreground: var(--brand-ink);
+  --destructive: var(--brand-error);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: var(--brand-border);
+  --input: var(--brand-border);
+  --ring: var(--brand-primary);
+  --radius: var(--brand-radius);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -22,32 +46,31 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
+  /* The VIBRANT brand accent — used on purpose in blocks (bg-brand-accent / text-brand-accent). */
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-foreground: var(--brand-accent-ink);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-card: var(--radius);
 
-  /* Agency aliases for the blocks (non-colliding; brand lives on `primary`). */
+  /* Agency aliases the blocks read (bg-surface, text-ink, …) — same bridge, friendlier names. */
   --color-surface: var(--background);
   --color-surface-muted: var(--muted);
   --color-ink: var(--foreground);
   --color-ink-muted: var(--muted-foreground);
   --color-on-accent: var(--primary-foreground);
   --color-accent-surface: var(--secondary);
-  --radius-card: var(--radius);
-  --radius-button: var(--radius-button);
-  --spacing-section: var(--spacing-section);
-  --font-sans: var(--font-sans);
-}
 
-:root {
-  /* darker brand for button hover (read as an arbitrary value). */
-  --color-accent-hover: color-mix(in oklch, var(--primary) 85%, black);
-  --destructive-foreground: oklch(0.985 0 0);
+  --spacing-section: 5rem;
+  --font-sans: var(--brand-font-sans);
+  --font-display: var(--brand-font-display);
 }
 
 @layer base {
@@ -55,7 +78,8 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground;
+    font-family: var(--brand-font-sans);
   }
 }
 
