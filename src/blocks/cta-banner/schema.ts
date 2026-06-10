@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { toneSchema } from "../tone";
+import { toneSchema } from "@/lib/tone";
 
 export const ctaBannerSchema = z.object({
   heading: z.string().min(1),
