@@ -19,7 +19,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             "flex h-10 w-full rounded-[--radius-input] border border-[--color-border] bg-[--color-surface] px-3 py-2 text-sm text-[--color-ink] " +
             "placeholder:text-[--color-ink-muted] " +
             "disabled:cursor-not-allowed disabled:opacity-50 " +
-            "outline-none focus-visible:ring-2 focus-visible:ring-[--color-accent] focus-visible:ring-offset-0 " +
+            "outline-none focus-visible:ring-2 focus-visible:ring-[--color-primary] focus-visible:ring-offset-0 " +
             "motion-safe:transition-colors",
             error && "border-[--destructive] focus-visible:ring-[--destructive]",
             className
