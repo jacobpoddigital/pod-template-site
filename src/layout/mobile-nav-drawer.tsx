@@ -17,10 +17,13 @@ export function MobileNavDrawer({ links }: { links: NavLink[] }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
-  // Close drawer on route change
-  useEffect(() => {
+  // Close on route change — reset during render (React's recommended pattern; no effect),
+  // covering back/forward nav too, not just link clicks.
+  const [lastPath, setLastPath] = useState(pathname);
+  if (pathname !== lastPath) {
+    setLastPath(pathname);
     setOpen(false);
-  }, [pathname]);
+  }
 
   // Escape key + body scroll lock
   useEffect(() => {
@@ -43,7 +46,7 @@ export function MobileNavDrawer({ links }: { links: NavLink[] }) {
         aria-expanded={open}
         aria-controls="mobile-nav"
         onClick={() => setOpen((v) => !v)}
-        className="p-2 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+        className="p-2 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[--color-accent]"
       >
         <span
           className="block h-px w-5 bg-current transition-transform motion-safe:duration-200"
@@ -72,7 +75,7 @@ export function MobileNavDrawer({ links }: { links: NavLink[] }) {
             <Link
               key={l.href}
               href={l.href}
-              className="border-b border-brand-light py-4 text-2xl font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+              className="border-b border-[--color-accent-surface] py-4 text-2xl font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[--color-accent]"
               onClick={() => setOpen(false)}
             >
               {l.label}

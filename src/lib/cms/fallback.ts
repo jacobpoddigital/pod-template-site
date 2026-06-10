@@ -1,66 +1,16 @@
 import type { Page } from "./types";
 
-// Graceful fallback content (workflow/01 §Phase 4): the site builds and renders
-// before WordPress is connected, and keeps rendering if WP is unreachable at
-// build/ISR time. Field names MUST match the ACF layouts / block schemas.
-// TEMPLATE: replace with the client's approved copy (content/copy-NN.md) and
-// keep in sync with the WP seed (wp/provision-content.php).
-
+// Graceful fallback (workflow/01 §Phase 4): the site builds + renders before WordPress is
+// connected, and keeps rendering if WP is unreachable at build/ISR time.
+// AGNOSTIC SCAFFOLD: the home page ships with NO blocks — it matches the empty registry
+// (src/blocks/registry.tsx), so a fresh template builds clean. Per client: register the
+// blocks you need, then add their fallback instances here (matching the ACF layouts +
+// schemas + the WP seed in wp/provision-content.php). The /styleguide page shows the
+// primitive layer in the meantime.
 const home: Page = {
   slug: "home",
   title: "Home",
-  blocks: [
-    {
-      layout: "hero",
-      data: {
-        heading: "Headline: the client's value proposition in eight words",
-        subheading:
-          "Subhead placeholder — twenty words answering the audience's biggest objection with a number or a mechanism.",
-        cta_label: "Primary action",
-        cta_url: "/#contact",
-      },
-    },
-    {
-      layout: "card_grid",
-      data: {
-        heading: "What you get",
-        cards: [
-          { title: "Benefit one", body: "Each card answers one audience objection from the brief — if it maps to none, cut it." },
-          { title: "Benefit two", body: "Numbers over adjectives. A claim without a number or mechanism is filler." },
-          { title: "Benefit three", body: "Body text stays under 160 characters — the budget is also the fluff filter." },
-        ],
-      },
-    },
-    {
-      layout: "faq",
-      data: {
-        heading: "Frequently asked",
-        items: [
-          { question: "Placeholder question one?", answer: "Each Q&A answers a practical objection from the brief — the block ships FAQPage JSON-LD automatically." },
-          { question: "Placeholder question two?", answer: "Keep answers to one or two plain sentences with a number or mechanism." },
-        ],
-      },
-    },
-    {
-      layout: "process_steps",
-      data: {
-        heading: "How it works",
-        steps: [
-          { title: "Step one", body: "Short, concrete, starts with what the client does." },
-          { title: "Step two", body: "What they see and when." },
-          { title: "Step three", body: "The outcome, with the timeline number." },
-        ],
-      },
-    },
-    {
-      layout: "cta_banner",
-      data: {
-        heading: "Closing ask — repeat the single conversion.",
-        cta_label: "Primary action",
-        cta_url: "/#contact",
-      },
-    },
-  ],
+  blocks: [],
 };
 
 const pages: Record<string, Page> = { home };
