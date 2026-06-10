@@ -37,9 +37,9 @@ const samples: { label: string; block: CmsBlock }[] = [
         heading: "What you get",
         intro: "Each card answers one audience objection — if it maps to none, cut it.",
         features: [
-          { title: "Fast", body: "Static-first, sub-second loads on mobile." },
-          { title: "Clear", body: "Every claim carries a number or a mechanism." },
-          { title: "Owned", body: "You hold the code and the CMS — no lock-in." },
+          { title: "Fast", body: "Static-first, sub-second loads on mobile.", icon: "zap" },
+          { title: "Clear", body: "Every claim carries a number or a mechanism.", icon: "check" },
+          { title: "Owned", body: "You hold the code and the CMS — no lock-in.", icon: "lock" },
         ],
       },
     },
@@ -51,6 +51,10 @@ const samples: { label: string; block: CmsBlock }[] = [
   {
     label: "cta_banner",
     block: { layout: "cta_banner", data: { heading: "Ready to see it?", body: "Book a 20-minute walkthrough — no slides, just the build.", cta_label: "Book a demo", cta_url: "#" } },
+  },
+  {
+    label: "contact_form",
+    block: { layout: "contact_form", data: { heading: "Get in touch", intro: "Tell us about the project and we'll come back within one working day." } },
   },
 ];
 
