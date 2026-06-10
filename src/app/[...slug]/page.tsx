@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { BlockRenderer } from "@/blocks/block-renderer";
 import { getPage, getPages } from "@/lib/cms";
 
@@ -24,6 +25,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const page = await getPage(slug.join("/"));
+  if (!page) notFound();
   return {
     title: page.title,
     alternates: { canonical: `/${slug.join("/")}` },
@@ -33,5 +35,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CmsPage({ params }: Props) {
   const { slug } = await params;
   const page = await getPage(slug.join("/"));
+  if (!page) notFound();
   return <BlockRenderer blocks={page.blocks} />;
 }

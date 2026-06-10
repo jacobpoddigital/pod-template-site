@@ -1,0 +1,11 @@
+# Slugs + titles for generateStaticParams + the sitemap. Published only.
+query AllPages {
+  pages(first: 100, where: { status: PUBLISH }) {
+    nodes {
+      databaseId
+      title
+      slug
+      uri
+    }
+  }
+}

@@ -68,6 +68,17 @@ else
   wpcli "plugin activate advanced-custom-fields-pro"
 fi
 
+echo "==> Installing WPGraphQL + WPGraphQL for ACF (sole content layer, ADR 0013)"
+# wp.org slugs. wpgraphql-acf is the 2.x rewrite that exposes ACF field groups as
+# typed GraphQL unions. Per layout: set "Show in GraphQL" + a pinned Type Name.
+for gqlplugin in wp-graphql wpgraphql-acf; do
+  if ! wpcli "plugin is-installed $gqlplugin" 2>/dev/null; then
+    wpcli "plugin install $gqlplugin --activate"
+  else
+    wpcli "plugin activate $gqlplugin"
+  fi
+done
+
 echo "==> Copying mu-plugin and ACF field groups from repo"
 docker compose run --rm --user root --entrypoint bash cli -c "
   mkdir -p /var/www/html/wp-content/mu-plugins
@@ -84,7 +95,7 @@ if [[ -f "wp/provision-content.php" ]]; then
     -c "wp --allow-root --path=/var/www/html eval-file /opt/pod-wp/provision-content.php"
 fi
 
-echo "==> Permalinks (REST requires pretty permalinks)"
+echo "==> Permalinks (WPGraphQL /graphql endpoint needs pretty permalinks)"
 wpcli "rewrite structure '/%postname%/'"
 wpcli "rewrite flush --hard"
 wpcli "option update blog_public 0"

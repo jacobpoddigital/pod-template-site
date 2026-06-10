@@ -1,0 +1,52 @@
+/* eslint-disable */
+import * as types from './graphql';
+import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+
+/**
+ * Map of all GraphQL operations in the project.
+ *
+ * This map has several performance disadvantages:
+ * 1. It is not tree-shakeable, so it will include all operations in the project.
+ * 2. It is not minifiable, so the string of a GraphQL query will be multiple times inside the bundle.
+ * 3. It does not support dead code elimination, so it will add unused operations.
+ *
+ * Therefore it is highly recommended to use the babel or swc plugin for production.
+ * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
+ */
+type Documents = {
+    "query AllPages {\n  pages(first: 100, where: {status: PUBLISH}) {\n    nodes {\n      databaseId\n      title\n      slug\n      uri\n    }\n  }\n}": typeof types.AllPagesDocument,
+    "query PageBySlug($slug: ID!) {\n  page(id: $slug, idType: URI) {\n    databaseId\n    title\n    slug\n    uri\n    pageFields {\n      blocks {\n        __typename\n        ... on Page_Pagefields_Blocks_Hero {\n          eyebrow\n          heading\n          subheading\n          cta_label: ctaLabel\n          cta_url: ctaUrl\n          secondary_label: secondaryLabel\n          secondary_url: secondaryUrl\n          tone\n        }\n        ... on Page_Pagefields_Blocks_FeatureGrid {\n          heading\n          intro\n          tone\n          features {\n            title\n            body\n            icon\n          }\n        }\n        ... on Page_Pagefields_Blocks_Faq {\n          heading\n          tone\n          items {\n            question\n            answer\n          }\n        }\n        ... on Page_Pagefields_Blocks_CtaBanner {\n          heading\n          body\n          cta_label: ctaLabel\n          cta_url: ctaUrl\n          tone\n        }\n        ... on Page_Pagefields_Blocks_LogoStrip {\n          heading\n          tone\n          logos {\n            name\n          }\n        }\n        ... on Page_Pagefields_Blocks_ContactForm {\n          heading\n          intro\n          submit_label: submitLabel\n          success_message: successMessage\n          tone\n        }\n      }\n    }\n  }\n}": typeof types.PageBySlugDocument,
+};
+const documents: Documents = {
+    "query AllPages {\n  pages(first: 100, where: {status: PUBLISH}) {\n    nodes {\n      databaseId\n      title\n      slug\n      uri\n    }\n  }\n}": types.AllPagesDocument,
+    "query PageBySlug($slug: ID!) {\n  page(id: $slug, idType: URI) {\n    databaseId\n    title\n    slug\n    uri\n    pageFields {\n      blocks {\n        __typename\n        ... on Page_Pagefields_Blocks_Hero {\n          eyebrow\n          heading\n          subheading\n          cta_label: ctaLabel\n          cta_url: ctaUrl\n          secondary_label: secondaryLabel\n          secondary_url: secondaryUrl\n          tone\n        }\n        ... on Page_Pagefields_Blocks_FeatureGrid {\n          heading\n          intro\n          tone\n          features {\n            title\n            body\n            icon\n          }\n        }\n        ... on Page_Pagefields_Blocks_Faq {\n          heading\n          tone\n          items {\n            question\n            answer\n          }\n        }\n        ... on Page_Pagefields_Blocks_CtaBanner {\n          heading\n          body\n          cta_label: ctaLabel\n          cta_url: ctaUrl\n          tone\n        }\n        ... on Page_Pagefields_Blocks_LogoStrip {\n          heading\n          tone\n          logos {\n            name\n          }\n        }\n        ... on Page_Pagefields_Blocks_ContactForm {\n          heading\n          intro\n          submit_label: submitLabel\n          success_message: successMessage\n          tone\n        }\n      }\n    }\n  }\n}": types.PageBySlugDocument,
+};
+
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ *
+ *
+ * @example
+ * ```ts
+ * const query = graphql(`query GetUser($id: ID!) { user(id: $id) { name } }`);
+ * ```
+ *
+ * The query argument is unknown!
+ * Please regenerate the types.
+ */
+export function graphql(source: string): unknown;
+
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query AllPages {\n  pages(first: 100, where: {status: PUBLISH}) {\n    nodes {\n      databaseId\n      title\n      slug\n      uri\n    }\n  }\n}"): (typeof documents)["query AllPages {\n  pages(first: 100, where: {status: PUBLISH}) {\n    nodes {\n      databaseId\n      title\n      slug\n      uri\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query PageBySlug($slug: ID!) {\n  page(id: $slug, idType: URI) {\n    databaseId\n    title\n    slug\n    uri\n    pageFields {\n      blocks {\n        __typename\n        ... on Page_Pagefields_Blocks_Hero {\n          eyebrow\n          heading\n          subheading\n          cta_label: ctaLabel\n          cta_url: ctaUrl\n          secondary_label: secondaryLabel\n          secondary_url: secondaryUrl\n          tone\n        }\n        ... on Page_Pagefields_Blocks_FeatureGrid {\n          heading\n          intro\n          tone\n          features {\n            title\n            body\n            icon\n          }\n        }\n        ... on Page_Pagefields_Blocks_Faq {\n          heading\n          tone\n          items {\n            question\n            answer\n          }\n        }\n        ... on Page_Pagefields_Blocks_CtaBanner {\n          heading\n          body\n          cta_label: ctaLabel\n          cta_url: ctaUrl\n          tone\n        }\n        ... on Page_Pagefields_Blocks_LogoStrip {\n          heading\n          tone\n          logos {\n            name\n          }\n        }\n        ... on Page_Pagefields_Blocks_ContactForm {\n          heading\n          intro\n          submit_label: submitLabel\n          success_message: successMessage\n          tone\n        }\n      }\n    }\n  }\n}"): (typeof documents)["query PageBySlug($slug: ID!) {\n  page(id: $slug, idType: URI) {\n    databaseId\n    title\n    slug\n    uri\n    pageFields {\n      blocks {\n        __typename\n        ... on Page_Pagefields_Blocks_Hero {\n          eyebrow\n          heading\n          subheading\n          cta_label: ctaLabel\n          cta_url: ctaUrl\n          secondary_label: secondaryLabel\n          secondary_url: secondaryUrl\n          tone\n        }\n        ... on Page_Pagefields_Blocks_FeatureGrid {\n          heading\n          intro\n          tone\n          features {\n            title\n            body\n            icon\n          }\n        }\n        ... on Page_Pagefields_Blocks_Faq {\n          heading\n          tone\n          items {\n            question\n            answer\n          }\n        }\n        ... on Page_Pagefields_Blocks_CtaBanner {\n          heading\n          body\n          cta_label: ctaLabel\n          cta_url: ctaUrl\n          tone\n        }\n        ... on Page_Pagefields_Blocks_LogoStrip {\n          heading\n          tone\n          logos {\n            name\n          }\n        }\n        ... on Page_Pagefields_Blocks_ContactForm {\n          heading\n          intro\n          submit_label: submitLabel\n          success_message: successMessage\n          tone\n        }\n      }\n    }\n  }\n}"];
+
+export function graphql(source: string) {
+  return (documents as any)[source] ?? {};
+}
+
+export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocumentNode extends DocumentNode<  infer TType,  any>  ? TType  : never;

@@ -1,61 +1,36 @@
-import { getAllFallbackPages, getFallbackPage } from "./fallback";
-import { mapPage } from "./wordpress/mappers";
-import { CmsError, wpFetch } from "./wordpress/fetch";
-import { wpPagesResponseSchema } from "./wordpress/schemas";
+import { cmsRequest } from "./client";
+import { toBlocks } from "./adapters/blocks";
+import { PageBySlugDocument, AllPagesDocument } from "./generated/graphql";
 import type { Page } from "./types";
 
 // The CMS public API — the ONLY entry point the rest of the app may import
-// (lint-enforced, workflow/02). Returns normalized domain types.
+// (lint-enforced, workflow/02). WPGraphQL is the sole content layer (ADR 0013):
+// no REST, no fallback content. Missing page → null (caller 404s); malformed
+// content fails loud at build/ISR (zod parse in BlockRenderer).
 
 export type { CmsBlock, Page } from "./types";
 
 /** Cache tag convention: revalidateTag("pages") / ("page:<slug>") via /api/revalidate. */
 export const PAGES_TAG = "pages";
 
-/**
- * Fetch a page by slug. WP absent/unreachable → fallback content (resilience:
- * "WordPress down ≠ site down"). Malformed WP content → zod throws LOUDLY at
- * build/ISR time — bad content must never silently render wrong.
- */
-export async function getPage(slug: string): Promise<Page> {
-  try {
-    const raw = await wpFetch(
-      `/wp/v2/pages?slug=${encodeURIComponent(slug)}&acf_format=standard`,
-      [PAGES_TAG, `page:${slug}`],
-    );
-    const pages = wpPagesResponseSchema.parse(raw);
-    const first = pages[0];
-    if (!first) throw new CmsError(`No WP page with slug "${slug}"`, "expected");
-    return mapPage(first);
-  } catch (error) {
-    if (error instanceof CmsError && error.kind === "expected") {
-      const fallback = getFallbackPage(slug);
-      if (fallback) {
-        console.warn(`[cms] ${error.message} — using fallback content for "${slug}"`);
-        return fallback;
-      }
-    }
-    throw error;
-  }
+/** Fetch a page by slug. Returns null when the page does not exist (caller calls notFound()). */
+export async function getPage(slug: string): Promise<Page | null> {
+  const data = await cmsRequest(PageBySlugDocument, { slug }, [PAGES_TAG, `page:${slug}`]);
+  const page = data.page;
+  if (!page) return null;
+  return {
+    slug: page.slug ?? slug,
+    title: page.title ?? slug,
+    blocks: toBlocks(page.pageFields?.blocks),
+  };
 }
 
-/**
- * List all published pages (slugs + titles) — drives generateStaticParams and
- * the sitemap. WP absent → fallback page list, same resilience contract as
- * getPage. Published-only; WP origin stays the single content authority.
- */
+/** List published pages (slugs + titles) — drives generateStaticParams + the sitemap. */
 export async function getPages(): Promise<Page[]> {
-  try {
-    const raw = await wpFetch(
-      "/wp/v2/pages?status=publish&per_page=100&acf_format=standard",
-      [PAGES_TAG],
-    );
-    return wpPagesResponseSchema.parse(raw).map(mapPage);
-  } catch (error) {
-    if (error instanceof CmsError && error.kind === "expected") {
-      console.warn(`[cms] ${error.message} — using fallback page list`);
-      return getAllFallbackPages();
-    }
-    throw error;
-  }
+  const data = await cmsRequest(AllPagesDocument, {}, [PAGES_TAG]);
+  return (data.pages?.nodes ?? []).map((node) => ({
+    slug: node.slug ?? "",
+    title: node.title ?? "",
+    blocks: [],
+  }));
 }
