@@ -50,7 +50,7 @@ Exactly: `src/blocks/<kebab>/` → `schema.ts` (Zod; ACF field names 1:1; **empt
 - **`src/ui/` primitives** (shadcn, copied + owned — compose these, don't hand-roll elements):
   | primitive | key API |
   |---|---|
-  | `Button` / `ButtonLink` | `variant`: primary·secondary·outline·ghost·destructive · `size`: sm·md·lg (`ButtonLink` adds `href`) |
+  | `Button` / `ButtonLink` | `variant`: primary·secondary·**accent**·outline·ghost·destructive · `size`: sm·md·lg (`ButtonLink` adds `href`). `accent` = the vibrant brand-accent button. |
   | `Card` (+ `CardHeader`/`CardTitle`/`CardContent`/`CardFooter`) | composition |
   | `Accordion` (+ `Item`/`Trigger`/`Content`) | `type="single" collapsible` |
   | `Input` `Textarea` `Label` `Checkbox` `Select`(+parts) `RadioGroup`(+`Item`) | form controls (label every input) |
