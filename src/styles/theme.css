@@ -1,27 +1,76 @@
-/* PER-CLIENT BRAND TOKENS — the handoff `tokens.css` drops in here (ADR 0014).
-   A library-agnostic brand vocabulary; the template's globals.css TRANSLATES these to the
-   shadcn bridge. Rebrand = replace these values, nothing else.
-
-   Note the two brand colours:
-     --brand-primary  : the main brand colour (CTAs, links, focus)
-     --brand-accent   : a VIBRANT, decorative secondary pop (eyebrows, icons, highlights)
-   shadcn's own `accent` (a muted hover surface) is derived in globals.css — it is NOT this. */
+/* PER-CLIENT BRAND TOKENS — the full contract (ADR 0015). The handoff `tokens.css` drops in here;
+   globals.css TRANSLATES every group into the Tailwind @theme + shadcn bridge. All values are plain
+   CSS (no shorthands). These defaults are Pod's house style; a client tokens.css overrides them. */
 :root {
+  /* ---- Colour (roles) ---- */
   --brand-primary: oklch(0.45 0.15 255);
   --brand-primary-ink: oklch(0.99 0 0);
-
   --brand-accent: oklch(0.8 0.16 85);
   --brand-accent-ink: oklch(0.25 0.03 85);
-
   --brand-surface: oklch(1 0 0);
   --brand-surface-raised: oklch(0.99 0.003 255);
   --brand-surface-muted: oklch(0.97 0.005 255);
   --brand-ink: oklch(0.22 0.02 255);
   --brand-ink-muted: oklch(0.5 0.02 255);
   --brand-border: oklch(0.9 0.005 255);
+  --brand-success: oklch(0.65 0.15 162);
+  --brand-warning: oklch(0.77 0.16 70);
   --brand-error: oklch(0.55 0.22 25);
 
-  --brand-radius: 0.625rem;
+  /* ---- Fonts (family only; loading is a per-client next/font line) ---- */
   --brand-font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --brand-font-display: var(--brand-font-sans);
+
+  /* ---- Type scale (size · leading · weight · tracking per step) ---- */
+  --brand-text-display-xl: clamp(2.5rem, 5vw + 1rem, 4.5rem);
+  --brand-text-display-xl-leading: 1.05;
+  --brand-text-display-xl-weight: 700;
+  --brand-text-display-xl-tracking: -0.02em;
+  --brand-text-display-lg: clamp(2rem, 3vw + 1rem, 3rem);
+  --brand-text-display-lg-leading: 1.1;
+  --brand-text-display-lg-weight: 700;
+  --brand-text-display-lg-tracking: -0.02em;
+  --brand-text-display-md: 1.875rem;
+  --brand-text-display-md-leading: 1.2;
+  --brand-text-display-md-weight: 700;
+  --brand-text-display-md-tracking: -0.01em;
+  --brand-text-display-sm: 1.5rem;
+  --brand-text-display-sm-leading: 1.25;
+  --brand-text-display-sm-weight: 600;
+  --brand-text-display-sm-tracking: -0.01em;
+  --brand-text-body-lg: 1.125rem;
+  --brand-text-body-lg-leading: 1.65;
+  --brand-text-body-lg-weight: 400;
+  --brand-text-body-lg-tracking: 0em;
+  --brand-text-body: 1rem;
+  --brand-text-body-leading: 1.6;
+  --brand-text-body-weight: 400;
+  --brand-text-body-tracking: 0em;
+  --brand-text-body-sm: 0.875rem;
+  --brand-text-body-sm-leading: 1.55;
+  --brand-text-body-sm-weight: 400;
+  --brand-text-body-sm-tracking: 0em;
+  --brand-text-label: 0.75rem;
+  --brand-text-label-leading: 1.5;
+  --brand-text-label-weight: 600;
+  --brand-text-label-tracking: 0.08em;
+
+  /* ---- Spacing rhythm ---- */
+  --brand-space-section: 5rem;
+  --brand-space-section-hero: 8rem;
+  --brand-space-stack: 2rem;
+
+  /* ---- Radius (base; the scale derives) ---- */
+  --brand-radius: 0.625rem;
+
+  /* ---- Shadow / elevation ---- */
+  --brand-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.06);
+  --brand-shadow-card: 0 4px 16px 0 rgb(0 0 0 / 0.08);
+  --brand-shadow-modal: 0 20px 60px 0 rgb(0 0 0 / 0.18);
+
+  /* ---- Motion ---- */
+  --brand-duration-fast: 150ms;
+  --brand-duration-base: 220ms;
+  --brand-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --brand-ease-emphasis: cubic-bezier(0.16, 1, 0.3, 1);
 }

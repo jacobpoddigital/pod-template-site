@@ -9,13 +9,13 @@ export function Hero({ eyebrow, heading, subheading, cta_label, cta_url, seconda
     <Section dataBlock="hero" tone={tone} padding="hero">
       <div className="max-w-3xl">
         {eyebrow ? (
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.08em] text-brand-accent">{eyebrow}</p>
+          <p className="mb-4 label text-brand-accent">{eyebrow}</p>
         ) : null}
-        <h1 className="text-[clamp(2.25rem,5vw+1rem,4.5rem)] font-bold leading-[1.05] tracking-tight text-ink">
+        <h1 className="display-xl text-ink">
           {heading}
         </h1>
         {subheading ? (
-          <p className="mt-6 max-w-[65ch] text-lg leading-relaxed text-ink-muted">{subheading}</p>
+          <p className="mt-6 max-w-[65ch] body-lg text-ink-muted">{subheading}</p>
         ) : null}
         {hasPrimary || hasSecondary ? (
           <div className="mt-8 flex flex-wrap items-center gap-4">

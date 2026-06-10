@@ -1,12 +1,12 @@
 @import "tailwindcss";
 @import "../styles/theme.css";
 
-/* TRANSLATION LAYER (ADR 0014) — the per-client brand vocabulary (--brand-*, from theme.css)
-   → the shadcn bridge. Owned by the template, because shadcn is a template implementation
-   detail. This is where the vocabulary mismatch is resolved deterministically:
-     • brand `accent` is a VIBRANT decorative pop  → its own --brand-accent (utilities below)
-     • shadcn `accent` is a MUTED hover surface     → derived from the muted surface, NOT the brand accent
-   If the UI library ever changes, only this map changes — the agent's output stays the same. */
+/* TRANSLATION LAYER (ADR 0014/0015) — the per-client brand vocabulary (--brand-*, from theme.css)
+   → the shadcn bridge + the Tailwind @theme. Owned by the template (shadcn is a template detail).
+   Resolves the vocabulary mismatch deterministically:
+     • brand `accent` = a VIBRANT decorative pop → its own --brand-accent (bg-brand-accent)
+     • shadcn `accent` = a MUTED hover surface → derived from the muted surface
+   Swap UI library → only this file changes. */
 :root {
   --background: var(--brand-surface);
   --foreground: var(--brand-ink);
@@ -31,6 +31,7 @@
 }
 
 @theme inline {
+  /* colour bridge */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -49,18 +50,14 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-success: var(--brand-success);
+  --color-warning: var(--brand-warning);
 
-  /* The VIBRANT brand accent — used on purpose in blocks (bg-brand-accent / text-brand-accent). */
+  /* the vibrant brand accent (decorative — bg-brand-accent / text-brand-accent) */
   --color-brand-accent: var(--brand-accent);
   --color-brand-accent-foreground: var(--brand-accent-ink);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-card: var(--radius);
-
-  /* Agency aliases the blocks read (bg-surface, text-ink, …) — same bridge, friendlier names. */
+  /* agency aliases the blocks read */
   --color-surface: var(--background);
   --color-surface-muted: var(--muted);
   --color-ink: var(--foreground);
@@ -68,13 +65,32 @@
   --color-on-accent: var(--primary-foreground);
   --color-accent-surface: var(--secondary);
 
-  --spacing-section: 5rem;
+  /* radius scale (derives from --radius = --brand-radius) */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-card: var(--radius);
+
+  /* shadow scale (brand-driven) */
+  --shadow-sm: var(--brand-shadow-sm);
+  --shadow-card: var(--brand-shadow-card);
+  --shadow-modal: var(--brand-shadow-modal);
+
+  /* spacing rhythm */
+  --spacing-section: var(--brand-space-section);
+  --spacing-section-hero: var(--brand-space-section-hero);
+  --spacing-stack: var(--brand-space-stack);
+
+  /* fonts */
   --font-sans: var(--brand-font-sans);
   --font-display: var(--brand-font-display);
 
-  /* Accordion slide (shadcn) — the Radix content height drives it. */
-  --animate-accordion-down: accordion-down 0.2s ease-out;
-  --animate-accordion-up: accordion-up 0.2s ease-out;
+  /* motion — brands every transition utility + the accordion */
+  --default-transition-duration: var(--brand-duration-base);
+  --default-transition-timing-function: var(--brand-ease-standard);
+  --animate-accordion-down: accordion-down 0.2s var(--brand-ease-standard);
+  --animate-accordion-up: accordion-up 0.2s var(--brand-ease-standard);
 }
 
 @keyframes accordion-down {
@@ -94,6 +110,61 @@
   }
 }
 
+/* TYPE SCALE — token-driven (size · line-height · weight · tracking from theme.css). Blocks use
+   these classes (display-xl … label) instead of ad-hoc text-3xl/font-bold, so a client tokens.css
+   drives typography too. One class = one full type style. */
+@layer components {
+  .display-xl {
+    font-size: var(--brand-text-display-xl);
+    line-height: var(--brand-text-display-xl-leading);
+    font-weight: var(--brand-text-display-xl-weight);
+    letter-spacing: var(--brand-text-display-xl-tracking);
+  }
+  .display-lg {
+    font-size: var(--brand-text-display-lg);
+    line-height: var(--brand-text-display-lg-leading);
+    font-weight: var(--brand-text-display-lg-weight);
+    letter-spacing: var(--brand-text-display-lg-tracking);
+  }
+  .display-md {
+    font-size: var(--brand-text-display-md);
+    line-height: var(--brand-text-display-md-leading);
+    font-weight: var(--brand-text-display-md-weight);
+    letter-spacing: var(--brand-text-display-md-tracking);
+  }
+  .display-sm {
+    font-size: var(--brand-text-display-sm);
+    line-height: var(--brand-text-display-sm-leading);
+    font-weight: var(--brand-text-display-sm-weight);
+    letter-spacing: var(--brand-text-display-sm-tracking);
+  }
+  .body-lg {
+    font-size: var(--brand-text-body-lg);
+    line-height: var(--brand-text-body-lg-leading);
+    font-weight: var(--brand-text-body-lg-weight);
+    letter-spacing: var(--brand-text-body-lg-tracking);
+  }
+  .body {
+    font-size: var(--brand-text-body);
+    line-height: var(--brand-text-body-leading);
+    font-weight: var(--brand-text-body-weight);
+    letter-spacing: var(--brand-text-body-tracking);
+  }
+  .body-sm {
+    font-size: var(--brand-text-body-sm);
+    line-height: var(--brand-text-body-sm-leading);
+    font-weight: var(--brand-text-body-sm-weight);
+    letter-spacing: var(--brand-text-body-sm-tracking);
+  }
+  .label {
+    font-size: var(--brand-text-label);
+    line-height: var(--brand-text-label-leading);
+    font-weight: var(--brand-text-label-weight);
+    letter-spacing: var(--brand-text-label-tracking);
+    text-transform: uppercase;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -104,15 +175,7 @@
   }
 }
 
-/* Keyboard focus ring — visible on every interactive element (KB 05). */
-:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
-}
-
-/* SECTION TONES — one attribute re-maps the local surface, so a whole section and every
-   component inside it (cards, buttons, text) re-theme automatically (they all read the bridge).
-   Set data-tone="…" on a <section>; default tone = the page surface. */
+/* SECTION TONES — one attribute re-maps the local surface; section + components re-theme. */
 [data-tone="muted"] {
   --background: var(--brand-surface-muted);
   --card: var(--brand-surface);
@@ -126,7 +189,7 @@
   --secondary: color-mix(in oklch, var(--brand-primary-ink) 14%, transparent);
   --secondary-foreground: var(--brand-primary-ink);
   --border: color-mix(in oklch, var(--brand-primary-ink) 22%, transparent);
-  --primary: var(--brand-accent); /* CTAs in a dark section pop in the accent */
+  --primary: var(--brand-accent);
   --primary-foreground: var(--brand-accent-ink);
   --ring: var(--brand-accent);
 }
@@ -138,4 +201,10 @@
   --primary: var(--brand-primary);
   --primary-foreground: var(--brand-primary-ink);
   --ring: var(--brand-primary);
+}
+
+/* Keyboard focus ring — visible on every interactive element (KB 05). */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }

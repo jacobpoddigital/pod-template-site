@@ -8,7 +8,7 @@ export function LogoStrip({ heading, logos, tone }: LogoStripProps) {
   return (
     <Section dataBlock="logo_strip" tone={tone ?? "muted"} padding="compact">
       {heading ? (
-        <p className="mb-8 text-center text-sm font-semibold uppercase tracking-[0.08em] text-ink-muted">{heading}</p>
+        <p className="mb-8 text-center label text-ink-muted">{heading}</p>
       ) : null}
       <ul className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
         {items.map((l) => (
