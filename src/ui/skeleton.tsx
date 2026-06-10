@@ -6,7 +6,7 @@ export function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivEl
   return (
     <div
       className={cn(
-        "animate-pulse rounded-[--radius-card] bg-muted",
+        "animate-pulse rounded-md bg-muted",
         className
       )}
       aria-hidden="true"
