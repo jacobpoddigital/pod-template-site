@@ -100,14 +100,15 @@ wpcli "rewrite structure '/%postname%/'"
 wpcli "rewrite flush --hard"
 wpcli "option update blog_public 0"
 
-echo "==> REST smoke test"
-REST_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$WP_URL/wp-json/wp/v2/pages")
-if [[ "$REST_STATUS" == "200" ]]; then
-  echo "    OK: REST API responding at $WP_URL/wp-json"
+echo "==> WPGraphQL smoke test"
+GQL_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$WP_URL/graphql" \
+  -H 'Content-Type: application/json' --data '{"query":"{__typename}"}')
+if [[ "$GQL_STATUS" == "200" ]]; then
+  echo "    OK: WPGraphQL responding at $WP_URL/graphql"
 else
-  echo "WARN: REST API returned HTTP $REST_STATUS — check WP permalink settings" >&2
+  echo "WARN: WPGraphQL returned HTTP $GQL_STATUS — check the WPGraphQL plugin + pretty permalinks" >&2
 fi
 
 echo
 echo "Done. WP admin: $WP_URL/wp-admin (admin/admin, local only)"
-echo "Frontend env:   WORDPRESS_API_URL=$WP_URL/wp-json"
+echo "Frontend env:   WPGRAPHQL_URL=$WP_URL/graphql   # the app reads this; WORDPRESS_API_URL (REST) is unused"
