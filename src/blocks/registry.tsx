@@ -1,4 +1,9 @@
 import { z } from "zod";
+import { heroSchema, Hero } from "./hero";
+import { featureGridSchema, FeatureGrid } from "./feature-grid";
+import { faqSchema, Faq } from "./faq";
+import { ctaBannerSchema, CtaBanner } from "./cta-banner";
+import { logoStripSchema, LogoStrip } from "./logo-strip";
 
 // ACF layout name → { schema, component }. ONE entry per block.
 // Keys must match `acf_fc_layout` values in wp/acf-fields/*.json exactly.
@@ -21,6 +26,9 @@ export function defineBlock<P extends Record<string, unknown>>(
 }
 
 export const registry: Record<string, BlockEntry> = {
-  // Add blocks here as they are built. Example:
-  //   hero: defineBlock(heroSchema, dynamic(() => import('./hero').then(m => m.Hero))),
+  hero: defineBlock(heroSchema, Hero),
+  feature_grid: defineBlock(featureGridSchema, FeatureGrid),
+  faq: defineBlock(faqSchema, Faq),
+  cta_banner: defineBlock(ctaBannerSchema, CtaBanner),
+  logo_strip: defineBlock(logoStripSchema, LogoStrip),
 };
