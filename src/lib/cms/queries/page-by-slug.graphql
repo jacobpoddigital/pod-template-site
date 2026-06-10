@@ -1,0 +1,66 @@
+# One inline fragment per registered block. Aliases map WPGraphQL's camelCase
+# (ctaLabel) back to the snake_case field names the block zod schemas expect
+# (cta_label) — so the adapter stays generic and blocks/schemas are untouched.
+# Add a fragment here when you add a block (the /new-block recipe).
+query PageBySlug($slug: ID!) {
+  page(id: $slug, idType: URI) {
+    databaseId
+    title
+    slug
+    uri
+    pageFields {
+      blocks {
+        __typename
+        ... on Page_Pagefields_Blocks_Hero {
+          eyebrow
+          heading
+          subheading
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
+          tone
+        }
+        ... on Page_Pagefields_Blocks_FeatureGrid {
+          heading
+          intro
+          tone
+          features {
+            title
+            body
+            icon
+          }
+        }
+        ... on Page_Pagefields_Blocks_Faq {
+          heading
+          tone
+          items {
+            question
+            answer
+          }
+        }
+        ... on Page_Pagefields_Blocks_CtaBanner {
+          heading
+          body
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          tone
+        }
+        ... on Page_Pagefields_Blocks_LogoStrip {
+          heading
+          tone
+          logos {
+            name
+          }
+        }
+        ... on Page_Pagefields_Blocks_ContactForm {
+          heading
+          intro
+          submit_label: submitLabel
+          success_message: successMessage
+          tone
+        }
+      }
+    }
+  }
+}

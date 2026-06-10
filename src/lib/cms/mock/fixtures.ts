@@ -1,0 +1,80 @@
+import type { PageBySlugQuery } from "../generated/graphql";
+
+// DEV-ONLY demo content (ADR 0013 amendment — dev mock, NOT shipped fallback
+// content). A "home" page exercising all 6 starter blocks, so `pnpm dev` renders
+// a real-looking page with no WordPress. Per project: edit freely, or delete this
+// file + the mock once real WP content exists. This is type-checked against the
+// generated PageBySlugQuery — it can't drift from the schema.
+
+export const mockHome: PageBySlugQuery = {
+  page: {
+    databaseId: 1,
+    title: "Home",
+    slug: "home",
+    uri: "/",
+    pageFields: {
+      blocks: [
+        {
+          __typename: "Page_Pagefields_Blocks_Hero",
+          eyebrow: "Pod template",
+          heading: "A headless WordPress starter, rendered with no backend",
+          subheading:
+            "This page is the dev mock — every block below is real, served from a committed schema while WordPress is offline.",
+          tone: "default",
+          cta_label: "Get started",
+          cta_url: "#",
+          secondary_label: "View the blocks",
+          secondary_url: "/blocks",
+        },
+        {
+          __typename: "Page_Pagefields_Blocks_LogoStrip",
+          heading: "Trusted by teams who ship",
+          tone: "muted",
+          logos: [
+            { name: "Northwind" },
+            { name: "Acme" },
+            { name: "Globex" },
+            { name: "Initech" },
+            { name: "Umbrella" },
+          ],
+        },
+        {
+          __typename: "Page_Pagefields_Blocks_FeatureGrid",
+          heading: "Everything wired, nothing in your way",
+          intro: "The plumbing is done; the content model is yours to define.",
+          tone: "default",
+          features: [
+            { title: "GraphQL data layer", body: "graphql-request + codegen, typed end to end.", icon: "Boxes" },
+            { title: "Builds offline", body: "Committed schema + dev mock — no WP needed to iterate.", icon: "PlugZap" },
+            { title: "Blocks pattern", body: "One ACF layout → one registry entry → one component.", icon: "LayoutGrid" },
+          ],
+        },
+        {
+          __typename: "Page_Pagefields_Blocks_Faq",
+          heading: "Common questions",
+          tone: "muted",
+          items: [
+            { question: "Do I need WordPress to run this?", answer: "No — the dev mock renders blocks against the committed schema. Point WPGRAPHQL_URL at real WP when you have it." },
+            { question: "How do I add a block?", answer: "Follow the /new-block recipe: ACF layout + schema + component + registry entry + a query fragment." },
+          ],
+        },
+        {
+          __typename: "Page_Pagefields_Blocks_ContactForm",
+          heading: "Get in touch",
+          intro: "The contact block posts through a Next.js Server Action — the writes path.",
+          tone: "default",
+          submit_label: "Send message",
+          success_message: "Thanks — we'll be in touch shortly.",
+        },
+        {
+          __typename: "Page_Pagefields_Blocks_CtaBanner",
+          heading: "Clone it, brand it, ship it",
+          body: "Regenerate the schema from your WP, define ACF, and the same blocks render live.",
+          tone: "accent",
+          cta_label: "Read the build guide",
+          cta_url: "#",
+        },
+      ],
+    },
+  },
+};

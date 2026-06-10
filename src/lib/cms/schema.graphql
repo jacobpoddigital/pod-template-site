@@ -1,0 +1,121 @@
+# Baseline WPGraphQL + WPGraphQL-for-ACF schema — HAND-AUTHORED.
+#
+# A minimal, valid subset covering page-by-slug + the 6 starter block layouts.
+# It exists so `pnpm codegen` and `pnpm build` run with NO live WordPress
+# (ADR 0013 — build green offline; the dev mock renders against it).
+#
+# Per project: once ACF fields are defined on real WP, REGENERATE this file —
+#   pnpm dlx get-graphql-schema "$WPGRAPHQL_URL" > src/lib/cms/schema.graphql
+# then `pnpm codegen` and commit. Type names below follow WPGraphQL-for-ACF's
+# convention (Page_Pagefields_Blocks_<Layout>), so queries survive the swap.
+
+schema {
+  query: RootQuery
+}
+
+type RootQuery {
+  page(id: ID!, idType: PageIdType): Page
+  pages(first: Int, where: RootQueryToPageConnectionWhereArgs): RootQueryToPageConnection
+}
+
+enum PageIdType {
+  SLUG
+  URI
+  DATABASE_ID
+}
+
+enum PostStatusEnum {
+  PUBLISH
+  DRAFT
+}
+
+input RootQueryToPageConnectionWhereArgs {
+  status: PostStatusEnum
+}
+
+type RootQueryToPageConnection {
+  nodes: [Page!]!
+}
+
+type Page {
+  databaseId: Int!
+  title: String
+  slug: String
+  uri: String
+  pageFields: Page_Pagefields
+}
+
+# ACF field group "Page Fields" → the `blocks` Flexible Content field.
+type Page_Pagefields {
+  blocks: [Page_Pagefields_Blocks!]
+}
+
+# Flexible Content layouts → a discriminated union (switch on __typename).
+union Page_Pagefields_Blocks =
+    Page_Pagefields_Blocks_Hero
+  | Page_Pagefields_Blocks_FeatureGrid
+  | Page_Pagefields_Blocks_Faq
+  | Page_Pagefields_Blocks_CtaBanner
+  | Page_Pagefields_Blocks_LogoStrip
+  | Page_Pagefields_Blocks_ContactForm
+
+type Page_Pagefields_Blocks_Hero {
+  eyebrow: String
+  heading: String
+  subheading: String
+  ctaLabel: String
+  ctaUrl: String
+  secondaryLabel: String
+  secondaryUrl: String
+  tone: String
+}
+
+type Page_Pagefields_Blocks_FeatureGrid {
+  heading: String
+  intro: String
+  tone: String
+  features: [Page_Pagefields_Blocks_FeatureGrid_Features!]
+}
+
+type Page_Pagefields_Blocks_FeatureGrid_Features {
+  title: String
+  body: String
+  icon: String
+}
+
+type Page_Pagefields_Blocks_Faq {
+  heading: String
+  tone: String
+  items: [Page_Pagefields_Blocks_Faq_Items!]
+}
+
+type Page_Pagefields_Blocks_Faq_Items {
+  question: String
+  answer: String
+}
+
+type Page_Pagefields_Blocks_CtaBanner {
+  heading: String
+  body: String
+  ctaLabel: String
+  ctaUrl: String
+  tone: String
+}
+
+type Page_Pagefields_Blocks_LogoStrip {
+  heading: String
+  tone: String
+  logos: [Page_Pagefields_Blocks_LogoStrip_Logos!]
+}
+
+type Page_Pagefields_Blocks_LogoStrip_Logos {
+  name: String
+}
+
+type Page_Pagefields_Blocks_ContactForm {
+  heading: String
+  intro: String
+  submitLabel: String
+  successMessage: String
+  tone: String
+}
