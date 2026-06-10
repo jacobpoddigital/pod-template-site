@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 // asChild: renders as its child element (e.g. <Link>) via Radix Slot — for navigation use ButtonLink instead.
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[--radius-button] text-sm font-semibold outline-none " +
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-semibold outline-none " +
   "disabled:pointer-events-none disabled:opacity-50 " +
   "motion-safe:transition-colors " +
   "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
