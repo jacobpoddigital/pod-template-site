@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-const feature = z.object({ title: z.string(), body: z.string() });
+// `icon` is a Lucide icon name (see the ICONS map in feature-grid.tsx); optional.
+const feature = z.object({ title: z.string(), body: z.string(), icon: z.string().nullish() });
 
 export const featureGridSchema = z.object({
   heading: z.string().nullish(),

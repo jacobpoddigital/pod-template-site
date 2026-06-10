@@ -5,6 +5,9 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import { Label } from "@/ui/label";
 import { Input } from "@/ui/input";
 import { Textarea } from "@/ui/textarea";
+import { Checkbox } from "@/ui/checkbox";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/ui/radio-group";
 import { Separator } from "@/ui/separator";
 import { Skeleton } from "@/ui/skeleton";
 import { Container } from "@/ui/container";
@@ -62,9 +65,35 @@ export default function StyleguidePage() {
                 <Input id="sg-name" placeholder="Jane Doe" />
               </div>
               <div className="space-y-1.5">
+                <Label htmlFor="sg-topic">Topic</Label>
+                <Select>
+                  <SelectTrigger id="sg-topic" className="w-full">
+                    <SelectValue placeholder="Choose a topic…" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="general">General enquiry</SelectItem>
+                    <SelectItem value="quote">Request a quote</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
                 <Label htmlFor="sg-msg">Message</Label>
                 <Textarea id="sg-msg" placeholder="Tell us about the project…" />
               </div>
+              <div className="flex items-center gap-3">
+                <Checkbox id="sg-consent" />
+                <Label htmlFor="sg-consent" className="font-normal text-ink-muted">Keep me updated</Label>
+              </div>
+              <RadioGroup defaultValue="email" className="flex gap-6">
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem id="sg-email" value="email" />
+                  <Label htmlFor="sg-email" className="font-normal text-ink-muted">Email</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem id="sg-phone" value="phone" />
+                  <Label htmlFor="sg-phone" className="font-normal text-ink-muted">Phone</Label>
+                </div>
+              </RadioGroup>
             </div>
           </Group>
 

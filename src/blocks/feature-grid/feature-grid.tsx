@@ -1,6 +1,19 @@
+import { Zap, ShieldCheck, Sparkles, Clock, Check, Gauge, Lock, Rocket, type LucideIcon } from "lucide-react";
 import { Container } from "@/ui/container";
 import { Card, CardHeader, CardTitle, CardContent } from "@/ui/card";
 import type { FeatureGridProps } from "./schema";
+
+// Curated Lucide set — keep small (named imports stay tree-shakeable). Fallback: Sparkles.
+const ICONS: Record<string, LucideIcon> = {
+  zap: Zap,
+  shield: ShieldCheck,
+  sparkles: Sparkles,
+  clock: Clock,
+  check: Check,
+  gauge: Gauge,
+  lock: Lock,
+  rocket: Rocket,
+};
 
 export function FeatureGrid({ heading, intro, features }: FeatureGridProps) {
   const items = Array.isArray(features) ? features : [];
@@ -15,16 +28,24 @@ export function FeatureGrid({ heading, intro, features }: FeatureGridProps) {
           </div>
         ) : null}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((f) => (
-            <Card key={f.title}>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold text-ink">{f.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="leading-relaxed text-ink-muted">{f.body}</p>
-              </CardContent>
-            </Card>
-          ))}
+          {items.map((f) => {
+            const Icon = f.icon ? (ICONS[f.icon] ?? Sparkles) : null;
+            return (
+              <Card key={f.title}>
+                <CardHeader>
+                  {Icon ? (
+                    <span className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-card bg-accent/10 text-accent">
+                      <Icon className="h-6 w-6" aria-hidden="true" />
+                    </span>
+                  ) : null}
+                  <CardTitle className="text-lg font-semibold text-ink">{f.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="leading-relaxed text-ink-muted">{f.body}</p>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </Container>
     </section>
