@@ -1,29 +1,54 @@
-/* Tailwind v4 @theme tokens — THE only per-client styling file.
-   Components use semantic tokens only — never raw palette values.
-   Rebrand = edit this file, nothing else.
-   TEMPLATE: replace all values with the client's brand. */
+/* Per-client brand — THE only file a rebrand edits (ADR 0012). The shadcn-bridge contract
+   (--primary, --background, --ring, --radius, …) in OKLCH, so the design_system / handoff
+   tokens.css drops STRAIGHT in here. The agency semantic tokens (--color-accent, bg-accent,
+   rounded-card) are DERIVED from these in globals.css and never change per-client.
+   TEMPLATE: replace these values with the client's brand. */
 
-@theme {
-  /* Accent / interactive — REPLACE with client brand colour */
-  --color-accent:         oklch(0.45 0.15 255);  /* primary CTA / interactive */
-  --color-accent-hover:   oklch(0.35 0.13 255);  /* hover state */
-  --color-accent-surface: oklch(0.92 0.04 255);  /* tinted background */
-  --color-on-accent:      oklch(0.99 0 0);        /* text on accent backgrounds */
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.15 0 0);
+  --card: oklch(0.97 0 0);
+  --card-foreground: oklch(0.15 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0 0);
+  --primary: oklch(0.45 0.15 255); /* brand / primary CTA */
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.92 0.04 255); /* brand tint */
+  --secondary-foreground: oklch(0.45 0.15 255);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.5 0 0);
+  --accent: oklch(0.92 0.04 255);
+  --accent-foreground: oklch(0.45 0.15 255);
+  --destructive: oklch(0.55 0.22 25);
+  --border: oklch(0.9 0 0);
+  --input: oklch(0.9 0 0);
+  --ring: oklch(0.45 0.15 255);
+  --radius: 0; /* card radius — 0 = sharp; 0.5rem = rounded; 1rem = soft */
 
-  /* Surfaces & text */
-  --color-surface:        oklch(1 0 0);           /* page background — white */
-  --color-surface-muted:  oklch(0.97 0 0);        /* off-white panels / cards */
-  --color-ink:            oklch(0.15 0 0);         /* near-black body text */
-  --color-ink-muted:      oklch(0.50 0 0);         /* secondary / supporting text */
-
-  /* Typography — REPLACE with client typeface (set in app/layout.tsx too) */
+  /* Shape & type (per-client) */
+  --radius-button: 0; /* 0 = sharp; 9999px = pill */
+  --spacing-section: 5rem;
   --font-sans: ui-sans-serif, system-ui, sans-serif;
   /* --font-display: 'Client Display Font', serif; */
+}
 
-  /* Shape — set to match brand personality */
-  --radius-card:     0;        /* 0 = sharp; 0.5rem = rounded */
-  --radius-button:   0;        /* 0 = sharp; 9999px = pill */
-
-  /* Rhythm */
-  --spacing-section: 5rem;
+.dark {
+  --background: oklch(0.16 0 0);
+  --foreground: oklch(0.97 0 0);
+  --card: oklch(0.21 0 0);
+  --card-foreground: oklch(0.97 0 0);
+  --popover: oklch(0.21 0 0);
+  --popover-foreground: oklch(0.97 0 0);
+  --primary: oklch(0.7 0.13 255);
+  --primary-foreground: oklch(0.16 0 0);
+  --secondary: oklch(0.3 0.02 255);
+  --secondary-foreground: oklch(0.97 0 0);
+  --muted: oklch(0.27 0 0);
+  --muted-foreground: oklch(0.7 0 0);
+  --accent: oklch(0.3 0.02 255);
+  --accent-foreground: oklch(0.97 0 0);
+  --destructive: oklch(0.65 0.2 25);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.7 0.13 255);
 }
