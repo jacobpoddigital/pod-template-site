@@ -14,8 +14,8 @@ Block name (kebab for folder, `snake_case` for ACF layout) · fields + types · 
 ## The slice — exactly these files, in this order
 
 1. **`wp/acf-export.json`** — add the layout to the `blocks` flexible-content field. Keys prefixed `layout_pod_<name>` / `field_pod_<name>_<field>`. NEVER edit field groups in wp-admin — the mu-plugin registers from this JSON and admin edits don't persist.
-2. **`src/blocks/<kebab-name>/schema.ts`** — zod schema, field names match ACF 1:1. ACF quirks: empty repeater/flexible = `false` (use `z.union([z.array(...), z.literal(false)])`); empty optional fields = `null` (use `.nullish()`).
-3. **`src/blocks/<kebab-name>/<kebab-name>.tsx`** — server component, props = `z.infer`. Imports from `@/ui` only; semantic theme tokens only (`bg-brand`, `rounded-card` — raw values are lint-banned). Return `null` for empty content.
+2. **`src/blocks/<kebab-name>/schema.ts`** — zod schema, field names match ACF 1:1. ACF quirks: empty repeater/flexible = `false` (use `z.union([z.array(...), z.literal(false)])`); empty optional fields = `null` (use `.nullish()`). Add `tone: toneSchema` (from `@/lib/tone`) for a section block.
+3. **`src/blocks/<kebab-name>/<kebab-name>.tsx`** — server component, props = `z.infer`. **Root MUST be `<Section dataBlock="<layout>" tone={tone}>` (`@/ui/section`), never a raw `<section>`** — Section owns the surface/padding/tone/Container, keeping every block consistent. Imports from `@/ui` only; token utilities only (`bg-primary`, `text-brand-accent`, `rounded-card` — raw hex AND arbitrary `[--var]` reads are banned). Return `null` for empty content.
 4. **`src/blocks/registry.tsx`** — one `defineBlock(schema, dynamic(() => import("./<kebab-name>").then(m => m.<Component>)))` entry keyed by the ACF layout name.
 
 Plus `index.ts` re-exporting both, and parity:

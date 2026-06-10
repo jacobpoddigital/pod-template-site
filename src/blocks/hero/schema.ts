@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { toneSchema } from "@/lib/tone";
 
 // ACF field names match the layout 1:1. Empty optional text → ACF null → .nullish().
 export const heroSchema = z.object({
@@ -9,6 +10,7 @@ export const heroSchema = z.object({
   cta_url: z.string().nullish(),
   secondary_label: z.string().nullish(),
   secondary_url: z.string().nullish(),
+  tone: toneSchema,
 });
 
 export type HeroProps = z.infer<typeof heroSchema>;
