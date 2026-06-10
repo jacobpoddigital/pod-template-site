@@ -1,39 +1,66 @@
 @import "tailwindcss";
 @import "../styles/theme.css";
 
-/* Agency semantic tokens — DERIVED from the shadcn bridge (ADR 0012 inversion). The bridge
-   in theme.css is canonical (so a design_system / handoff tokens.css drops in); these map the
-   agency names (bg-surface, bg-[--color-accent], rounded-card, py-section) onto it and never
-   change per-client. NOTE: the agency's --color-accent = the BRAND/primary (not shadcn's
-   muted accent). */
+/* The FULL shadcn bridge → Tailwind utilities (bg-primary, bg-popover, bg-card, bg-muted,
+   text-muted-foreground, border-input, ring-ring, rounded-md/lg, …) so every shadcn primitive
+   styles. The bridge :root is canonical in theme.css (ADR 0012). Brand = `primary`; `accent`
+   is shadcn's MUTED hover surface (not the brand). A few agency aliases (bg-surface, text-ink)
+   are kept for the blocks — they map onto the same bridge, no per-client edits. */
 @theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Agency aliases for the blocks (non-colliding; brand lives on `primary`). */
   --color-surface: var(--background);
   --color-surface-muted: var(--muted);
   --color-ink: var(--foreground);
   --color-ink-muted: var(--muted-foreground);
-  --color-accent: var(--primary);
-  --color-accent-surface: var(--secondary);
   --color-on-accent: var(--primary-foreground);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
+  --color-accent-surface: var(--secondary);
   --radius-card: var(--radius);
   --radius-button: var(--radius-button);
   --spacing-section: var(--spacing-section);
   --font-sans: var(--font-sans);
 }
 
-/* Derived values read as arbitrary properties by the primitives. */
 :root {
+  /* darker brand for button hover (read as an arbitrary value). */
   --color-accent-hover: color-mix(in oklch, var(--primary) 85%, black);
-  --destructive-foreground: oklch(0.99 0 0);
+  --destructive-foreground: oklch(0.985 0 0);
 }
 
-body {
-  @apply bg-surface text-ink font-sans;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
 }
 
 /* Keyboard focus ring — visible on every interactive element (KB 05). */
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--ring);
   outline-offset: 2px;
 }

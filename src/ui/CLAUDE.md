@@ -32,7 +32,7 @@ Semantic tokens only (`--color-accent`, `--color-ink`, `--radius-card`) — neve
 
 1. Import `cn()` from `@/lib/utils` for all className merging.
 2. Use `buttonVariants` from `button.tsx` when styling any element as a button.
-3. Never write `focus:outline-none` without a visible replacement — always `focus-visible:ring-2 focus-visible:ring-[--color-accent]`.
+3. Never write `focus:outline-none` without a visible replacement — always `focus-visible:ring-2 focus-visible:ring-[--color-primary]`.
 4. All transitions: `motion-safe:transition-*` to respect `prefers-reduced-motion`.
 5. Input error states: `aria-invalid` + `aria-describedby` wired to `<p id="${id}-error" role="alert">`.
 6. Dialogs/Sheets: always include `DialogTitle` + `DialogDescription` (or wrap in `VisuallyHidden`).

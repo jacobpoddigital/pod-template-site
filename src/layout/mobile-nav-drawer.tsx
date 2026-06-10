@@ -46,7 +46,7 @@ export function MobileNavDrawer({ links }: { links: NavLink[] }) {
         aria-expanded={open}
         aria-controls="mobile-nav"
         onClick={() => setOpen((v) => !v)}
-        className="p-2 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[--color-accent]"
+        className="p-2 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[--color-primary]"
       >
         <span
           className="block h-px w-5 bg-current transition-transform motion-safe:duration-200"
@@ -75,7 +75,7 @@ export function MobileNavDrawer({ links }: { links: NavLink[] }) {
             <Link
               key={l.href}
               href={l.href}
-              className="border-b border-[--color-accent-surface] py-4 text-2xl font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[--color-accent]"
+              className="border-b border-[--color-accent-surface] py-4 text-2xl font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[--color-primary]"
               onClick={() => setOpen(false)}
             >
               {l.label}

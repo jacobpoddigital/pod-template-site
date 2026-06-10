@@ -26,7 +26,7 @@ export function ContactForm({ submitLabel, successMessage }: { submitLabel: stri
 
   if (state.ok) {
     return (
-      <p role="status" className="rounded-card bg-accent/10 px-4 py-3 text-ink">
+      <p role="status" className="rounded-card bg-primary/10 px-4 py-3 text-ink">
         {successMessage}
       </p>
     );
