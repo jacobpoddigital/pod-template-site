@@ -35,7 +35,7 @@ const podSiteBoundaries = {
         default: "disallow",
         rules: [
           // Same-layer imports are always fine; cross-layer only as listed.
-          { from: "ui", allow: ["ui"] },
+          { from: "ui", allow: ["ui", "lib"] }, // shadcn primitives import cn from lib/utils (ADR 0012)
           { from: "blocks", allow: ["blocks", "ui", "lib", "cms-public"] },
           { from: "layout", allow: ["layout", "ui", "lib", "cms-public"] },
           { from: "app", allow: ["app", "blocks", "layout", "ui", "lib", "cms-public"] },

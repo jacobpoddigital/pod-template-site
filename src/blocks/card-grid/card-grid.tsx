@@ -1,5 +1,6 @@
 import { Container } from "@/ui/container";
 import { Heading } from "@/ui/heading";
+import { Card, CardHeader, CardTitle, CardContent } from "@/ui/card";
 import type { CardGridProps } from "./schema";
 
 export function CardGrid({ heading, cards }: CardGridProps) {
@@ -15,13 +16,14 @@ export function CardGrid({ heading, cards }: CardGridProps) {
         ) : null}
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((card) => (
-            <div
-              key={card.title}
-              className="rounded-card bg-surface-muted p-8"
-            >
-              <Heading level={3}>{card.title}</Heading>
-              <p className="mt-3 text-ink-muted">{card.body}</p>
-            </div>
+            <Card key={card.title}>
+              <CardHeader>
+                <CardTitle>{card.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">{card.body}</p>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </Container>

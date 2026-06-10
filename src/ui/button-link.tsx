@@ -1,24 +1,24 @@
 import Link from "next/link";
+import type { VariantProps } from "class-variance-authority";
+import { buttonVariants } from "@/ui/button";
+import { cn } from "@/lib/utils";
 
-// FRAMEWORK primitive — no CMS knowledge. Semantic tokens only (ADR 0004).
-
-const variants = {
-  primary: "bg-brand text-on-brand hover:bg-brand-dark",
-  secondary: "bg-brand-light text-brand hover:bg-brand hover:text-on-brand",
-} as const;
+// FRAMEWORK primitive — a next/link styled as the shadcn Button (ADR 0012). Semantic via
+// the bridge tokens; no CMS knowledge. For an actual <button>, use Button directly.
+type Variant = VariantProps<typeof buttonVariants>["variant"];
+type Size = VariantProps<typeof buttonVariants>["size"];
 
 interface ButtonLinkProps {
   href: string;
-  variant?: keyof typeof variants;
+  variant?: Variant;
+  size?: Size;
+  className?: string;
   children: React.ReactNode;
 }
 
-export function ButtonLink({ href, variant = "primary", children }: ButtonLinkProps) {
+export function ButtonLink({ href, variant = "default", size = "lg", className, children }: ButtonLinkProps) {
   return (
-    <Link
-      href={href}
-      className={`inline-block rounded-button px-6 py-3 font-semibold transition-colors ${variants[variant]}`}
-    >
+    <Link href={href} className={cn(buttonVariants({ variant, size }), className)}>
       {children}
     </Link>
   );

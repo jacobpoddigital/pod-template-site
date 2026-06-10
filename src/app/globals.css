@@ -1,12 +1,62 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 @import "../styles/theme.css";
 
-body {
-  @apply bg-surface text-ink font-sans;
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* shadcn bridge → Tailwind utilities (bg-primary, text-foreground, border-border, …) */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+
+  /* Semantic aliases (ADR 0012) — keep the blocks' classes + the "no raw values" lint rule.
+     They map onto the shadcn bridge so a rebrand only ever edits theme.css's :root. */
+  --color-brand: var(--primary);
+  --color-on-brand: var(--primary-foreground);
+  --color-brand-light: color-mix(in oklch, var(--primary) 14%, var(--background));
+  --color-surface: var(--background);
+  --color-surface-muted: var(--muted);
+  --color-ink: var(--foreground);
+  --color-ink-muted: var(--muted-foreground);
+  --radius-card: var(--radius);
+  --radius-button: 9999px;
+  --spacing-section: 5rem;
+  --font-sans: var(--font-sans);
+  --font-heading: var(--font-sans);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
 }
 
 /* Visible focus for keyboard users on every interactive element (workflow/04 §7) */
 :focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 3px solid var(--ring);
   outline-offset: 2px;
 }

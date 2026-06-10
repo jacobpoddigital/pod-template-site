@@ -1,26 +1,49 @@
-/* Tailwind v4 @theme tokens — THE only per-client styling file (ADR 0004, workflow/02).
-   Components use semantic tokens only (bg-brand, rounded-card) — never raw palette values.
-   Rebrand = edit this file, nothing else. */
+/* Per-client brand tokens — THE only file a rebrand edits (ADR 0004, ADR 0012).
+   This is the shadcn bridge contract (--primary, --background, --ring, --radius, …) in OKLCH,
+   so the design_system / handoff `tokens.css` drops STRAIGHT in here. Seeded with the
+   template default (Pod blue + warm accent). The semantic aliases (bg-brand, rounded-card)
+   live in globals.css's @theme inline and map onto these — components never touch raw values. */
 
-@theme {
-  /* Brand palette */
-  --color-brand: oklch(0.45 0.15 255);
-  --color-brand-dark: oklch(0.35 0.13 255);
-  --color-brand-light: oklch(0.92 0.04 255);
-  --color-accent: oklch(0.75 0.16 70);
-
-  /* Surfaces & text */
-  --color-surface: oklch(1 0 0);
-  --color-surface-muted: oklch(0.97 0.005 255);
-  --color-ink: oklch(0.22 0.02 255);
-  --color-ink-muted: oklch(0.45 0.02 255);
-  --color-on-brand: oklch(0.99 0 0);
-
-  /* Type */
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.22 0.02 255);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.02 255);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.02 255);
+  --primary: oklch(0.45 0.15 255); /* brand */
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.97 0.005 255);
+  --secondary-foreground: oklch(0.22 0.02 255);
+  --muted: oklch(0.97 0.005 255);
+  --muted-foreground: oklch(0.45 0.02 255);
+  --accent: oklch(0.75 0.16 70); /* warm accent */
+  --accent-foreground: oklch(0.22 0.02 255);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0.004 255);
+  --input: oklch(0.922 0.004 255);
+  --ring: oklch(0.75 0.16 70); /* focus = accent */
+  --radius: 1rem; /* card radius */
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
 
-  /* Shape & rhythm */
-  --radius-card: 1rem;
-  --radius-button: 9999px;
-  --spacing-section: 5rem;
+.dark {
+  --background: oklch(0.22 0.02 255);
+  --foreground: oklch(0.97 0.005 255);
+  --card: oklch(0.26 0.02 255);
+  --card-foreground: oklch(0.97 0.005 255);
+  --popover: oklch(0.26 0.02 255);
+  --popover-foreground: oklch(0.97 0.005 255);
+  --primary: oklch(0.7 0.13 255);
+  --primary-foreground: oklch(0.18 0.02 255);
+  --secondary: oklch(0.3 0.02 255);
+  --secondary-foreground: oklch(0.97 0.005 255);
+  --muted: oklch(0.3 0.02 255);
+  --muted-foreground: oklch(0.7 0.02 255);
+  --accent: oklch(0.75 0.16 70);
+  --accent-foreground: oklch(0.18 0.02 255);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.75 0.16 70);
 }
