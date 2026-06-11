@@ -1,6 +1,6 @@
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
-import { PageBySlugDocument, AllPagesDocument, RecentPostsDocument } from "../generated/graphql";
-import { mockHome, mockPosts } from "./fixtures";
+import { PageBySlugDocument, AllPagesDocument, RecentPostsDocument, SiteChromeDocument } from "../generated/graphql";
+import { mockHome, mockPosts, mockChrome } from "./fixtures";
 
 // DEV-ONLY GraphQL mock (ADR 0013 amendment). Serves the committed-schema queries
 // from curated fixtures so the template builds + renders with no WordPress. It is
@@ -29,6 +29,10 @@ export async function mockRequest<TResult>(
 
   if ((document as unknown) === RecentPostsDocument) {
     return { posts: { nodes: mockPosts } } as TResult;
+  }
+
+  if ((document as unknown) === SiteChromeDocument) {
+    return mockChrome as TResult;
   }
 
   return {} as TResult;

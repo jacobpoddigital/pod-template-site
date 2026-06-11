@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/ui/container";
 import { siteConfig } from "../../site.config";
+import type { SiteChrome } from "@/lib/cms";
 
 function FooterNav({ title, links }: { title: string; links: readonly { label: string; href: string }[] }) {
   return (
@@ -22,8 +23,9 @@ function FooterNav({ title, links }: { title: string; links: readonly { label: s
   );
 }
 
-export function Footer() {
-  const { name, footer } = siteConfig;
+export function Footer({ chrome }: { chrome: SiteChrome }) {
+  const { name, footer: cfg } = siteConfig;
+  const f = chrome.footer;
   const year = new Date().getFullYear();
 
   return (
@@ -32,21 +34,21 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="text-lg font-semibold">{name}</p>
-            <p className="mt-2 max-w-[40ch] text-sm text-surface/70">{footer.strapline}</p>
-            {footer.address ? (
-              <address className="mt-4 whitespace-pre-line text-sm not-italic text-surface/70">{footer.address}</address>
+            {f.strapline ? <p className="mt-2 max-w-[40ch] text-sm text-surface/70">{f.strapline}</p> : null}
+            {f.address ? (
+              <address className="mt-4 whitespace-pre-line text-sm not-italic text-surface/70">{f.address}</address>
             ) : null}
           </div>
 
-          {footer.columns.map((col) => (
+          {f.columns.map((col) => (
             <FooterNav key={col.title} title={col.title} links={col.links} />
           ))}
 
-          {footer.social.length ? (
+          {f.social.length ? (
             <div>
               <p className="text-sm font-semibold">Follow</p>
               <ul className="mt-3 space-y-2">
-                {footer.social.map((s) => (
+                {f.social.map((s) => (
                   <li key={s.href}>
                     <a
                       href={s.href}
@@ -65,11 +67,11 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col gap-3 border-t border-surface/15 pt-6 text-sm text-surface/60 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {year} {footer.company}. All rights reserved.
+            © {year} {cfg.company}. All rights reserved.
           </p>
-          {footer.legal.length ? (
+          {cfg.legal.length ? (
             <ul className="flex flex-wrap gap-4">
-              {footer.legal.map((l) => (
+              {cfg.legal.map((l) => (
                 <li key={l.href}>
                   <Link
                     href={l.href}

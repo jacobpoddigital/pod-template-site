@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Header } from "@/layout/header";
 import { Footer } from "@/layout/footer";
 import { StructuredData } from "./structured-data";
+import { getSiteChrome } from "@/lib/cms";
 import { siteConfig } from "../../site.config";
 import "./globals.css";
 
@@ -29,11 +30,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Chrome is editor-managed in WP — fetched once here, passed to header + footer.
+  const chrome = await getSiteChrome();
   return (
     <html lang="en" className="h-full antialiased">
       <body className="flex min-h-full flex-col bg-surface text-ink font-sans">
@@ -43,11 +46,11 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <Header />
+        <Header chrome={chrome} />
         <main id="main-content" className="flex-1">
           {children}
         </main>
-        <Footer />
+        <Footer chrome={chrome} />
         <StructuredData />
       </body>
     </html>

@@ -1,0 +1,35 @@
+# Editor-managed header/footer in one round-trip. Menu items are flat (parentId) →
+# built into a tree: PRIMARY = header nav (drill-down), FOOTER top-level items =
+# footer columns with their children as the links. siteOptions = ACF options page.
+query SiteChrome {
+  primary: menuItems(where: { location: PRIMARY }) {
+    nodes {
+      id
+      parentId
+      label
+      uri
+    }
+  }
+  footer: menuItems(where: { location: FOOTER }) {
+    nodes {
+      id
+      parentId
+      label
+      uri
+    }
+  }
+  siteOptions {
+    strapline
+    address
+    headerCtaLabel
+    headerCtaUrl
+    logo {
+      sourceUrl
+      altText
+    }
+    social {
+      label
+      url
+    }
+  }
+}

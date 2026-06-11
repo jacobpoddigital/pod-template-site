@@ -1,20 +1,24 @@
 import { cmsRequest } from "./client";
 import { toBlocks } from "./adapters/blocks";
-import { PageBySlugDocument, AllPagesDocument, RecentPostsDocument } from "./generated/graphql";
-import type { Page, PostSummary } from "./types";
+import { PageBySlugDocument, AllPagesDocument, RecentPostsDocument, SiteChromeDocument } from "./generated/graphql";
+import type { SiteChromeQuery } from "./generated/graphql";
+import type { Page, PostSummary, SiteChrome, NavItem } from "./types";
 
 // The CMS public API — the ONLY entry point the rest of the app may import
 // (lint-enforced, workflow/02). WPGraphQL is the sole content layer (ADR 0013):
 // no REST, no fallback content. Missing page → null (caller 404s); malformed
 // content fails loud at build/ISR (zod parse in BlockRenderer).
 
-export type { CmsBlock, Page, PostSummary } from "./types";
+export type { CmsBlock, Page, PostSummary, SiteChrome, NavItem } from "./types";
 
 /** Cache tag convention: revalidateTag("pages") / ("page:<slug>") via /api/revalidate. */
 export const PAGES_TAG = "pages";
 
 /** Cache tag for post listings (post_grid). */
 export const POSTS_TAG = "posts";
+
+/** Cache tag for the header/footer chrome (menus + options). */
+export const CHROME_TAG = "chrome";
 
 /** Fetch a page by slug. Returns null when the page does not exist (caller calls notFound()). */
 export async function getPage(slug: string): Promise<Page | null> {
@@ -55,4 +59,65 @@ export async function getRecentPosts(opts: { first?: number; category?: string |
       image: img?.sourceUrl ? { sourceUrl: img.sourceUrl, altText: img.altText } : null,
     };
   });
+}
+
+// Flat WPGraphQL menu items (parentId) → a nav tree. Empty children are dropped.
+interface MenuNode {
+  id: string;
+  parentId?: string | null;
+  label?: string | null;
+  uri?: string | null;
+}
+
+function buildNavTree(nodes: readonly MenuNode[]): NavItem[] {
+  const byId = new Map<string, NavItem>();
+  for (const n of nodes) byId.set(n.id, { label: n.label ?? "", href: n.uri ?? "#", children: [] });
+  const roots: NavItem[] = [];
+  for (const n of nodes) {
+    const item = byId.get(n.id)!;
+    const parent = n.parentId ? byId.get(n.parentId) : undefined;
+    if (parent) parent.children!.push(item);
+    else roots.push(item);
+  }
+  const clean = (items: NavItem[]): NavItem[] =>
+    items.map(({ label, href, children }) =>
+      children && children.length ? { label, href, children: clean(children) } : { label, href },
+    );
+  return clean(roots);
+}
+
+// Small normalizers keep getSiteChrome under the complexity bar.
+type ChromeOptions = SiteChromeQuery["siteOptions"];
+
+function toLogo(o: ChromeOptions): SiteChrome["logo"] {
+  return o?.logo?.sourceUrl ? { sourceUrl: o.logo.sourceUrl, altText: o.logo.altText } : null;
+}
+function toHeaderCta(o: ChromeOptions): SiteChrome["headerCta"] {
+  return o?.headerCtaLabel && o?.headerCtaUrl ? { label: o.headerCtaLabel, href: o.headerCtaUrl } : null;
+}
+function toSocial(o: ChromeOptions): SiteChrome["footer"]["social"] {
+  return (o?.social ?? []).map((s) => ({ label: s.label ?? "", href: s.url ?? "#" }));
+}
+function toColumns(tree: NavItem[]): SiteChrome["footer"]["columns"] {
+  return tree.map((c) => ({
+    title: c.label,
+    links: (c.children ?? []).map((l) => ({ label: l.label, href: l.href })),
+  }));
+}
+
+/** Header + footer chrome, editor-managed in WordPress (menus + ACF options). */
+export async function getSiteChrome(): Promise<SiteChrome> {
+  const data = await cmsRequest(SiteChromeDocument, {}, [CHROME_TAG]);
+  const o = data.siteOptions;
+  return {
+    logo: toLogo(o),
+    headerCta: toHeaderCta(o),
+    nav: buildNavTree(data.primary?.nodes ?? []),
+    footer: {
+      strapline: o?.strapline ?? null,
+      address: o?.address ?? null,
+      columns: toColumns(buildNavTree(data.footer?.nodes ?? [])),
+      social: toSocial(o),
+    },
+  };
 }

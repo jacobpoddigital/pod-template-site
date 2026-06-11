@@ -23,3 +23,24 @@ export interface PostSummary {
   excerpt?: string | null;
   image?: { sourceUrl: string; altText?: string | null } | null;
 }
+
+/** A nav link, with optional children for the mobile drill-down menu. */
+export interface NavItem {
+  label: string;
+  href: string;
+  children?: NavItem[];
+}
+
+/** Site chrome (header + footer) — editor-managed in WordPress (menus + ACF options),
+ *  normalized from WPGraphQL. Fetched once at the layout level. */
+export interface SiteChrome {
+  logo: { sourceUrl: string; altText?: string | null } | null;
+  headerCta: { label: string; href: string } | null;
+  nav: NavItem[];
+  footer: {
+    strapline: string | null;
+    address: string | null;
+    columns: { title: string; links: { label: string; href: string }[] }[];
+    social: { label: string; href: string }[];
+  };
+}

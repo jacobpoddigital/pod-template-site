@@ -17,6 +17,48 @@ type RootQuery {
   page(id: ID!, idType: PageIdType): Page
   pages(first: Int, where: RootQueryToPageConnectionWhereArgs): RootQueryToPageConnection
   posts(first: Int, where: RootQueryToPostConnectionWhereArgs): RootQueryToPostConnection
+  menuItems(where: RootQueryToMenuItemConnectionWhereArgs): RootQueryToMenuItemConnection
+  siteOptions: SiteOptions
+}
+
+# Editor-managed chrome (header/footer). Menus → nav (WPGraphQL); site options →
+# logo / CTA / footer extras (WPGraphQL-for-ACF options page). Per project: register
+# the PRIMARY + FOOTER menu locations and a "Site Options" ACF options page, exposed
+# to GraphQL, then regenerate this SDL.
+enum MenuLocationEnum {
+  PRIMARY
+  FOOTER
+}
+
+input RootQueryToMenuItemConnectionWhereArgs {
+  location: MenuLocationEnum
+}
+
+type RootQueryToMenuItemConnection {
+  nodes: [MenuItem!]!
+}
+
+# Flat list with parentId — built into a tree client-side (header drill-down + footer columns).
+type MenuItem {
+  id: ID!
+  parentId: ID
+  label: String
+  uri: String
+  target: String
+}
+
+type SiteOptions {
+  logo: MediaItem
+  strapline: String
+  address: String
+  headerCtaLabel: String
+  headerCtaUrl: String
+  social: [SiteOptionsSocial!]
+}
+
+type SiteOptionsSocial {
+  label: String
+  url: String
 }
 
 enum PageIdType {
