@@ -97,7 +97,7 @@ These are codebase-specific musts. They were each a real miss; do not repeat the
 - **The scale is the design_system agent's CONTRACT (ADR 0015), not ours to extend ad-hoc.** To change a size, **edit the token** (`theme.css` default / the agent's `tokens.css`) — it cascades to every element on that rung. Do NOT invent per-element tokens or add a new rung template-only (it won't retune per client; add it to the agent's contract first).
 - **Weight MAY stay a `font-*` utility** (presentational). `body-sm font-medium` is fine — the *size* is tokenised; the weight is a tweak. What's banned is the raw *size*, not the weight.
 - Role → class: section heading `h2 display-md` · **card/item title + nav item `h3/display-xs`** · lead/intro `body-lg` · body `body`/prose · small/meta `body-sm` · eyebrow/badge `label` · hero `display-xl` · big stat `display-lg`. Chrome (header/footer/nav/drawer) and the shadcn `ui/*` primitives use the scale too. Form controls = `body` (16px, no iOS zoom).
-- **One sanctioned exception:** `ui/rich-text.tsx` styles *injected* WYSIWYG HTML it doesn't author (`[&_h2]:text-3xl`…) — `eslint`-ignored.
+- **Bare elements have token-driven defaults** (`globals.css @layer base`: `h1 display-lg · h2 display-md · h3 display-sm · h4–h6 display-xs · p body`). So a `<h2>`/`<p>` with no class — incl. **injected CMS HTML** (`rich-text`) — still gets a design-system size, not a browser default. A class overrides (base < components < utilities). There are **no `text-*` exceptions** — the rule covers all of `src/`.
 
 **Accessibility (these shipped wrong once).**
 - **Interactive controls ≥ 44px.** `Button` `md`=`h-11`, `icon`=`h-11 w-11`; form controls `h-11`. Icon-only links/buttons need `aria-label`; decorative icons `aria-hidden="true"`.
