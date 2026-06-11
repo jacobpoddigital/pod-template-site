@@ -28,17 +28,29 @@ export const LAYOUTS = ["grid", "slider"] as const;
 export type BlockLayout = (typeof LAYOUTS)[number];
 export const layoutSchema = z.enum(LAYOUTS).nullish();
 
-/** Spread into a section block's zod object: z.object({ ...sectionSettingsFields, … }). */
+/** Spread into a section block's zod object: z.object({ ...sectionSettingsFields, … }).
+ *  `anchor` gives the section an editor-set id so in-page nav (#anchor) can target it. */
 export const sectionSettingsFields = {
   tone: toneSchema,
   spacing: spacingSchema,
   container: containerSchema,
+  anchor: z.string().nullish(),
 } as const;
 
 export interface SectionSettings {
   tone?: Tone | null;
   spacing?: Spacing | null;
   container?: ContainerWidth | null;
+  anchor?: string | null;
+}
+
+/** Editor `anchor` text → a safe HTML id (lowercase, hyphenated). Empty → "". */
+export function toAnchorId(anchor?: string | null): string {
+  return (anchor ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "");
 }
 
 // spacing (editor vocabulary) → <Section> padding preset (the spacing scale).

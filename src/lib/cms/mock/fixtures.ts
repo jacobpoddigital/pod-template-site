@@ -34,6 +34,7 @@ export const mockHome: PageBySlugQuery = {
           tone: "muted",
           spacing: null,
           container: null,
+          anchor: null,
           logos: [
             { name: "Northwind" },
             { name: "Acme" },
@@ -49,6 +50,7 @@ export const mockHome: PageBySlugQuery = {
           tone: "default",
           spacing: null,
           container: null,
+          anchor: "services",
           features: [
             { title: "GraphQL data layer", body: "graphql-request + codegen, typed end to end.", icon: "Boxes" },
             { title: "Builds offline", body: "Committed schema + dev mock — no WP needed to iterate.", icon: "PlugZap" },
@@ -61,6 +63,7 @@ export const mockHome: PageBySlugQuery = {
           tone: "muted",
           spacing: null,
           container: null,
+          anchor: null,
           items: [
             { question: "Do I need WordPress to run this?", answer: "No — the dev mock renders blocks against the committed schema. Point WPGRAPHQL_URL at real WP when you have it." },
             { question: "How do I add a block?", answer: "Follow the /new-block recipe: ACF layout + schema + component + registry entry + a query fragment." },
@@ -73,6 +76,7 @@ export const mockHome: PageBySlugQuery = {
           tone: "default",
           spacing: null,
           container: null,
+          anchor: null,
           submit_label: "Send message",
           success_message: "Thanks — we'll be in touch shortly.",
         },
@@ -89,6 +93,7 @@ export const mockHome: PageBySlugQuery = {
           tone: "default",
           spacing: "default",
           container: "default",
+          anchor: null,
           image: {
             sourceUrl: "https://picsum.photos/seed/podmock/1200/900",
             altText: "Placeholder image",
@@ -102,6 +107,7 @@ export const mockHome: PageBySlugQuery = {
           tone: "accent",
           spacing: null,
           container: null,
+          anchor: null,
           cta_label: "Read the build guide",
           cta_url: "#",
         },
