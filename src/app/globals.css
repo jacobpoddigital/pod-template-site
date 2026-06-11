@@ -169,6 +169,14 @@
     letter-spacing: var(--brand-text-label-tracking);
     text-transform: uppercase;
   }
+  /* Display rungs use the display font even on non-heading elements (e.g. stat <dd>). */
+  .display-xl,
+  .display-lg,
+  .display-md,
+  .display-sm,
+  .display-xs {
+    font-family: var(--brand-font-display);
+  }
 }
 
 @layer base {
@@ -214,6 +222,16 @@
     line-height: var(--brand-text-body-leading);
     font-weight: var(--brand-text-body-weight);
     letter-spacing: var(--brand-text-body-tracking);
+  }
+  /* Headings render in the display font (--brand-font-display). Defaults to the sans
+     family, so no change until a client sets a distinct display face in tokens.css. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--brand-font-display);
   }
 }
 
