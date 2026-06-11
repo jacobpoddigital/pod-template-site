@@ -30,17 +30,17 @@ export function ComparisonTable({
         <table className="w-full min-w-[34rem] border-collapse text-left">
           <thead>
             <tr className="border-b border-border">
-              <th scope="col" className="py-3 pr-4 font-semibold text-ink">Feature</th>
-              <th scope="col" className="px-4 py-3 font-semibold text-ink">{aLabel}</th>
-              <th scope="col" className="px-4 py-3 font-semibold text-ink">{bLabel}</th>
+              <th scope="col" className="py-3 pr-4 body-sm font-semibold text-ink">Feature</th>
+              <th scope="col" className="px-4 py-3 body-sm font-semibold text-ink">{aLabel}</th>
+              <th scope="col" className="px-4 py-3 body-sm font-semibold text-ink">{bLabel}</th>
             </tr>
           </thead>
           <tbody>
             {items.map((r, i) => (
               <tr key={i} className="border-b border-border">
-                <th scope="row" className="py-3 pr-4 font-medium text-ink">{r.feature}</th>
-                <td className="px-4 py-3 text-ink-muted">{r.option_a}</td>
-                <td className="px-4 py-3 text-ink-muted">{r.option_b}</td>
+                <th scope="row" className="py-3 pr-4 body-sm font-medium text-ink">{r.feature}</th>
+                <td className="px-4 py-3 body-sm text-ink-muted">{r.option_a}</td>
+                <td className="px-4 py-3 body-sm text-ink-muted">{r.option_b}</td>
               </tr>
             ))}
           </tbody>

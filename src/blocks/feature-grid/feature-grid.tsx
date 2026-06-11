@@ -42,7 +42,7 @@ export function FeatureGrid({ heading, intro, tone, spacing, container, features
                 <CardTitle className="display-xs text-ink">{f.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="leading-relaxed text-ink-muted">{f.body}</p>
+                <p className="body text-ink-muted">{f.body}</p>
               </CardContent>
             </Card>
             </li>

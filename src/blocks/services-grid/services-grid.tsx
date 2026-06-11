@@ -17,7 +17,7 @@ function ServiceItemView({ s }: { s: ServiceItem }) {
         </div>
       ) : null}
       <h3 className="display-xs text-ink">{s.title}</h3>
-      {s.body ? <p className="mt-2 leading-relaxed text-ink-muted">{s.body}</p> : null}
+      {s.body ? <p className="mt-2 body text-ink-muted">{s.body}</p> : null}
       {hasLink ? (
         <div className="mt-4">
           <ButtonLink href={s.link_url!} variant="ghost" size="sm">

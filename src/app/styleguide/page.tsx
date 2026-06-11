@@ -22,7 +22,7 @@ export const dynamic = "error";
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-12">
-      <h2 className="text-xl font-semibold text-ink">{title}</h2>
+      <h2 className="display-sm text-ink">{title}</h2>
       <div className="mt-4">{children}</div>
     </section>
   );
@@ -33,7 +33,7 @@ export default function StyleguidePage() {
     <main>
       <Container>
         <div className="py-section">
-          <h1 className="text-3xl font-bold text-ink">Styleguide</h1>
+          <h1 className="display-md text-ink">Styleguide</h1>
           <p className="mt-2 text-ink-muted">The live design system — shadcn primitives + blocks on the current theme. Internal reference (noindex).</p>
 
           <Group title="Buttons">
@@ -63,17 +63,17 @@ export default function StyleguidePage() {
             <div className="flex flex-wrap items-center gap-4">
               <div className="flex items-center gap-2">
                 <span className="h-10 w-10 rounded-md bg-primary" />
-                <span className="text-sm text-ink-muted">primary (CTAs, links)</span>
+                <span className="body-sm text-ink-muted">primary (CTAs, links)</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="h-10 w-10 rounded-md bg-brand-accent" />
-                <span className="text-sm text-ink-muted">brand-accent (decorative pop)</span>
+                <span className="body-sm text-ink-muted">brand-accent (decorative pop)</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="h-10 w-10 rounded-md bg-accent" />
-                <span className="text-sm text-ink-muted">accent (shadcn muted hover)</span>
+                <span className="body-sm text-ink-muted">accent (shadcn muted hover)</span>
               </div>
-              <span className="text-sm font-semibold uppercase tracking-[0.08em] text-brand-accent">
+              <span className="label text-brand-accent">
                 Accent eyebrow
               </span>
             </div>
@@ -87,8 +87,8 @@ export default function StyleguidePage() {
                   data-tone={t === "default" ? undefined : t}
                   className="space-y-3 rounded-card border border-border bg-background p-5 text-foreground"
                 >
-                  <p className="text-sm font-semibold">{t}</p>
-                  <p className="text-sm text-muted-foreground">Body in this tone.</p>
+                  <p className="body-sm font-semibold">{t}</p>
+                  <p className="body-sm text-muted-foreground">Body in this tone.</p>
                   <Button size="sm">Action</Button>
                 </div>
               ))}

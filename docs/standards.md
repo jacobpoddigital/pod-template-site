@@ -92,10 +92,12 @@ are not suggestions — training defaults are wrong here; this is right. A viola
 ## 11. Template hard rules — learned, enforce these (2026-06-11 audit + build)
 These are codebase-specific musts. They were each a real miss; do not repeat them.
 
-**Typography — use the SCALE CLASSES, never raw `text-*`.**
-- Every text element uses a type-scale class: `display-xl/lg/md/sm/xs`, `body-lg/body/body-sm`, `label` — **never** `text-sm`/`text-lg`/`text-2xl` etc. (raw sizes bypass the brand tokens, so a client `tokens.css` can't retune them).
-- Role → class: section heading `h2 display-md` · **card/item title `h3 display-xs`** · lead/intro `body-lg` · body `body`/prose · **small/meta `body-sm` (NOT `text-sm`)** · eyebrow `label` · hero `display-xl`. The chrome (header/footer/nav) uses the scale too.
-- This applies to the form-control exception only: inputs/select/textarea are `text-base md:text-sm` (16px on mobile = no iOS zoom). That's the one sanctioned raw size.
+**Typography — SIZE comes from the system; never raw `text-*`. (lint-enforced)**
+- **A text element's SIZE always comes from a type-scale class** — `display-xl/lg/md/sm/xs`, `body-lg/body/body-sm`, `label`. **Raw Tailwind `text-<size>` (`text-sm`/`text-lg`/`text-2xl`…) is banned** and fails lint (`no-restricted-syntax` in `eslint.config.mjs`). Raw sizes bypass the brand tokens, so a client `tokens.css` can't retune them.
+- **The scale is the design_system agent's CONTRACT (ADR 0015), not ours to extend ad-hoc.** To change a size, **edit the token** (`theme.css` default / the agent's `tokens.css`) — it cascades to every element on that rung. Do NOT invent per-element tokens or add a new rung template-only (it won't retune per client; add it to the agent's contract first).
+- **Weight MAY stay a `font-*` utility** (presentational). `body-sm font-medium` is fine — the *size* is tokenised; the weight is a tweak. What's banned is the raw *size*, not the weight.
+- Role → class: section heading `h2 display-md` · **card/item title + nav item `h3/display-xs`** · lead/intro `body-lg` · body `body`/prose · small/meta `body-sm` · eyebrow/badge `label` · hero `display-xl` · big stat `display-lg`. Chrome (header/footer/nav/drawer) and the shadcn `ui/*` primitives use the scale too. Form controls = `body` (16px, no iOS zoom).
+- **One sanctioned exception:** `ui/rich-text.tsx` styles *injected* WYSIWYG HTML it doesn't author (`[&_h2]:text-3xl`…) — `eslint`-ignored.
 
 **Accessibility (these shipped wrong once).**
 - **Interactive controls ≥ 44px.** `Button` `md`=`h-11`, `icon`=`h-11 w-11`; form controls `h-11`. Icon-only links/buttons need `aria-label`; decorative icons `aria-hidden="true"`.

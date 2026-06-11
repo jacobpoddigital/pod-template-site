@@ -66,7 +66,7 @@ export function ContactForm({ submitLabel, successMessage }: { submitLabel: stri
       <div className="flex items-start gap-3">
         <Checkbox id="consent" name="consent" aria-describedby={e.consent ? "consent-err" : undefined} />
         <div>
-          <Label htmlFor="consent" className="font-normal leading-snug text-ink-muted">
+          <Label htmlFor="consent" className="body-sm font-normal leading-snug text-ink-muted">
             I agree to be contacted about my enquiry.
           </Label>
           <ErrorText id="consent-err" msg={e.consent} />

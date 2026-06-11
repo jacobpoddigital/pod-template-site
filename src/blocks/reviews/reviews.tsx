@@ -30,7 +30,7 @@ function ReviewItemView({ r }: { r: ReviewItem }) {
         <blockquote className="body-lg text-ink">&ldquo;{r.quote}&rdquo;</blockquote>
         {r.author || r.role ? (
           <p className="mt-4 body-sm text-ink-muted">
-            {r.author ? <span className="font-semibold text-ink">{r.author}</span> : null}
+            {r.author ? <span className="body-sm font-semibold text-ink">{r.author}</span> : null}
             {r.author && r.role ? ", " : null}
             {r.role}
           </p>
