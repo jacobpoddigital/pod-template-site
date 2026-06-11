@@ -153,13 +153,13 @@ export function MobileNavDrawer({ links, cta }: { links: readonly NavItem[]; cta
               <button
                 type="button"
                 onClick={() => setPath(path.slice(0, -1))}
-                className="-ml-1 flex items-center gap-1 rounded text-sm font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="-ml-1 flex items-center gap-1 rounded body-sm font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <ChevronLeft className="h-5 w-5" aria-hidden="true" />
                 {levels[depth]?.title}
               </button>
             ) : (
-              <span className="text-sm font-semibold text-ink-muted">Menu</span>
+              <span className="body-sm font-semibold text-ink-muted">Menu</span>
             )}
             <button
               type="button"

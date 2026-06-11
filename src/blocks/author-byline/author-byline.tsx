@@ -27,7 +27,7 @@ export function AuthorByline({ name, role, date, bio, profile_url, avatar, tone,
         ) : null}
         <div>
           <p className="font-semibold text-ink">{nameEl}</p>
-          {meta ? <p className="text-sm text-ink-muted">{meta}</p> : null}
+          {meta ? <p className="body-sm text-ink-muted">{meta}</p> : null}
           {bio ? <p className="mt-2 max-w-[65ch] text-ink-muted">{bio}</p> : null}
         </div>
       </div>

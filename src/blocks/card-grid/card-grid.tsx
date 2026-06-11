@@ -24,7 +24,7 @@ function CardItemView({ c }: { c: CardItem }) {
         </div>
       ) : null}
       <CardHeader>
-        <CardTitle className="text-lg font-bold text-ink">{c.title}</CardTitle>
+        <CardTitle className="display-xs text-ink">{c.title}</CardTitle>
       </CardHeader>
       {c.body || hasLink ? (
         <CardContent>

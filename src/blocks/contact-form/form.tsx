@@ -14,7 +14,7 @@ const initial: ContactState = { ok: false };
 function ErrorText({ id, msg }: { id: string; msg?: string }) {
   if (!msg) return null;
   return (
-    <p id={id} className="mt-1 text-sm text-destructive">
+    <p id={id} className="mt-1 body-sm text-destructive">
       {msg}
     </p>
   );

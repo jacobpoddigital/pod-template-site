@@ -138,6 +138,12 @@
     font-weight: var(--brand-text-display-sm-weight);
     letter-spacing: var(--brand-text-display-sm-tracking);
   }
+  .display-xs {
+    font-size: var(--brand-text-display-xs);
+    line-height: var(--brand-text-display-xs-leading);
+    font-weight: var(--brand-text-display-xs-weight);
+    letter-spacing: var(--brand-text-display-xs-tracking);
+  }
   .body-lg {
     font-size: var(--brand-text-body-lg);
     line-height: var(--brand-text-body-lg-leading);

@@ -29,7 +29,7 @@ function ReviewItemView({ r }: { r: ReviewItem }) {
         {typeof r.rating === "number" ? <Rating value={r.rating} /> : null}
         <blockquote className="body-lg text-ink">&ldquo;{r.quote}&rdquo;</blockquote>
         {r.author || r.role ? (
-          <p className="mt-4 text-sm text-ink-muted">
+          <p className="mt-4 body-sm text-ink-muted">
             {r.author ? <span className="font-semibold text-ink">{r.author}</span> : null}
             {r.author && r.role ? ", " : null}
             {r.role}

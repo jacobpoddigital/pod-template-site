@@ -16,7 +16,7 @@ function ServiceItemView({ s }: { s: ServiceItem }) {
           <Image src={s.image.sourceUrl} alt={s.image.altText ?? ""} fill sizes="56px" className="object-cover" />
         </div>
       ) : null}
-      <h3 className="text-lg font-bold text-ink">{s.title}</h3>
+      <h3 className="display-xs text-ink">{s.title}</h3>
       {s.body ? <p className="mt-2 leading-relaxed text-ink-muted">{s.body}</p> : null}
       {hasLink ? (
         <div className="mt-4">

@@ -20,7 +20,7 @@ export function StatWithSource({ heading, intro, columns, stats, tone, spacing, 
           <div key={i}>
             <dd className="display-lg text-brand-accent">{s.value}</dd>
             {s.label ? <dt className="mt-2 font-medium text-ink">{s.label}</dt> : null}
-            {s.source ? <p className="mt-1 text-sm text-ink-muted">{s.source}</p> : null}
+            {s.source ? <p className="mt-1 body-sm text-ink-muted">{s.source}</p> : null}
           </div>
         ))}
       </dl>

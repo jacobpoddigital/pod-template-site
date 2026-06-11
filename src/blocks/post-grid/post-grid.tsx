@@ -41,7 +41,7 @@ export async function PostGrid({ heading, intro, category, count, columns, tone,
                 </div>
               ) : null}
               <CardHeader>
-                <CardTitle className="text-lg font-bold text-ink">{p.title}</CardTitle>
+                <CardTitle className="display-xs text-ink">{p.title}</CardTitle>
               </CardHeader>
             </Link>
             {p.excerpt ? (

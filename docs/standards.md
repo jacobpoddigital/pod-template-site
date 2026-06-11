@@ -89,6 +89,33 @@ are not suggestions — training defaults are wrong here; this is right. A viola
 - This template's contract (ADR 0012): the **shadcn bridge `:root` is canonical** in `src/styles/theme.css` (`--primary`, `--background`, `--ring`, `--radius`, OKLCH) — the rebrand/handoff drop-in; `src/app/globals.css` derives the **agency semantic aliases** (`--color-accent`, `bg-surface`, `rounded-card`). **Components use tokens, never raw values.** Rebrand = edit `theme.css` only.
 - Seven token categories required: colour, typography (composite size+lh+weight+tracking), spacing, radius, motion (duration+easing pairs), shadow, z-index (named layers).
 
+## 11. Template hard rules — learned, enforce these (2026-06-11 audit + build)
+These are codebase-specific musts. They were each a real miss; do not repeat them.
+
+**Typography — use the SCALE CLASSES, never raw `text-*`.**
+- Every text element uses a type-scale class: `display-xl/lg/md/sm/xs`, `body-lg/body/body-sm`, `label` — **never** `text-sm`/`text-lg`/`text-2xl` etc. (raw sizes bypass the brand tokens, so a client `tokens.css` can't retune them).
+- Role → class: section heading `h2 display-md` · **card/item title `h3 display-xs`** · lead/intro `body-lg` · body `body`/prose · **small/meta `body-sm` (NOT `text-sm`)** · eyebrow `label` · hero `display-xl`. The chrome (header/footer/nav) uses the scale too.
+- This applies to the form-control exception only: inputs/select/textarea are `text-base md:text-sm` (16px on mobile = no iOS zoom). That's the one sanctioned raw size.
+
+**Accessibility (these shipped wrong once).**
+- **Interactive controls ≥ 44px.** `Button` `md`=`h-11`, `icon`=`h-11 w-11`; form controls `h-11`. Icon-only links/buttons need `aria-label`; decorative icons `aria-hidden="true"`.
+- **Card titles are real `<h3>`** (`CardTitle` renders `<h3>`), under the section `<h2>` — keep the hierarchy.
+- **Repeated items are semantic lists** — `<ul role="list">`/`<li>` (the `role` is required; Tailwind's reset strips list semantics in Safari/VoiceOver).
+
+**Security.**
+- **WordPress HTML injected via `dangerouslySetInnerHTML` MUST pass through `sanitize()`** (`@/lib/sanitize`, `sanitize-html`) — rich_text, columns, post_grid excerpt. WP content is semi-trusted. **Do NOT use `isomorphic-dompurify`** — its jsdom dep breaks the Turbopack build (`ERR_REQUIRE_ESM`) and is heavy on Vercel.
+- `target="_blank"` always carries `rel="noopener noreferrer"`. CMS-driven hrefs go through `next/link`/`<a>` (no raw `javascript:` execution).
+
+**CMS data discipline.**
+- **Map keys are stable + compound** (`key={`${value}-${i}`}`), never a bare content string (titles/questions/names collide).
+- **Empty ACF repeaters arrive as `null` over WPGraphQL** → schema fields are `z.array(item).nullish()`. Do NOT use the REST-era `z.union([…, z.literal(false)])`.
+- **A required Zod field (`.min(1)`) must be marked _Required_ in `wp/acf-fields/*.json`** (the renderer parses fail-loud, so a blank required field fails the page build).
+- Tree-builders over CMS input (menus) need a **cycle guard** (skip self-parent + a visited set).
+
+**Contract + structure.**
+- **Every section block** spreads `...sectionSettingsFields` (tone/spacing/container/anchor) and applies them via `sectionProps(...)` on a `<Section>` root — **including hero** (default its spacing to `"spacious"`). Never a raw `<section>`, never hardcoded tone/padding. `anchor` is applied centrally in `BlockRenderer` (don't render it per-block).
+- **Icons:** `lucide-react` for UI glyphs; **`react-icons/fa6` for social brands** (Simple Icons dropped the major social trademarks, so `react-icons/si` lacks them).
+
 ---
 
 *Exhaustive detail lives in the HQ knowledge base (`web-ai-automation/knowledge-base/01–10`). This file is the in-repo enforceable subset. When they disagree, the HQ KB wins — update this file.*

@@ -38,6 +38,10 @@
   --brand-text-display-sm-leading: 1.25;
   --brand-text-display-sm-weight: 700;
   --brand-text-display-sm-tracking: -0.01em;
+  --brand-text-display-xs: 1.125rem;
+  --brand-text-display-xs-leading: 1.35;
+  --brand-text-display-xs-weight: 700;
+  --brand-text-display-xs-tracking: -0.01em;
   --brand-text-body-lg: 1.125rem;
   --brand-text-body-lg-leading: 1.65;
   --brand-text-body-lg-weight: 400;

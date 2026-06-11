@@ -30,7 +30,7 @@ export function Header({ chrome }: { chrome: SiteChrome }) {
             {logo?.sourceUrl ? (
               <Image src={logo.sourceUrl} alt={logo.altText || name} width={160} height={40} className="h-8 w-auto" priority />
             ) : (
-              <span className="text-lg font-bold text-ink">{name}</span>
+              <span className="display-xs text-ink">{name}</span>
             )}
           </Link>
 
@@ -39,7 +39,7 @@ export function Header({ chrome }: { chrome: SiteChrome }) {
             {singlePhone ? (
               <a
                 href={`tel:${singlePhone.number.replace(/\s+/g, "")}`}
-                className="inline-flex h-11 items-center gap-2 rounded-card px-2 text-sm font-medium text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="inline-flex h-11 items-center gap-2 rounded-card px-2 body-sm font-medium text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <Phone className="h-4 w-4" aria-hidden="true" />
                 <span className="hidden sm:inline">{singlePhone.number}</span>
@@ -54,7 +54,7 @@ export function Header({ chrome }: { chrome: SiteChrome }) {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className="text-sm font-medium text-ink-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="body-sm font-medium text-ink-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       {item.label}
                     </Link>
