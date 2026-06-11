@@ -58,6 +58,7 @@ union Page_Pagefields_Blocks =
   | Page_Pagefields_Blocks_CtaBanner
   | Page_Pagefields_Blocks_LogoStrip
   | Page_Pagefields_Blocks_ContactForm
+  | Page_Pagefields_Blocks_MediaText
 
 type Page_Pagefields_Blocks_Hero {
   eyebrow: String
@@ -118,4 +119,33 @@ type Page_Pagefields_Blocks_ContactForm {
   submitLabel: String
   successMessage: String
   tone: String
+}
+
+# media + text block. `spacing` + `container` are the editor-controlled
+# section_settings (alongside `tone`) — see src/lib/section-settings.ts.
+type Page_Pagefields_Blocks_MediaText {
+  eyebrow: String
+  heading: String
+  body: String
+  ctaLabel: String
+  ctaUrl: String
+  image: MediaItem
+  mediaPosition: String
+  mediaRatio: String
+  tone: String
+  spacing: String
+  container: String
+}
+
+# WordPress MediaItem (an ACF image field). Minimal subset — regenerating the SDL
+# from real WP brings the full type; the block only reads these.
+type MediaItem {
+  sourceUrl: String
+  altText: String
+  mediaDetails: MediaDetails
+}
+
+type MediaDetails {
+  width: Int
+  height: Int
 }

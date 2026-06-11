@@ -56,6 +56,39 @@ const samples: { label: string; block: CmsBlock }[] = [
     label: "contact_form",
     block: { layout: "contact_form", data: { heading: "Get in touch", intro: "Tell us about the project and we'll come back within one working day." } },
   },
+  {
+    label: "media_text",
+    block: {
+      layout: "media_text",
+      data: {
+        eyebrow: "How it works",
+        heading: "Image or video, beside the copy that earns the click",
+        body: "media_text composes the shared <Section>, so an editor sets the spacing, width and surface in WordPress — no rebuild. The image leads on mobile; media_position swaps the columns on desktop.",
+        cta_label: "See the contract",
+        cta_url: "#",
+        image: { sourceUrl: "https://picsum.photos/seed/podmedia/1200/900", altText: "Placeholder", mediaDetails: { width: 1200, height: 900 } },
+        media_position: "right",
+        media_ratio: "landscape",
+      },
+    },
+  },
+  {
+    label: "media_text (tone=muted · media left · narrow)",
+    block: {
+      layout: "media_text",
+      data: {
+        eyebrow: "Editor-controlled",
+        heading: "Same block, different settings — no code change",
+        body: "This instance sets tone=muted, media_position=left, container=narrow and spacing=compact. The section_settings contract resolves each to a design-system token, never freeform CSS.",
+        image: { sourceUrl: "https://picsum.photos/seed/podmedia2/900/1100", altText: "Placeholder", mediaDetails: { width: 900, height: 1100 } },
+        media_position: "left",
+        media_ratio: "portrait",
+        tone: "muted",
+        container: "narrow",
+        spacing: "compact",
+      },
+    },
+  },
 ];
 
 export default function BlocksPage() {

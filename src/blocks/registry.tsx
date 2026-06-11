@@ -5,6 +5,7 @@ import { faqSchema, Faq } from "./faq";
 import { ctaBannerSchema, CtaBanner } from "./cta-banner";
 import { logoStripSchema, LogoStrip } from "./logo-strip";
 import { contactFormSchema, ContactFormBlock } from "./contact-form";
+import { mediaTextSchema, MediaText } from "./media-text";
 
 // ACF layout name → { schema, component }. ONE entry per block.
 // Keys must match `acf_fc_layout` values in wp/acf-fields/*.json exactly.
@@ -33,4 +34,5 @@ export const registry: Record<string, BlockEntry> = {
   cta_banner: defineBlock(ctaBannerSchema, CtaBanner),
   logo_strip: defineBlock(logoStripSchema, LogoStrip),
   contact_form: defineBlock(contactFormSchema, ContactFormBlock),
+  media_text: defineBlock(mediaTextSchema, MediaText),
 };

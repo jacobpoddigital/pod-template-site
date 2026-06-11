@@ -60,6 +60,26 @@ query PageBySlug($slug: ID!) {
           success_message: successMessage
           tone
         }
+        ... on Page_Pagefields_Blocks_MediaText {
+          eyebrow
+          heading
+          body
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          media_position: mediaPosition
+          media_ratio: mediaRatio
+          tone
+          spacing
+          container
+          image {
+            sourceUrl
+            altText
+            mediaDetails {
+              width
+              height
+            }
+          }
+        }
       }
     }
   }
