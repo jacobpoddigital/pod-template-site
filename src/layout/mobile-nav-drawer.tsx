@@ -5,7 +5,7 @@
 // Stack-based (the `path` array), reimplemented in React (no DOM walking).
 // Slot-bridge pattern: only this leaf is "use client", never the Header (workflow/02).
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type MouseEvent } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, ChevronLeft, X, Menu } from "lucide-react";
@@ -45,7 +45,7 @@ function Panel({
   active: boolean;
   basePath: readonly number[];
   onDrill: (path: number[]) => void;
-  onNavigate: () => void;
+  onNavigate: (href: string, e: MouseEvent) => void;
 }) {
   return (
     <ul className="h-full w-full shrink-0 overflow-y-auto px-6 py-4" inert={!active}>
@@ -65,7 +65,7 @@ function Panel({
           <li key={item.href}>
             <Link
               href={item.href}
-              onClick={onNavigate}
+              onClick={(e) => onNavigate(item.href, e)}
               className="block border-b border-border py-4 text-xl font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {item.label}
@@ -109,6 +109,34 @@ export function MobileNavDrawer({ links, cta }: { links: readonly NavItem[]; cta
   const close = () => {
     setOpen(false);
     setPath([]);
+  };
+
+  // Same-page anchor links: close + release the scroll-lock, THEN smooth-scroll to
+  // the target. The menu's body scroll-lock (and usePathname not changing on a
+  // hash-only nav) otherwise leaves you stuck — the modification this needs.
+  // Cross-page links just close and let <Link> navigate.
+  const handleNavigate = (href: string, e: MouseEvent) => {
+    const hashIndex = href.indexOf("#");
+    if (hashIndex === -1) {
+      close();
+      return;
+    }
+    const targetPath = href.slice(0, hashIndex) || "/";
+    const hash = href.slice(hashIndex + 1);
+    const samePage = targetPath === pathname || (targetPath === "/" && pathname === "/");
+    if (!hash || !samePage) {
+      close();
+      return;
+    }
+    e.preventDefault();
+    setOpen(false);
+    setPath([]);
+    document.body.style.overflow = "";
+    window.history.replaceState(null, "", `#${hash}`);
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    requestAnimationFrame(() => {
+      document.getElementById(hash)?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    });
   };
 
   return (
@@ -160,7 +188,7 @@ export function MobileNavDrawer({ links, cta }: { links: readonly NavItem[]; cta
                   active={li === depth}
                   basePath={path.slice(0, li)}
                   onDrill={setPath}
-                  onNavigate={close}
+                  onNavigate={handleNavigate}
                 />
               ))}
             </div>
