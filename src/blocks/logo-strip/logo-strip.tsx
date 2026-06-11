@@ -13,7 +13,7 @@ export function LogoStrip({ heading, logos, tone, spacing, container }: LogoStri
       ) : null}
       <ul className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
         {items.map((l, i) => (
-          <li key={`${l.name}-${i}`} className="text-lg font-semibold text-ink-muted">
+          <li key={`${l.name}-${i}`} className="body-lg font-semibold text-ink-muted">
             {l.name}
           </li>
         ))}
