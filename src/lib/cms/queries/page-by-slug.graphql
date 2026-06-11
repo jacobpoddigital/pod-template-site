@@ -21,6 +21,9 @@ query PageBySlug($slug: ID!) {
           secondary_url: secondaryUrl
           layout
           tone
+          spacing
+          container
+          anchor
           image {
             sourceUrl
             altText

@@ -149,6 +149,9 @@ type Page_Pagefields_Blocks_Hero {
   image: MediaItem
   layout: String
   tone: String
+  spacing: String
+  container: String
+  anchor: String
 }
 
 type Page_Pagefields_Blocks_FeatureGrid {
