@@ -149,6 +149,13 @@ union Page_Pagefields_Blocks =
   | Page_Pagefields_Blocks_Pricing
   | Page_Pagefields_Blocks_Team
   | Page_Pagefields_Blocks_StatsBand
+  | Page_Pagefields_Blocks_TabbedContent
+  | Page_Pagefields_Blocks_ProcessSteps
+  | Page_Pagefields_Blocks_BentoGrid
+  | Page_Pagefields_Blocks_CaseStudies
+  | Page_Pagefields_Blocks_Timeline
+  | Page_Pagefields_Blocks_Newsletter
+  | Page_Pagefields_Blocks_Gallery
 
 type Page_Pagefields_Blocks_Hero {
   eyebrow: String
@@ -508,4 +515,117 @@ type Page_Pagefields_Blocks_StatsBand_Stats {
   value: String
   label: String
   description: String
+}
+
+# tabbed_content — labelled tabs, each holding rich-text content.
+type Page_Pagefields_Blocks_TabbedContent {
+  heading: String
+  intro: String
+  tabs: [Page_Pagefields_Blocks_TabbedContent_Tabs!]
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+type Page_Pagefields_Blocks_TabbedContent_Tabs {
+  label: String
+  content: String
+}
+
+# process_steps — numbered "how it works" steps.
+type Page_Pagefields_Blocks_ProcessSteps {
+  heading: String
+  intro: String
+  steps: [Page_Pagefields_Blocks_ProcessSteps_Steps!]
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+type Page_Pagefields_Blocks_ProcessSteps_Steps {
+  title: String
+  body: String
+}
+
+# bento_grid — asymmetric mosaic; each tile carries a span (normal/wide/tall/large).
+type Page_Pagefields_Blocks_BentoGrid {
+  heading: String
+  intro: String
+  items: [Page_Pagefields_Blocks_BentoGrid_Items!]
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+type Page_Pagefields_Blocks_BentoGrid_Items {
+  title: String
+  body: String
+  span: String
+  image: MediaItem
+  linkUrl: String
+}
+
+# case_studies — result cards (client logo + headline metric + one line + link).
+type Page_Pagefields_Blocks_CaseStudies {
+  heading: String
+  intro: String
+  columns: Int
+  items: [Page_Pagefields_Blocks_CaseStudies_Items!]
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+type Page_Pagefields_Blocks_CaseStudies_Items {
+  metric: String
+  summary: String
+  client: String
+  linkLabel: String
+  linkUrl: String
+  logo: MediaItem
+}
+
+# timeline — vertical chronology (date · title · body).
+type Page_Pagefields_Blocks_Timeline {
+  heading: String
+  intro: String
+  events: [Page_Pagefields_Blocks_Timeline_Events!]
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+type Page_Pagefields_Blocks_Timeline_Events {
+  date: String
+  title: String
+  body: String
+}
+
+# newsletter — inline email capture (Server Action). Distinct from contact_form.
+type Page_Pagefields_Blocks_Newsletter {
+  heading: String
+  intro: String
+  placeholder: String
+  buttonLabel: String
+  successMessage: String
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+
+# gallery — image grid with a click-to-zoom lightbox.
+type Page_Pagefields_Blocks_Gallery {
+  heading: String
+  intro: String
+  columns: Int
+  images: [Page_Pagefields_Blocks_Gallery_Images!]
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+type Page_Pagefields_Blocks_Gallery_Images {
+  image: MediaItem
+  caption: String
 }

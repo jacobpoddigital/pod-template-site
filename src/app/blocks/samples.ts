@@ -1,5 +1,7 @@
 import type { CmsBlock } from "@/lib/cms";
 import { extraSamples } from "./samples-extra";
+import { tier2Samples } from "./samples-tier2";
+import { tier3Samples } from "./samples-tier3";
 
 export type BlockSample = { label: string; block: CmsBlock };
 
@@ -289,6 +291,11 @@ const coreSamples: BlockSample[] = [
   },
 ];
 
-// Roadmap Tier-1 additions live in a separate file to keep each under the
-// max-lines lint cap; the gallery renders core + extra in order.
-export const samples: BlockSample[] = [...coreSamples, ...extraSamples];
+// Roadmap additions live in separate files to keep each under the max-lines lint
+// cap; the gallery renders core + tier1 + tier2 + tier3 in order.
+export const samples: BlockSample[] = [
+  ...coreSamples,
+  ...extraSamples,
+  ...tier2Samples,
+  ...tier3Samples,
+];

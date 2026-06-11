@@ -374,6 +374,120 @@ query PageBySlug($slug: ID!) {
             description
           }
         }
+        ... on Page_Pagefields_Blocks_TabbedContent {
+          heading
+          intro
+          tone
+          spacing
+          container
+          anchor
+          tabs {
+            label
+            content
+          }
+        }
+        ... on Page_Pagefields_Blocks_ProcessSteps {
+          heading
+          intro
+          tone
+          spacing
+          container
+          anchor
+          steps {
+            title
+            body
+          }
+        }
+        ... on Page_Pagefields_Blocks_BentoGrid {
+          heading
+          intro
+          tone
+          spacing
+          container
+          anchor
+          items {
+            title
+            body
+            span
+            link_url: linkUrl
+            image {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_CaseStudies {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          anchor
+          items {
+            metric
+            summary
+            client
+            link_label: linkLabel
+            link_url: linkUrl
+            logo {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_Timeline {
+          heading
+          intro
+          tone
+          spacing
+          container
+          anchor
+          events {
+            date
+            title
+            body
+          }
+        }
+        ... on Page_Pagefields_Blocks_Newsletter {
+          heading
+          intro
+          placeholder
+          button_label: buttonLabel
+          success_message: successMessage
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on Page_Pagefields_Blocks_Gallery {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          anchor
+          images {
+            caption
+            image {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+        }
       }
     }
   }

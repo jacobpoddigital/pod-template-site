@@ -35,6 +35,13 @@ const LAYOUT: Record<BlockNode["__typename"], string> = {
   Page_Pagefields_Blocks_Pricing: "pricing",
   Page_Pagefields_Blocks_Team: "team",
   Page_Pagefields_Blocks_StatsBand: "stats_band",
+  Page_Pagefields_Blocks_TabbedContent: "tabbed_content",
+  Page_Pagefields_Blocks_ProcessSteps: "process_steps",
+  Page_Pagefields_Blocks_BentoGrid: "bento_grid",
+  Page_Pagefields_Blocks_CaseStudies: "case_studies",
+  Page_Pagefields_Blocks_Timeline: "timeline",
+  Page_Pagefields_Blocks_Newsletter: "newsletter",
+  Page_Pagefields_Blocks_Gallery: "gallery",
 };
 
 export function toBlocks(

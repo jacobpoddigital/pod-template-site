@@ -21,6 +21,13 @@ import { postGridSchema, PostGrid, type PostGridProps } from "./post-grid";
 import { pricingSchema, Pricing } from "./pricing";
 import { teamSchema, Team } from "./team";
 import { statsBandSchema, StatsBand } from "./stats-band";
+import { tabbedContentSchema, TabbedContent } from "./tabbed-content";
+import { processStepsSchema, ProcessSteps } from "./process-steps";
+import { bentoGridSchema, BentoGrid } from "./bento-grid";
+import { caseStudiesSchema, CaseStudies } from "./case-studies";
+import { timelineSchema, Timeline } from "./timeline";
+import { newsletterSchema, Newsletter } from "./newsletter";
+import { gallerySchema, Gallery } from "./gallery";
 
 // ACF layout name → { schema, component }. ONE entry per block.
 // Keys must match `acf_fc_layout` values in wp/acf-fields/*.json exactly.
@@ -64,6 +71,13 @@ export const registry: Record<string, BlockEntry> = {
   pricing: defineBlock(pricingSchema, Pricing),
   team: defineBlock(teamSchema, Team),
   stats_band: defineBlock(statsBandSchema, StatsBand),
+  tabbed_content: defineBlock(tabbedContentSchema, TabbedContent),
+  process_steps: defineBlock(processStepsSchema, ProcessSteps),
+  bento_grid: defineBlock(bentoGridSchema, BentoGrid),
+  case_studies: defineBlock(caseStudiesSchema, CaseStudies),
+  timeline: defineBlock(timelineSchema, Timeline),
+  newsletter: defineBlock(newsletterSchema, Newsletter),
+  gallery: defineBlock(gallerySchema, Gallery),
   // post_grid is an async (fetching) server component — cast to satisfy the
   // ComponentType signature; React renders async server components fine.
   post_grid: defineBlock(postGridSchema, PostGrid as unknown as React.ComponentType<PostGridProps>),
