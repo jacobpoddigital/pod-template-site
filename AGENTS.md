@@ -3,6 +3,10 @@
 You are Claude Code building a client website in this repo. This is the **how-to-build** guide;
 follow it by the book. It works off-API (no Hub access), so everything you need is in this repo.
 
+> For the *human* developer's end-to-end view of how a Great White Pro site gets built (your role, the
+> compose-vs-bespoke-block split, the editor section-settings handoff), see **HQ `workflow/31`**. This
+> file is the in-repo build recipe; workflow/31 is the surrounding workflow.
+
 **Read first, in order:**
 1. This file (the flow + the gates).
 2. **`docs/standards.md`** — the enforceable design/code/perf/a11y/conversion standards. Non-negotiable.
