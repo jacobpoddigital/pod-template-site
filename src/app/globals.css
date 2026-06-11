@@ -138,6 +138,12 @@
     font-weight: var(--brand-text-display-sm-weight);
     letter-spacing: var(--brand-text-display-sm-tracking);
   }
+  .display-xs {
+    font-size: var(--brand-text-display-xs);
+    line-height: var(--brand-text-display-xs-leading);
+    font-weight: var(--brand-text-display-xs-weight);
+    letter-spacing: var(--brand-text-display-xs-tracking);
+  }
   .body-lg {
     font-size: var(--brand-text-body-lg);
     line-height: var(--brand-text-body-lg-leading);
@@ -163,6 +169,14 @@
     letter-spacing: var(--brand-text-label-tracking);
     text-transform: uppercase;
   }
+  /* Display rungs use the display font even on non-heading elements (e.g. stat <dd>). */
+  .display-xl,
+  .display-lg,
+  .display-md,
+  .display-sm,
+  .display-xs {
+    font-family: var(--brand-font-display);
+  }
 }
 
 @layer base {
@@ -172,6 +186,52 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--brand-font-sans);
+  }
+  /* Token-driven defaults for BARE elements (no class) — so content + injected CMS
+     HTML still gets a design-system size instead of dropping to the browser default,
+     and stays dynamic per brand. An explicit scale class overrides these (the cascade
+     is theme < base < components < utilities), so this is a floor, not a cage. */
+  h1 {
+    font-size: var(--brand-text-display-lg);
+    line-height: var(--brand-text-display-lg-leading);
+    font-weight: var(--brand-text-display-lg-weight);
+    letter-spacing: var(--brand-text-display-lg-tracking);
+  }
+  h2 {
+    font-size: var(--brand-text-display-md);
+    line-height: var(--brand-text-display-md-leading);
+    font-weight: var(--brand-text-display-md-weight);
+    letter-spacing: var(--brand-text-display-md-tracking);
+  }
+  h3 {
+    font-size: var(--brand-text-display-sm);
+    line-height: var(--brand-text-display-sm-leading);
+    font-weight: var(--brand-text-display-sm-weight);
+    letter-spacing: var(--brand-text-display-sm-tracking);
+  }
+  h4,
+  h5,
+  h6 {
+    font-size: var(--brand-text-display-xs);
+    line-height: var(--brand-text-display-xs-leading);
+    font-weight: var(--brand-text-display-xs-weight);
+    letter-spacing: var(--brand-text-display-xs-tracking);
+  }
+  p {
+    font-size: var(--brand-text-body);
+    line-height: var(--brand-text-body-leading);
+    font-weight: var(--brand-text-body-weight);
+    letter-spacing: var(--brand-text-body-tracking);
+  }
+  /* Headings render in the display font (--brand-font-display). Defaults to the sans
+     family, so no change until a client sets a distinct display face in tokens.css. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--brand-font-display);
   }
 }
 

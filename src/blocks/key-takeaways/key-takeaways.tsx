@@ -10,7 +10,7 @@ export function KeyTakeaways({ heading, points, tone, spacing, container }: KeyT
   return (
     <Section dataBlock="key_takeaways" {...sectionProps({ tone, spacing, container: container ?? "narrow" })}>
       <div className="rounded-card border border-border bg-surface-muted p-6 md:p-8">
-        <h2 className="display-sm text-ink">{heading || "Key takeaways"}</h2>
+        <h2 className="display-md text-ink">{heading || "Key takeaways"}</h2>
         <ul className="mt-4 space-y-3">
           {items.map((p, i) => (
             <li key={i} className="flex gap-3">

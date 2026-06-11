@@ -20,7 +20,7 @@ export function UspBar({ columns, items, tone, spacing, container }: UspBarProps
                   <Image src={item.image.sourceUrl} alt={item.image.altText ?? ""} fill sizes="40px" className="object-contain" />
                 </span>
               ) : null}
-              <span className="font-medium text-ink">{item.text}</span>
+              <span className="body font-medium text-ink">{item.text}</span>
             </span>
           );
           return (

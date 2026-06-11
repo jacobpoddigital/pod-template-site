@@ -32,7 +32,7 @@ export function PhoneMenu({ numbers }: { numbers: { location: string; number: st
         aria-haspopup="true"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-11 items-center gap-2 rounded-card px-2 text-sm font-medium text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        className="inline-flex h-11 items-center gap-2 rounded-card px-2 body-sm font-medium text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         <Phone className="h-4 w-4" aria-hidden="true" />
         <span className="hidden sm:inline">Call us</span>
@@ -52,8 +52,8 @@ export function PhoneMenu({ numbers }: { numbers: { location: string; number: st
                 onClick={() => setOpen(false)}
                 className="flex flex-col rounded px-3 py-2 hover:bg-muted focus-visible:bg-muted focus-visible:outline-none"
               >
-                <span className="text-sm font-medium text-ink">{n.location}</span>
-                <span className="text-sm text-ink-muted">{n.number}</span>
+                <span className="body-sm font-medium text-ink">{n.location}</span>
+                <span className="body-sm text-ink-muted">{n.number}</span>
               </a>
             </li>
           ))}

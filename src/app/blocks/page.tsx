@@ -14,7 +14,7 @@ export default function BlocksPage() {
     <main>
       <Container>
         <div className="py-12">
-          <h1 className="text-3xl font-bold tracking-tight text-ink">Block library</h1>
+          <h1 className="display-md text-ink">Block library</h1>
           <p className="mt-2 max-w-[65ch] text-ink-muted">
             The shared starter blocks shipped in this template, rendered on the live theme. A client build composes pages from these (and adds bespoke ones via <span className="font-mono">/new-block</span>). Internal reference — noindex.
           </p>
@@ -23,7 +23,7 @@ export default function BlocksPage() {
       {samples.map(({ label, block }) => (
         <div key={label}>
           <Container>
-            <p className="border-t border-border pb-2 pt-10 font-mono text-xs text-ink-muted">block: {label}</p>
+            <p className="border-t border-border pb-2 pt-10 font-mono body-sm text-ink-muted">block: {label}</p>
           </Container>
           <BlockRenderer blocks={[block]} />
         </div>

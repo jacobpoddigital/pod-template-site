@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 // asChild: renders as its child element (e.g. <Link>) via Radix Slot — for navigation use ButtonLink instead.
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-semibold outline-none " +
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-semibold outline-none " +
   "disabled:pointer-events-none disabled:opacity-50 " +
   "motion-safe:transition-colors " +
   "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
@@ -23,9 +23,10 @@ const buttonVariants = cva(
       },
       size: {
         // WCAG 2.5.5 — 44px min touch target (h-11). sm is the compact affordance.
-        sm: "h-10 px-3 text-sm",
-        md: "h-11 px-4",
-        lg: "h-12 px-6 text-base",
+        // Size class lives per-variant (not the base) so lg's body doesn't clash with body-sm.
+        sm: "h-10 px-3 body-sm",
+        md: "h-11 px-4 body-sm",
+        lg: "h-12 px-6 body",
         icon: "h-11 w-11",
       },
     },

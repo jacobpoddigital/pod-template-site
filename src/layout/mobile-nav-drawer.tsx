@@ -50,7 +50,7 @@ function Panel({
             <button
               type="button"
               onClick={() => onDrill([...basePath, i])}
-              className="flex w-full items-center justify-between border-b border-border py-4 text-left text-xl font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex w-full items-center justify-between border-b border-border py-4 text-left display-xs text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {item.label}
               <ChevronRight className="h-5 w-5 text-ink-muted" aria-hidden="true" />
@@ -61,7 +61,7 @@ function Panel({
             <Link
               href={item.href}
               onClick={(e) => onNavigate(item.href, e)}
-              className="block border-b border-border py-4 text-xl font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="block border-b border-border py-4 display-xs text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {item.label}
             </Link>
@@ -153,13 +153,13 @@ export function MobileNavDrawer({ links, cta }: { links: readonly NavItem[]; cta
               <button
                 type="button"
                 onClick={() => setPath(path.slice(0, -1))}
-                className="-ml-1 flex items-center gap-1 rounded text-sm font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="-ml-1 flex items-center gap-1 rounded body-sm font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <ChevronLeft className="h-5 w-5" aria-hidden="true" />
                 {levels[depth]?.title}
               </button>
             ) : (
-              <span className="text-sm font-semibold text-ink-muted">Menu</span>
+              <span className="body-sm font-semibold text-ink-muted">Menu</span>
             )}
             <button
               type="button"

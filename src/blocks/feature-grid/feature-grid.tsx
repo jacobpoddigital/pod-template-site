@@ -39,10 +39,10 @@ export function FeatureGrid({ heading, intro, tone, spacing, container, features
                     <Icon className="h-6 w-6" aria-hidden="true" />
                   </span>
                 ) : null}
-                <CardTitle className="text-lg font-bold text-ink">{f.title}</CardTitle>
+                <CardTitle className="display-xs text-ink">{f.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="leading-relaxed text-ink-muted">{f.body}</p>
+                <p className="body text-ink-muted">{f.body}</p>
               </CardContent>
             </Card>
             </li>
