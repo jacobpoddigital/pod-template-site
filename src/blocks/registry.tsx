@@ -6,6 +6,13 @@ import { ctaBannerSchema, CtaBanner } from "./cta-banner";
 import { logoStripSchema, LogoStrip } from "./logo-strip";
 import { contactFormSchema, ContactFormBlock } from "./contact-form";
 import { mediaTextSchema, MediaText } from "./media-text";
+import { cardGridSchema, CardGrid } from "./card-grid";
+import { servicesGridSchema, ServicesGrid } from "./services-grid";
+import { uspBarSchema, UspBar } from "./usp-bar";
+import { reviewsSchema, Reviews } from "./reviews";
+import { richTextSchema, RichTextBlock } from "./rich-text";
+import { columnsSchema, Columns } from "./columns";
+import { videoSchema, Video } from "./video";
 
 // ACF layout name → { schema, component }. ONE entry per block.
 // Keys must match `acf_fc_layout` values in wp/acf-fields/*.json exactly.
@@ -35,4 +42,11 @@ export const registry: Record<string, BlockEntry> = {
   logo_strip: defineBlock(logoStripSchema, LogoStrip),
   contact_form: defineBlock(contactFormSchema, ContactFormBlock),
   media_text: defineBlock(mediaTextSchema, MediaText),
+  card_grid: defineBlock(cardGridSchema, CardGrid),
+  services_grid: defineBlock(servicesGridSchema, ServicesGrid),
+  usp_bar: defineBlock(uspBarSchema, UspBar),
+  reviews: defineBlock(reviewsSchema, Reviews),
+  rich_text: defineBlock(richTextSchema, RichTextBlock),
+  columns: defineBlock(columnsSchema, Columns),
+  video: defineBlock(videoSchema, Video),
 };

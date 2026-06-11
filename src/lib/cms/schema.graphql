@@ -59,6 +59,13 @@ union Page_Pagefields_Blocks =
   | Page_Pagefields_Blocks_LogoStrip
   | Page_Pagefields_Blocks_ContactForm
   | Page_Pagefields_Blocks_MediaText
+  | Page_Pagefields_Blocks_CardGrid
+  | Page_Pagefields_Blocks_ServicesGrid
+  | Page_Pagefields_Blocks_UspBar
+  | Page_Pagefields_Blocks_Reviews
+  | Page_Pagefields_Blocks_RichText
+  | Page_Pagefields_Blocks_Columns
+  | Page_Pagefields_Blocks_Video
 
 type Page_Pagefields_Blocks_Hero {
   eyebrow: String
@@ -148,4 +155,100 @@ type MediaItem {
 type MediaDetails {
   width: Int
   height: Int
+}
+
+# --- Tier-1 marketing blocks (workflow/29). All carry the editor section_settings
+# (tone · spacing · container). camelCase here; the query aliases back to snake_case. ---
+
+type Page_Pagefields_Blocks_CardGrid {
+  heading: String
+  intro: String
+  columns: Int
+  cards: [Page_Pagefields_Blocks_CardGrid_Cards!]
+  tone: String
+  spacing: String
+  container: String
+}
+type Page_Pagefields_Blocks_CardGrid_Cards {
+  image: MediaItem
+  title: String
+  body: String
+  linkLabel: String
+  linkUrl: String
+}
+
+type Page_Pagefields_Blocks_ServicesGrid {
+  heading: String
+  intro: String
+  columns: Int
+  services: [Page_Pagefields_Blocks_ServicesGrid_Services!]
+  tone: String
+  spacing: String
+  container: String
+}
+type Page_Pagefields_Blocks_ServicesGrid_Services {
+  image: MediaItem
+  title: String
+  body: String
+  linkLabel: String
+  linkUrl: String
+}
+
+type Page_Pagefields_Blocks_UspBar {
+  columns: Int
+  items: [Page_Pagefields_Blocks_UspBar_Items!]
+  tone: String
+  spacing: String
+  container: String
+}
+type Page_Pagefields_Blocks_UspBar_Items {
+  image: MediaItem
+  text: String
+  linkUrl: String
+}
+
+type Page_Pagefields_Blocks_Reviews {
+  heading: String
+  intro: String
+  columns: Int
+  reviews: [Page_Pagefields_Blocks_Reviews_Reviews!]
+  tone: String
+  spacing: String
+  container: String
+}
+type Page_Pagefields_Blocks_Reviews_Reviews {
+  quote: String
+  author: String
+  role: String
+  rating: Int
+}
+
+type Page_Pagefields_Blocks_RichText {
+  content: String
+  tone: String
+  spacing: String
+  container: String
+}
+
+type Page_Pagefields_Blocks_Columns {
+  heading: String
+  intro: String
+  columnCount: Int
+  columns: [Page_Pagefields_Blocks_Columns_Columns!]
+  tone: String
+  spacing: String
+  container: String
+}
+type Page_Pagefields_Blocks_Columns_Columns {
+  content: String
+}
+
+type Page_Pagefields_Blocks_Video {
+  heading: String
+  videoId: String
+  facadeImage: MediaItem
+  buttonText: String
+  tone: String
+  spacing: String
+  container: String
 }

@@ -89,6 +89,104 @@ const samples: { label: string; block: CmsBlock }[] = [
       },
     },
   },
+  {
+    label: "card_grid",
+    block: {
+      layout: "card_grid",
+      data: {
+        heading: "What we do",
+        intro: "An image card grid — the columns count is an editor setting.",
+        columns: 3,
+        cards: [
+          { title: "Strategy", body: "Plan the work before the work.", link_label: "Learn more", link_url: "#", image: { sourceUrl: "https://picsum.photos/seed/card1/800/450", altText: "" } },
+          { title: "Design", body: "Taste, applied to a system.", link_label: "Learn more", link_url: "#", image: { sourceUrl: "https://picsum.photos/seed/card2/800/450", altText: "" } },
+          { title: "Build", body: "Headless, fast, measurable.", link_label: "Learn more", link_url: "#", image: { sourceUrl: "https://picsum.photos/seed/card3/800/450", altText: "" } },
+        ],
+      },
+    },
+  },
+  {
+    label: "services_grid (tone=muted)",
+    block: {
+      layout: "services_grid",
+      data: {
+        heading: "Services",
+        intro: "Icon/image-led cards with a brand-accent treatment.",
+        tone: "muted",
+        columns: 3,
+        services: [
+          { title: "SEO", body: "Technical + content, traditional and AI search.", link_label: "Explore", link_url: "#", image: { sourceUrl: "https://picsum.photos/seed/svc1/200/200", altText: "" } },
+          { title: "PPC", body: "Conversion-tracked paid search and social.", link_label: "Explore", link_url: "#", image: { sourceUrl: "https://picsum.photos/seed/svc2/200/200", altText: "" } },
+          { title: "Web", body: "AI-assisted headless builds.", link_label: "Explore", link_url: "#", image: { sourceUrl: "https://picsum.photos/seed/svc3/200/200", altText: "" } },
+        ],
+      },
+    },
+  },
+  {
+    label: "usp_bar (tone=accent)",
+    block: {
+      layout: "usp_bar",
+      data: {
+        tone: "accent",
+        items: [
+          { text: "10+ years", image: { sourceUrl: "https://picsum.photos/seed/usp1/80/80", altText: "" } },
+          { text: "ROI-driven", image: { sourceUrl: "https://picsum.photos/seed/usp2/80/80", altText: "" } },
+          { text: "Headless + fast", image: { sourceUrl: "https://picsum.photos/seed/usp3/80/80", altText: "" } },
+        ],
+      },
+    },
+  },
+  {
+    label: "reviews",
+    block: {
+      layout: "reviews",
+      data: {
+        heading: "What clients say",
+        columns: 3,
+        reviews: [
+          { quote: "They rebuilt our funnel and doubled enquiries.", author: "A. Client", role: "Founder, Acme", rating: 5 },
+          { quote: "Fast, measurable, and genuinely hands-off for us.", author: "B. Client", role: "MD, Globex", rating: 5 },
+          { quote: "The reporting alone paid for itself.", author: "C. Client", role: "CMO, Initech", rating: 4 },
+        ],
+      },
+    },
+  },
+  {
+    label: "rich_text",
+    block: {
+      layout: "rich_text",
+      data: {
+        content: "<h2>A prose band</h2><p>The <strong>rich_text</strong> block renders WordPress WYSIWYG content with prose typography, capped at a 65ch measure. Editors can widen it via the container setting.</p><ul><li>Headings, lists and links are styled</li><li>Narrow container by default</li></ul>",
+      },
+    },
+  },
+  {
+    label: "columns",
+    block: {
+      layout: "columns",
+      data: {
+        heading: "Columns",
+        column_count: 3,
+        column_items: [
+          { content: "<h3>Discover</h3><p>We start with the data and the goal.</p>" },
+          { content: "<h3>Design</h3><p>Then the system and the taste.</p>" },
+          { content: "<h3>Deliver</h3><p>Then the build, measured.</p>" },
+        ],
+      },
+    },
+  },
+  {
+    label: "video",
+    block: {
+      layout: "video",
+      data: {
+        heading: "Watch the 90-second overview",
+        video_id: "dQw4w9WgXcQ",
+        button_text: "Play the overview",
+        facade_image: { sourceUrl: "https://picsum.photos/seed/video/1280/720", altText: "Video thumbnail" },
+      },
+    },
+  },
 ];
 
 export default function BlocksPage() {
