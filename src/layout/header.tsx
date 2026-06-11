@@ -4,6 +4,7 @@ import { Phone } from "lucide-react";
 import { Container } from "@/ui/container";
 import { ButtonLink } from "@/ui/button-link";
 import { MobileNavDrawer } from "./mobile-nav-drawer";
+import { DesktopNav } from "./desktop-nav";
 import { PhoneMenu } from "./phone-menu";
 import { SocialLinks } from "./social-icons";
 import { siteConfig } from "../../site.config";
@@ -48,20 +49,7 @@ export function Header({ chrome }: { chrome: SiteChrome }) {
               <PhoneMenu numbers={phoneNumbers} />
             ) : null}
 
-            <nav aria-label="Main" className="hidden lg:block">
-              <ul className="flex gap-6">
-                {nav.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className="body-sm font-medium text-ink-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+            <DesktopNav nav={nav} />
 
             {socialInHeader && social.length ? (
               <SocialLinks links={social} className="hidden lg:flex" itemClassName="h-9 w-9 text-ink-muted hover:text-ink" />
