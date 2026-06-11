@@ -63,14 +63,13 @@ const podGuardrails = {
 // Type-scale enforcement (ADR 0015 + docs/standards.md §11). A text element's SIZE must come from
 // a scale class (display-*/body-*/label) — never a raw Tailwind `text-<size>` utility, which bypasses
 // the brand tokens (a client tokens.css then can't retune it). To change a size, edit the token.
-// Weight may stay a `font-*` utility. The ONE exception is src/ui/rich-text.tsx, which styles injected
-// WYSIWYG HTML it doesn't author (ignored below). This is the lint teeth the read-and-comply gate lacked.
+// Weight may stay a `font-*` utility. Bare elements get token-driven defaults from globals.css
+// @layer base, so even injected CMS HTML needs no raw sizes. This is the lint teeth the gate lacked.
 const RAW_TEXT_SIZE = "\\btext-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl)\\b";
 const TYPE_SCALE_MSG =
-  "Use a type-scale class (display-xl/lg/md/sm/xs, body-lg/body/body-sm, label) — not a raw Tailwind text-<size> utility. The scale is the design_system agent's contract (ADR 0015); to change a size, edit the token. Exception: src/ui/rich-text.tsx (injected WYSIWYG HTML).";
+  "Use a type-scale class (display-xl/lg/md/sm/xs, body-lg/body/body-sm, label) or rely on the @layer base element default — not a raw Tailwind text-<size> utility. The scale is the design_system agent's contract (ADR 0015); to change a size, edit the token.";
 const podTypeScale = {
   files: ["src/**/*.{ts,tsx}"],
-  ignores: ["src/ui/rich-text.tsx"],
   rules: {
     "no-restricted-syntax": [
       "error",
