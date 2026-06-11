@@ -5,6 +5,7 @@ import { Container } from "@/ui/container";
 import { ButtonLink } from "@/ui/button-link";
 import { MobileNavDrawer } from "./mobile-nav-drawer";
 import { PhoneMenu } from "./phone-menu";
+import { SocialLinks } from "./social-icons";
 import { siteConfig } from "../../site.config";
 import type { SiteChrome } from "@/lib/cms";
 
@@ -14,7 +15,7 @@ import type { SiteChrome } from "@/lib/cms";
 
 export function Header({ chrome }: { chrome: SiteChrome }) {
   const { name } = siteConfig;
-  const { logo, nav, headerCta, phoneNumbers } = chrome;
+  const { logo, nav, headerCta, phoneNumbers, social, socialInHeader } = chrome;
   const singlePhone = phoneNumbers.length === 1 ? phoneNumbers[0] : null;
 
   return (
@@ -61,6 +62,10 @@ export function Header({ chrome }: { chrome: SiteChrome }) {
                 ))}
               </ul>
             </nav>
+
+            {socialInHeader && social.length ? (
+              <SocialLinks links={social} className="hidden lg:flex" itemClassName="h-9 w-9 text-ink-muted hover:text-ink" />
+            ) : null}
 
             {headerCta ? (
               <ButtonLink href={headerCta.href} size="sm" className="hidden lg:inline-flex">

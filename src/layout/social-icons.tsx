@@ -18,6 +18,7 @@ import {
 } from "react-icons/fa6";
 import { FiLink } from "react-icons/fi";
 import type { IconType } from "react-icons";
+import { cn } from "@/lib/utils";
 
 // Resolve a social link → a brand glyph by matching its URL/label — the editor
 // just pastes the URL. Unknown hosts fall back to a generic link icon. Specific
@@ -44,4 +45,41 @@ const MAP: { test: RegExp; Icon: IconType }[] = [
 
 export function socialIcon(input: string): IconType {
   return MAP.find((m) => m.test.test(input))?.Icon ?? FiLink;
+}
+
+// Shared row of accessible brand-icon links (footer + optional header). Server
+// component — no client needed. `itemClassName` sets colour/size per context.
+export function SocialLinks({
+  links,
+  className,
+  itemClassName,
+}: {
+  links: { label: string; href: string }[];
+  className?: string;
+  itemClassName?: string;
+}) {
+  if (!links.length) return null;
+  return (
+    <ul className={cn("flex flex-wrap items-center gap-1", className)}>
+      {links.map((s) => {
+        const Icon = socialIcon(`${s.href} ${s.label}`);
+        return (
+          <li key={s.href}>
+            <a
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={s.label}
+              className={cn(
+                "inline-flex h-11 w-11 items-center justify-center rounded-card transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                itemClassName,
+              )}
+            >
+              <Icon className="h-5 w-5" aria-hidden="true" />
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  );
 }

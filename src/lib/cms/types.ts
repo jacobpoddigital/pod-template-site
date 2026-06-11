@@ -38,11 +38,14 @@ export interface SiteChrome {
   headerCta: { label: string; href: string } | null;
   /** Header phone(s): 1 → tel: link, 2+ → a location dropdown. */
   phoneNumbers: { location: string; number: string }[];
+  /** Social links (rendered in the footer, and the header when socialInHeader). */
+  social: { label: string; href: string }[];
+  /** Editor toggle — also show the social icons in the header (desktop). */
+  socialInHeader: boolean;
   nav: NavItem[];
   footer: {
     strapline: string | null;
     address: string | null;
     columns: { title: string; links: { label: string; href: string }[] }[];
-    social: { label: string; href: string }[];
   };
 }

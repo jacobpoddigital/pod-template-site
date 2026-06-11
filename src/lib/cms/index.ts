@@ -99,7 +99,7 @@ function toLogo(o: ChromeOptions): SiteChrome["logo"] {
 function toHeaderCta(o: ChromeOptions): SiteChrome["headerCta"] {
   return o?.headerCtaLabel && o?.headerCtaUrl ? { label: o.headerCtaLabel, href: o.headerCtaUrl } : null;
 }
-function toSocial(o: ChromeOptions): SiteChrome["footer"]["social"] {
+function toSocial(o: ChromeOptions): SiteChrome["social"] {
   return (o?.social ?? []).map((s) => ({ label: s.label ?? "", href: s.url ?? "#" }));
 }
 function toPhones(o: ChromeOptions): SiteChrome["phoneNumbers"] {
@@ -120,12 +120,13 @@ export async function getSiteChrome(): Promise<SiteChrome> {
     logo: toLogo(o),
     headerCta: toHeaderCta(o),
     phoneNumbers: toPhones(o),
+    social: toSocial(o),
+    socialInHeader: Boolean(o?.socialInHeader),
     nav: buildNavTree(data.primary?.nodes ?? []),
     footer: {
       strapline: o?.strapline ?? null,
       address: o?.address ?? null,
       columns: toColumns(buildNavTree(data.footer?.nodes ?? [])),
-      social: toSocial(o),
     },
   };
 }

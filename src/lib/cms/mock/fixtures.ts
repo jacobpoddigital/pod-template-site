@@ -183,6 +183,7 @@ export const mockChrome = {
       { label: "X", url: "https://x.com" },
       { label: "Facebook", url: "https://www.facebook.com" },
     ],
+    socialInHeader: true,
     phoneNumbers: [
       { location: "Leicester", number: "0116 123 4567" },
       { location: "London", number: "020 1234 5678" },
