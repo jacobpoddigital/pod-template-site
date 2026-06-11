@@ -50,7 +50,7 @@ function Panel({
             <button
               type="button"
               onClick={() => onDrill([...basePath, i])}
-              className="flex w-full items-center justify-between border-b border-border py-4 text-left body-lg font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex w-full items-center justify-between border-b border-border py-4 text-left display-xs text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {item.label}
               <ChevronRight className="h-5 w-5 text-ink-muted" aria-hidden="true" />
@@ -61,7 +61,7 @@ function Panel({
             <Link
               href={item.href}
               onClick={(e) => onNavigate(item.href, e)}
-              className="block border-b border-border py-4 body-lg font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="block border-b border-border py-4 display-xs text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {item.label}
             </Link>
