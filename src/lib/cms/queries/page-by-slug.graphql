@@ -190,6 +190,22 @@ query PageBySlug($slug: ID!) {
             author
             role
             rating
+            avatar {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+            company_logo: companyLogo {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
           }
         }
         ... on Page_Pagefields_Blocks_RichText {
@@ -294,6 +310,317 @@ query PageBySlug($slug: ID!) {
             mediaDetails {
               width
               height
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_Pricing {
+          heading
+          intro
+          tone
+          spacing
+          container
+          anchor
+          plans {
+            name
+            price
+            price_annual: priceAnnual
+            period
+            description
+            featured
+            badge
+            cta_label: ctaLabel
+            cta_url: ctaUrl
+            features {
+              text
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_Team {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          anchor
+          members {
+            name
+            role
+            bio
+            linkedin_url: linkedinUrl
+            twitter_url: twitterUrl
+            website_url: websiteUrl
+            image {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_StatsBand {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          anchor
+          stats {
+            value
+            label
+            description
+          }
+        }
+        ... on Page_Pagefields_Blocks_TabbedContent {
+          heading
+          intro
+          tone
+          spacing
+          container
+          anchor
+          tabs {
+            label
+            content
+          }
+        }
+        ... on Page_Pagefields_Blocks_ProcessSteps {
+          heading
+          intro
+          tone
+          spacing
+          container
+          anchor
+          steps {
+            title
+            body
+          }
+        }
+        ... on Page_Pagefields_Blocks_BentoGrid {
+          heading
+          intro
+          tone
+          spacing
+          container
+          anchor
+          items {
+            title
+            body
+            span
+            link_url: linkUrl
+            image {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_CaseStudies {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          anchor
+          items {
+            metric
+            summary
+            client
+            link_label: linkLabel
+            link_url: linkUrl
+            logo {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_Timeline {
+          heading
+          intro
+          tone
+          spacing
+          container
+          anchor
+          events {
+            date
+            title
+            body
+          }
+        }
+        ... on Page_Pagefields_Blocks_Newsletter {
+          heading
+          intro
+          placeholder
+          button_label: buttonLabel
+          success_message: successMessage
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on Page_Pagefields_Blocks_Gallery {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          anchor
+          images {
+            caption
+            image {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_BeforeAfter {
+          heading
+          intro
+          before_label: beforeLabel
+          after_label: afterLabel
+          tone
+          spacing
+          container
+          anchor
+          before_image: beforeImage {
+            sourceUrl
+            altText
+            mediaDetails {
+              width
+              height
+            }
+          }
+          after_image: afterImage {
+            sourceUrl
+            altText
+            mediaDetails {
+              width
+              height
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_Toc {
+          heading
+          tone
+          spacing
+          container
+          anchor
+          items {
+            label
+            target
+          }
+        }
+        ... on Page_Pagefields_Blocks_IntegrationsGrid {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          anchor
+          items {
+            name
+            url
+            logo {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_PricingMatrix {
+          heading
+          intro
+          tone
+          spacing
+          container
+          anchor
+          plan_labels: planLabels {
+            label
+          }
+          rows {
+            feature
+            value1
+            value2
+            value3
+          }
+        }
+        ... on Page_Pagefields_Blocks_LocationsMap {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          anchor
+          locations {
+            name
+            address
+            maps_url: mapsUrl
+            phone
+          }
+        }
+        ... on Page_Pagefields_Blocks_VideoTestimonial {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          anchor
+          items {
+            video_id: videoId
+            quote
+            author
+            role
+            facade_image: facadeImage {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_FeatureRows {
+          heading
+          intro
+          tone
+          spacing
+          container
+          anchor
+          rows {
+            eyebrow
+            title
+            body
+            cta_label: ctaLabel
+            cta_url: ctaUrl
+            image {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
             }
           }
         }

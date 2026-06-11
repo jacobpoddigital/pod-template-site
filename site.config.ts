@@ -21,6 +21,12 @@ export const siteConfig = {
       { label: "Terms", href: "/terms" },
     ],
   },
+  /** Dismissible announcement strip above the header. null = no bar.
+   *  TEMPLATE: set per client, e.g. { text: "Now booking Q3 projects", href: "/contact", linkLabel: "Enquire" }. */
+  announcement: null as null | { text: string; href?: string; linkLabel?: string },
+  /** Sticky bottom CTA bar on mobile (< lg) — phone + primary CTA from WP chrome.
+   *  Best-evidenced mobile conversion pattern (+8–31%). Set false to disable. */
+  stickyMobileCta: true,
 } as const;
 
 export type SiteConfig = typeof siteConfig;

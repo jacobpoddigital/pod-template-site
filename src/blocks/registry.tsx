@@ -18,6 +18,23 @@ import { statWithSourceSchema, StatWithSource } from "./stat-with-source";
 import { comparisonTableSchema, ComparisonTable } from "./comparison-table";
 import { authorBylineSchema, AuthorByline } from "./author-byline";
 import { postGridSchema, PostGrid, type PostGridProps } from "./post-grid";
+import { pricingSchema, Pricing } from "./pricing";
+import { teamSchema, Team } from "./team";
+import { statsBandSchema, StatsBand } from "./stats-band";
+import { tabbedContentSchema, TabbedContent } from "./tabbed-content";
+import { processStepsSchema, ProcessSteps } from "./process-steps";
+import { bentoGridSchema, BentoGrid } from "./bento-grid";
+import { caseStudiesSchema, CaseStudies } from "./case-studies";
+import { timelineSchema, Timeline } from "./timeline";
+import { newsletterSchema, Newsletter } from "./newsletter";
+import { gallerySchema, Gallery } from "./gallery";
+import { beforeAfterSchema, BeforeAfter } from "./before-after";
+import { tocSchema, Toc } from "./toc";
+import { integrationsGridSchema, IntegrationsGrid } from "./integrations-grid";
+import { pricingMatrixSchema, PricingMatrix } from "./pricing-matrix";
+import { locationsMapSchema, LocationsMap } from "./locations-map";
+import { videoTestimonialSchema, VideoTestimonial } from "./video-testimonial";
+import { featureRowsSchema, FeatureRows } from "./feature-rows";
 
 // ACF layout name → { schema, component }. ONE entry per block.
 // Keys must match `acf_fc_layout` values in wp/acf-fields/*.json exactly.
@@ -58,6 +75,23 @@ export const registry: Record<string, BlockEntry> = {
   stat_with_source: defineBlock(statWithSourceSchema, StatWithSource),
   comparison_table: defineBlock(comparisonTableSchema, ComparisonTable),
   author_byline: defineBlock(authorBylineSchema, AuthorByline),
+  pricing: defineBlock(pricingSchema, Pricing),
+  team: defineBlock(teamSchema, Team),
+  stats_band: defineBlock(statsBandSchema, StatsBand),
+  tabbed_content: defineBlock(tabbedContentSchema, TabbedContent),
+  process_steps: defineBlock(processStepsSchema, ProcessSteps),
+  bento_grid: defineBlock(bentoGridSchema, BentoGrid),
+  case_studies: defineBlock(caseStudiesSchema, CaseStudies),
+  timeline: defineBlock(timelineSchema, Timeline),
+  newsletter: defineBlock(newsletterSchema, Newsletter),
+  gallery: defineBlock(gallerySchema, Gallery),
+  before_after: defineBlock(beforeAfterSchema, BeforeAfter),
+  toc: defineBlock(tocSchema, Toc),
+  integrations_grid: defineBlock(integrationsGridSchema, IntegrationsGrid),
+  pricing_matrix: defineBlock(pricingMatrixSchema, PricingMatrix),
+  locations_map: defineBlock(locationsMapSchema, LocationsMap),
+  video_testimonial: defineBlock(videoTestimonialSchema, VideoTestimonial),
+  feature_rows: defineBlock(featureRowsSchema, FeatureRows),
   // post_grid is an async (fetching) server component — cast to satisfy the
   // ComponentType signature; React renders async server components fine.
   post_grid: defineBlock(postGridSchema, PostGrid as unknown as React.ComponentType<PostGridProps>),

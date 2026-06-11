@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Container } from "@/ui/container";
 import { BlockRenderer } from "@/blocks/block-renderer";
-import { samples } from "./samples";
+import { samples, variantSamples } from "./samples";
 
 // Internal preview of the shared starter block library on the live theme — what ships in the
 // template before a client build. Noindexed + absent from the CMS-driven sitemap. Sample data
@@ -24,6 +24,25 @@ export default function BlocksPage() {
         <div key={label}>
           <Container>
             <p className="border-t border-border pb-2 pt-10 font-mono body-sm text-ink-muted">block: {label}</p>
+          </Container>
+          <BlockRenderer blocks={[block]} />
+        </div>
+      ))}
+
+      <Container>
+        <div className="border-t-2 border-border pt-16">
+          <h2 className="display-md text-ink">Variants &amp; settings</h2>
+          <p className="mt-2 max-w-[65ch] text-ink-muted">
+            The same blocks under different editor settings — section tone, grid vs slider layout,
+            column count, media position, pricing toggle. Section tone (default / muted / inverted /
+            accent) applies to every block.
+          </p>
+        </div>
+      </Container>
+      {variantSamples.map(({ label, block }) => (
+        <div key={`variant-${label}`}>
+          <Container>
+            <p className="border-t border-border pb-2 pt-10 font-mono body-sm text-ink-muted">variant: {label}</p>
           </Container>
           <BlockRenderer blocks={[block]} />
         </div>

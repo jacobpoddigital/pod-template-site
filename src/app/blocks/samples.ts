@@ -1,6 +1,16 @@
 import type { CmsBlock } from "@/lib/cms";
+import { extraSamples } from "./samples-extra";
+import { tier2Samples } from "./samples-tier2";
+import { tier3Samples } from "./samples-tier3";
+import { variantSamples } from "./samples-variants";
 
-export const samples: { label: string; block: CmsBlock }[] = [
+export type BlockSample = { label: string; block: CmsBlock };
+
+// One representative instance per block (the gallery) + a variant showcase (the
+// same blocks under different editor settings: tone, layout, columns, …).
+export { variantSamples };
+
+const coreSamples: BlockSample[] = [
   {
     label: "hero",
     block: {
@@ -284,4 +294,13 @@ export const samples: { label: string; block: CmsBlock }[] = [
     label: "post_grid",
     block: { layout: "post_grid", data: { heading: "From the blog", intro: "Fetched live (mock posts in dev).", count: 3 } },
   },
+];
+
+// Roadmap additions live in separate files to keep each under the max-lines lint
+// cap; the gallery renders core + tier1 + tier2 + tier3 in order.
+export const samples: BlockSample[] = [
+  ...coreSamples,
+  ...extraSamples,
+  ...tier2Samples,
+  ...tier3Samples,
 ];

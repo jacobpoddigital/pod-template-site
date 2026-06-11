@@ -4,14 +4,18 @@ import { Phone } from "lucide-react";
 import { Container } from "@/ui/container";
 import { ButtonLink } from "@/ui/button-link";
 import { MobileNavDrawer } from "./mobile-nav-drawer";
+import { DesktopNav } from "./desktop-nav";
 import { PhoneMenu } from "./phone-menu";
 import { SocialLinks } from "./social-icons";
+import { StickyHeader } from "./sticky-header";
+import { ThemeToggle } from "./theme-toggle";
 import { siteConfig } from "../../site.config";
 import type { SiteChrome } from "@/lib/cms";
 
 // Server Component shell — chrome (logo/nav/CTA) is editor-managed in WP, fetched
-// at the layout and passed in. Nav is passed down to the Client Component drawer
-// leaf (slot-bridge pattern, workflow/02). The header never uses "use client".
+// at the layout and passed in. Nav + the sticky/scroll behaviour are passed to
+// Client Component leaves (slot-bridge pattern, workflow/02). The header's content
+// never uses "use client".
 
 export function Header({ chrome }: { chrome: SiteChrome }) {
   const { name } = siteConfig;
@@ -19,9 +23,9 @@ export function Header({ chrome }: { chrome: SiteChrome }) {
   const singlePhone = phoneNumbers.length === 1 ? phoneNumbers[0] : null;
 
   return (
-    <header className="border-b border-border bg-surface" aria-label="Main">
+    <StickyHeader>
       <Container>
-        <div className="flex h-16 items-center justify-between gap-6">
+        <div className="flex h-16 items-center justify-between gap-6 lg:h-20">
           <Link
             href="/"
             aria-label={name}
@@ -48,24 +52,15 @@ export function Header({ chrome }: { chrome: SiteChrome }) {
               <PhoneMenu numbers={phoneNumbers} />
             ) : null}
 
-            <nav aria-label="Main" className="hidden lg:block">
-              <ul className="flex gap-6">
-                {nav.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className="body-sm font-medium text-ink-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+            <DesktopNav nav={nav} />
 
             {socialInHeader && social.length ? (
               <SocialLinks links={social} className="hidden lg:flex" itemClassName="h-9 w-9 text-ink-muted hover:text-ink" />
             ) : null}
+
+            <div className="hidden lg:block">
+              <ThemeToggle />
+            </div>
 
             {headerCta ? (
               <ButtonLink href={headerCta.href} size="sm" className="hidden lg:inline-flex">
@@ -77,6 +72,6 @@ export function Header({ chrome }: { chrome: SiteChrome }) {
           </div>
         </div>
       </Container>
-    </header>
+    </StickyHeader>
   );
 }

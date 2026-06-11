@@ -1,8 +1,11 @@
+import Image from "next/image";
 import { Star } from "lucide-react";
 import { Section } from "@/ui/section";
 import { Card, CardContent } from "@/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/ui/avatar";
 import { Slider, SliderItem } from "@/ui/slider";
 import { sectionProps, columnsClass } from "@/lib/section-settings";
+import { initials } from "@/lib/utils";
 import type { ReviewsProps } from "./schema";
 
 type ReviewItem = NonNullable<ReviewsProps["reviews"]>[number];
@@ -22,19 +25,51 @@ function Rating({ value }: { value: number }) {
   );
 }
 
+function AttributionAvatar({ r }: { r: ReviewItem }) {
+  if (!r.avatar?.sourceUrl) return null;
+  return (
+    <Avatar size="sm">
+      <AvatarImage src={r.avatar.sourceUrl} alt={r.avatar.altText ?? r.author ?? ""} />
+      <AvatarFallback>{initials(r.author)}</AvatarFallback>
+    </Avatar>
+  );
+}
+
+function CompanyLogo({ r }: { r: ReviewItem }) {
+  if (!r.company_logo?.sourceUrl) return null;
+  return (
+    <Image
+      src={r.company_logo.sourceUrl}
+      alt={r.company_logo.altText ?? ""}
+      width={88}
+      height={28}
+      sizes="88px"
+      className="ml-auto h-7 w-auto object-contain opacity-70"
+    />
+  );
+}
+
+function Attribution({ r }: { r: ReviewItem }) {
+  if (!r.author && !r.role) return null;
+  return (
+    <div className="mt-6 flex items-center gap-3">
+      <AttributionAvatar r={r} />
+      <p className="body-sm text-ink-muted">
+        {r.author ? <span className="block body-sm font-semibold text-ink">{r.author}</span> : null}
+        {r.role}
+      </p>
+      <CompanyLogo r={r} />
+    </div>
+  );
+}
+
 function ReviewItemView({ r }: { r: ReviewItem }) {
   return (
-    <Card className="h-full">
-      <CardContent className="pt-6">
+    <Card className="flex h-full flex-col">
+      <CardContent className="flex flex-1 flex-col pt-6">
         {typeof r.rating === "number" ? <Rating value={r.rating} /> : null}
         <blockquote className="body-lg text-ink">&ldquo;{r.quote}&rdquo;</blockquote>
-        {r.author || r.role ? (
-          <p className="mt-4 body-sm text-ink-muted">
-            {r.author ? <span className="body-sm font-semibold text-ink">{r.author}</span> : null}
-            {r.author && r.role ? ", " : null}
-            {r.role}
-          </p>
-        ) : null}
+        <Attribution r={r} />
       </CardContent>
     </Card>
   );

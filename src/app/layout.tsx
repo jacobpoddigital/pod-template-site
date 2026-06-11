@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Header } from "@/layout/header";
 import { Footer } from "@/layout/footer";
+import { AnnouncementBar } from "@/ui/announcement-bar";
+import { StickyCta } from "@/ui/sticky-cta";
 import { StructuredData } from "./structured-data";
 import { getSiteChrome } from "@/lib/cms";
 import { siteConfig } from "../../site.config";
@@ -49,8 +51,10 @@ export default async function RootLayout({
 }>) {
   // Chrome is editor-managed in WP — fetched once here, passed to header + footer.
   const chrome = await getSiteChrome();
+  const { announcement, stickyMobileCta } = siteConfig;
+  const stickyPhone = chrome.phoneNumbers[0]?.number ?? null;
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="en" className="h-full scroll-pt-20 antialiased">
       <body className="flex min-h-full flex-col bg-surface text-ink font-sans">
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
         <a
@@ -59,11 +63,19 @@ export default async function RootLayout({
         >
           Skip to content
         </a>
+        {announcement ? (
+          <AnnouncementBar
+            text={announcement.text}
+            href={announcement.href}
+            linkLabel={announcement.linkLabel}
+          />
+        ) : null}
         <Header chrome={chrome} />
         <main id="main-content" className="flex-1">
           {children}
         </main>
         <Footer chrome={chrome} />
+        {stickyMobileCta ? <StickyCta phone={stickyPhone} cta={chrome.headerCta} /> : null}
         <StructuredData />
       </body>
     </html>
