@@ -187,6 +187,65 @@ const samples: { label: string; block: CmsBlock }[] = [
       },
     },
   },
+  {
+    label: "key_takeaways",
+    block: {
+      layout: "key_takeaways",
+      data: {
+        heading: "Key takeaways",
+        points: [
+          { text: "Headless WordPress + Next.js gives sub-second loads and first-party measurement." },
+          { text: "Editors control layout via section settings — no developer rebuild." },
+          { text: "Stats, tables and quotes lift visibility in AI search." },
+        ],
+      },
+    },
+  },
+  {
+    label: "stat_with_source",
+    block: {
+      layout: "stat_with_source",
+      data: {
+        heading: "The numbers",
+        columns: 3,
+        stats: [
+          { value: "+41%", label: "AI visibility from quotations", source: "GEO, Princeton KDD 2024" },
+          { value: "4.4x", label: "AI referrals convert vs organic", source: "Adobe" },
+          { value: "<2.5s", label: "LCP target on every build", source: "Core Web Vitals" },
+        ],
+      },
+    },
+  },
+  {
+    label: "comparison_table",
+    block: {
+      layout: "comparison_table",
+      data: {
+        heading: "Headless vs traditional",
+        option_a_label: "Great White Pro (headless)",
+        option_b_label: "Classic WordPress",
+        rows: [
+          { feature: "Page speed", option_a: "Sub-second (static/edge)", option_b: "Variable (PHP render)" },
+          { feature: "First-party measurement", option_a: "Native (server-side)", option_b: "Bolt-on" },
+          { feature: "Editor layout control", option_a: "Section settings, no rebuild", option_b: "Developer or page builder" },
+        ],
+      },
+    },
+  },
+  {
+    label: "author_byline",
+    block: {
+      layout: "author_byline",
+      data: {
+        name: "Jacob Hedges",
+        role: "Pod Digital",
+        date: "11 June 2026",
+        bio: "Building the AI-assisted web tier at Pod Digital.",
+        profile_url: "#",
+        avatar: { sourceUrl: "https://picsum.photos/seed/author/200/200", altText: "Author avatar" },
+      },
+    },
+  },
 ];
 
 export default function BlocksPage() {

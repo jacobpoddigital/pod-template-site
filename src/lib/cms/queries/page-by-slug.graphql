@@ -189,6 +189,60 @@ query PageBySlug($slug: ID!) {
             }
           }
         }
+        ... on Page_Pagefields_Blocks_KeyTakeaways {
+          heading
+          tone
+          spacing
+          container
+          points {
+            text
+          }
+        }
+        ... on Page_Pagefields_Blocks_StatWithSource {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          stats {
+            value
+            label
+            source
+          }
+        }
+        ... on Page_Pagefields_Blocks_ComparisonTable {
+          heading
+          intro
+          option_a_label: optionALabel
+          option_b_label: optionBLabel
+          tone
+          spacing
+          container
+          rows {
+            feature
+            option_a: optionA
+            option_b: optionB
+          }
+        }
+        ... on Page_Pagefields_Blocks_AuthorByline {
+          name
+          role
+          date
+          bio
+          profile_url: profileUrl
+          tone
+          spacing
+          container
+          avatar {
+            sourceUrl
+            altText
+            mediaDetails {
+              width
+              height
+            }
+          }
+        }
       }
     }
   }

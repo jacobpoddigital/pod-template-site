@@ -13,6 +13,10 @@ import { reviewsSchema, Reviews } from "./reviews";
 import { richTextSchema, RichTextBlock } from "./rich-text";
 import { columnsSchema, Columns } from "./columns";
 import { videoSchema, Video } from "./video";
+import { keyTakeawaysSchema, KeyTakeaways } from "./key-takeaways";
+import { statWithSourceSchema, StatWithSource } from "./stat-with-source";
+import { comparisonTableSchema, ComparisonTable } from "./comparison-table";
+import { authorBylineSchema, AuthorByline } from "./author-byline";
 
 // ACF layout name → { schema, component }. ONE entry per block.
 // Keys must match `acf_fc_layout` values in wp/acf-fields/*.json exactly.
@@ -49,4 +53,8 @@ export const registry: Record<string, BlockEntry> = {
   rich_text: defineBlock(richTextSchema, RichTextBlock),
   columns: defineBlock(columnsSchema, Columns),
   video: defineBlock(videoSchema, Video),
+  key_takeaways: defineBlock(keyTakeawaysSchema, KeyTakeaways),
+  stat_with_source: defineBlock(statWithSourceSchema, StatWithSource),
+  comparison_table: defineBlock(comparisonTableSchema, ComparisonTable),
+  author_byline: defineBlock(authorBylineSchema, AuthorByline),
 };
