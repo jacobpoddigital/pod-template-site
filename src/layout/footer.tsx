@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/ui/container";
+import { SocialLinks } from "./social-icons";
 import { siteConfig } from "../../site.config";
 import type { SiteChrome } from "@/lib/cms";
 
@@ -44,23 +45,10 @@ export function Footer({ chrome }: { chrome: SiteChrome }) {
             <FooterNav key={col.title} title={col.title} links={col.links} />
           ))}
 
-          {f.social.length ? (
+          {chrome.social.length ? (
             <div>
               <p className="text-sm font-semibold">Follow</p>
-              <ul className="mt-3 space-y-2">
-                {f.social.map((s) => (
-                  <li key={s.href}>
-                    <a
-                      href={s.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rounded text-sm text-surface/70 transition-colors hover:text-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    >
-                      {s.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+              <SocialLinks links={chrome.social} className="mt-3" itemClassName="text-surface/70 hover:text-surface" />
             </div>
           ) : null}
         </div>

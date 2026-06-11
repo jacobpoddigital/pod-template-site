@@ -177,7 +177,13 @@ export const mockChrome = {
     headerCtaLabel: "Get in touch",
     headerCtaUrl: "/#contact",
     logo: null,
-    social: [{ label: "LinkedIn", url: "https://www.linkedin.com" }],
+    social: [
+      { label: "LinkedIn", url: "https://www.linkedin.com" },
+      { label: "Instagram", url: "https://www.instagram.com" },
+      { label: "X", url: "https://x.com" },
+      { label: "Facebook", url: "https://www.facebook.com" },
+    ],
+    socialInHeader: true,
     phoneNumbers: [
       { location: "Leicester", number: "0116 123 4567" },
       { location: "London", number: "020 1234 5678" },

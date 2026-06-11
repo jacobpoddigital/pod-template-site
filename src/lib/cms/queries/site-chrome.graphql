@@ -31,6 +31,7 @@ query SiteChrome {
       label
       url
     }
+    socialInHeader
     phoneNumbers {
       location
       number

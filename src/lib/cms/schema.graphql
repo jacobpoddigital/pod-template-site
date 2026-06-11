@@ -54,6 +54,7 @@ type SiteOptions {
   headerCtaLabel: String
   headerCtaUrl: String
   social: [SiteOptionsSocial!]
+  socialInHeader: Boolean
   phoneNumbers: [SiteOptionsPhone!]
 }
 
