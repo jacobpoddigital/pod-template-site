@@ -34,6 +34,8 @@ query PageBySlug($slug: ID!) {
           heading
           intro
           tone
+          spacing
+          container
           features {
             title
             body
@@ -43,6 +45,8 @@ query PageBySlug($slug: ID!) {
         ... on Page_Pagefields_Blocks_Faq {
           heading
           tone
+          spacing
+          container
           items {
             question
             answer
@@ -54,10 +58,14 @@ query PageBySlug($slug: ID!) {
           cta_label: ctaLabel
           cta_url: ctaUrl
           tone
+          spacing
+          container
         }
         ... on Page_Pagefields_Blocks_LogoStrip {
           heading
           tone
+          spacing
+          container
           logos {
             name
           }
@@ -68,6 +76,8 @@ query PageBySlug($slug: ID!) {
           submit_label: submitLabel
           success_message: successMessage
           tone
+          spacing
+          container
         }
         ... on Page_Pagefields_Blocks_MediaText {
           eyebrow

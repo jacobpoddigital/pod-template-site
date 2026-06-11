@@ -1,5 +1,6 @@
 import { Section } from "@/ui/section";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/ui/accordion";
+import { sectionProps } from "@/lib/section-settings";
 import type { FaqProps } from "./schema";
 
 // Ships FAQPage JSON-LD server-rendered with the content, so AI/search crawlers (no JS) read it.
@@ -15,11 +16,11 @@ function faqJsonLd(items: { question: string; answer: string }[]) {
   };
 }
 
-export function Faq({ heading, items, tone }: FaqProps) {
+export function Faq({ heading, items, tone, spacing, container }: FaqProps) {
   const list = Array.isArray(items) ? items : [];
   if (list.length === 0) return null;
   return (
-    <Section dataBlock="faq" tone={tone}>
+    <Section dataBlock="faq" {...sectionProps({ tone, spacing, container })}>
       {heading ? (
         <h2 className="mb-8 display-md text-ink">{heading}</h2>
       ) : null}

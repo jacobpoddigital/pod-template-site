@@ -1,6 +1,7 @@
 import { Zap, ShieldCheck, Sparkles, Clock, Check, Gauge, Lock, Rocket, type LucideIcon } from "lucide-react";
 import { Section } from "@/ui/section";
 import { Card, CardHeader, CardTitle, CardContent } from "@/ui/card";
+import { sectionProps } from "@/lib/section-settings";
 import type { FeatureGridProps } from "./schema";
 
 // Curated Lucide set — keep small (named imports stay tree-shakeable). Fallback: Sparkles.
@@ -15,11 +16,11 @@ const ICONS: Record<string, LucideIcon> = {
   rocket: Rocket,
 };
 
-export function FeatureGrid({ heading, intro, tone, features }: FeatureGridProps) {
+export function FeatureGrid({ heading, intro, tone, spacing, container, features }: FeatureGridProps) {
   const items = Array.isArray(features) ? features : [];
   if (items.length === 0) return null;
   return (
-    <Section dataBlock="feature_grid" tone={tone}>
+    <Section dataBlock="feature_grid" {...sectionProps({ tone, spacing, container })}>
       {heading || intro ? (
         <div className="mb-12 max-w-2xl">
           {heading ? <h2 className="display-md text-ink">{heading}</h2> : null}

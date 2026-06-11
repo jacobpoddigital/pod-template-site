@@ -1,12 +1,13 @@
 import { Section } from "@/ui/section";
+import { sectionProps } from "@/lib/section-settings";
 import type { LogoStripProps } from "./schema";
 
 // Text placeholders for now — swap to <Image> logos when assets land (keep alt = name).
-export function LogoStrip({ heading, logos, tone }: LogoStripProps) {
+export function LogoStrip({ heading, logos, tone, spacing, container }: LogoStripProps) {
   const items = Array.isArray(logos) ? logos : [];
   if (items.length === 0) return null;
   return (
-    <Section dataBlock="logo_strip" tone={tone ?? "muted"} padding="compact">
+    <Section dataBlock="logo_strip" {...sectionProps({ tone: tone ?? "muted", spacing: spacing ?? "compact", container })}>
       {heading ? (
         <p className="mb-8 text-center label text-ink-muted">{heading}</p>
       ) : null}
