@@ -66,6 +66,10 @@ union Page_Pagefields_Blocks =
   | Page_Pagefields_Blocks_RichText
   | Page_Pagefields_Blocks_Columns
   | Page_Pagefields_Blocks_Video
+  | Page_Pagefields_Blocks_KeyTakeaways
+  | Page_Pagefields_Blocks_StatWithSource
+  | Page_Pagefields_Blocks_ComparisonTable
+  | Page_Pagefields_Blocks_AuthorByline
 
 type Page_Pagefields_Blocks_Hero {
   eyebrow: String
@@ -248,6 +252,62 @@ type Page_Pagefields_Blocks_Video {
   videoId: String
   facadeImage: MediaItem
   buttonText: String
+  tone: String
+  spacing: String
+  container: String
+}
+
+# --- Citation / E-E-A-T blocks (workflow/04 §9). ---
+
+type Page_Pagefields_Blocks_KeyTakeaways {
+  heading: String
+  points: [Page_Pagefields_Blocks_KeyTakeaways_Points!]
+  tone: String
+  spacing: String
+  container: String
+}
+type Page_Pagefields_Blocks_KeyTakeaways_Points {
+  text: String
+}
+
+type Page_Pagefields_Blocks_StatWithSource {
+  heading: String
+  intro: String
+  columns: Int
+  stats: [Page_Pagefields_Blocks_StatWithSource_Stats!]
+  tone: String
+  spacing: String
+  container: String
+}
+type Page_Pagefields_Blocks_StatWithSource_Stats {
+  value: String
+  label: String
+  source: String
+}
+
+type Page_Pagefields_Blocks_ComparisonTable {
+  heading: String
+  intro: String
+  optionALabel: String
+  optionBLabel: String
+  rows: [Page_Pagefields_Blocks_ComparisonTable_Rows!]
+  tone: String
+  spacing: String
+  container: String
+}
+type Page_Pagefields_Blocks_ComparisonTable_Rows {
+  feature: String
+  optionA: String
+  optionB: String
+}
+
+type Page_Pagefields_Blocks_AuthorByline {
+  name: String
+  role: String
+  date: String
+  bio: String
+  profileUrl: String
+  avatar: MediaItem
   tone: String
   spacing: String
   container: String
