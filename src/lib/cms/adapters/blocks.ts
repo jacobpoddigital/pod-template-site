@@ -20,6 +20,13 @@ const LAYOUT: Record<BlockNode["__typename"], string> = {
   Page_Pagefields_Blocks_LogoStrip: "logo_strip",
   Page_Pagefields_Blocks_ContactForm: "contact_form",
   Page_Pagefields_Blocks_MediaText: "media_text",
+  Page_Pagefields_Blocks_CardGrid: "card_grid",
+  Page_Pagefields_Blocks_ServicesGrid: "services_grid",
+  Page_Pagefields_Blocks_UspBar: "usp_bar",
+  Page_Pagefields_Blocks_Reviews: "reviews",
+  Page_Pagefields_Blocks_RichText: "rich_text",
+  Page_Pagefields_Blocks_Columns: "columns",
+  Page_Pagefields_Blocks_Video: "video",
 };
 
 export function toBlocks(

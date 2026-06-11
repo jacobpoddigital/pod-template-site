@@ -53,3 +53,17 @@ export function sectionProps(s: SectionSettings) {
     container: s.container ?? "default",
   } as const;
 }
+
+// Editor `columns` (1–4) → a STATIC responsive grid-cols class (Tailwind needs
+// whole class names, so this is a lookup, not interpolation). Grids start at 1 col
+// on mobile and expand outward (KB 09). Clamped/defaulted to 3.
+const COLUMNS = {
+  1: "grid-cols-1",
+  2: "grid-cols-1 sm:grid-cols-2",
+  3: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+  4: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4",
+} as const;
+
+export function columnsClass(n?: number | null): string {
+  return COLUMNS[(n as 1 | 2 | 3 | 4) ?? 3] ?? COLUMNS[3];
+}

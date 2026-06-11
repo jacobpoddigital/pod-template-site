@@ -80,6 +80,115 @@ query PageBySlug($slug: ID!) {
             }
           }
         }
+        ... on Page_Pagefields_Blocks_CardGrid {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          cards {
+            title
+            body
+            link_label: linkLabel
+            link_url: linkUrl
+            image {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_ServicesGrid {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          services {
+            title
+            body
+            link_label: linkLabel
+            link_url: linkUrl
+            image {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_UspBar {
+          columns
+          tone
+          spacing
+          container
+          items {
+            text
+            link_url: linkUrl
+            image {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_Reviews {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          reviews {
+            quote
+            author
+            role
+            rating
+          }
+        }
+        ... on Page_Pagefields_Blocks_RichText {
+          content
+          tone
+          spacing
+          container
+        }
+        ... on Page_Pagefields_Blocks_Columns {
+          heading
+          intro
+          column_count: columnCount
+          tone
+          spacing
+          container
+          column_items: columns {
+            content
+          }
+        }
+        ... on Page_Pagefields_Blocks_Video {
+          heading
+          video_id: videoId
+          button_text: buttonText
+          tone
+          spacing
+          container
+          facade_image: facadeImage {
+            sourceUrl
+            altText
+            mediaDetails {
+              width
+              height
+            }
+          }
+        }
       }
     }
   }
