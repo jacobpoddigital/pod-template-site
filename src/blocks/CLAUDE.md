@@ -17,3 +17,4 @@ Rules:
 - Blocks never fetch — they receive validated props from `<BlockRenderer>`.
 - Blocks never import WP shapes — `lib/cms` is the only module that knows them.
 - **No `fallback.ts`** (ADR 0013) — develop before WP via the dev mock, never shippable fallback content.
+- **A `z.string().min(1)` (or any required) schema field MUST be marked _Required_ in its `wp/acf-fields/*.json` field.** The renderer parses each block with Zod and throws on failure (fail-loud, ADR 0013), so a *required* field left blank by an editor would fail the page build/ISR. Marking it required in ACF stops the editor publishing it blank — the Zod rule is then a backstop, not a trap.

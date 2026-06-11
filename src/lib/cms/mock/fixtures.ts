@@ -178,5 +178,9 @@ export const mockChrome = {
     headerCtaUrl: "/#contact",
     logo: null,
     social: [{ label: "LinkedIn", url: "https://www.linkedin.com" }],
+    phoneNumbers: [
+      { location: "Leicester", number: "0116 123 4567" },
+      { location: "London", number: "020 1234 5678" },
+    ],
   },
 };

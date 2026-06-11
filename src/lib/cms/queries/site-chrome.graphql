@@ -31,5 +31,9 @@ query SiteChrome {
       label
       url
     }
+    phoneNumbers {
+      location
+      number
+    }
   }
 }

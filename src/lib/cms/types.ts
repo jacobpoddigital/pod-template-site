@@ -36,6 +36,8 @@ export interface NavItem {
 export interface SiteChrome {
   logo: { sourceUrl: string; altText?: string | null } | null;
   headerCta: { label: string; href: string } | null;
+  /** Header phone(s): 1 → tel: link, 2+ → a location dropdown. */
+  phoneNumbers: { location: string; number: string }[];
   nav: NavItem[];
   footer: {
     strapline: string | null;
