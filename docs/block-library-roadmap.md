@@ -5,6 +5,20 @@
 
 This roadmap answers two questions: **which card variants and which UI patterns are we missing**, tiered from "every site needs this" down to niche. It is grounded in (a) the union component list across shadcn/Radix/MUI/Chakra/AntD/daisyUI/Tailwind Plus, (b) 2025–26 trend evidence, and (c) CRO research on what actually converts. Sources are cited inline.
 
+## Build status — branch `feat/block-library-tier-0-3`
+
+**Shipped (building green: typecheck + lint + `pnpm build`):**
+- ✅ **Tier 0** — Card variant axes (`elevation`/`emphasis`/`interaction`, backward-compatible) · Avatar · Tabs primitives.
+- ✅ **Tier 1 blocks** — `pricing` (featured + monthly/annual Tabs toggle) · `team` · `stats_band` · `reviews` extended with avatar + company logo. All on `/blocks` + dev mock.
+- ✅ **Globals** — announcement bar (dismissible) · sticky mobile CTA (site.config-driven).
+- ✅ **Header H1** — desktop flyout / sub-menus (Radix navigation-menu; nested `children` now render on desktop).
+
+**Remaining (next batches, same branch — mechanical repeats of the proven pattern):**
+- ⏳ **Tier 2** — tabbed_content · process_steps · bento_grid · case_studies · timeline · newsletter · gallery.
+- ⏳ **Tier 3** — before_after · toc · integrations_grid · pricing_matrix · locations_map · video_testimonial · feature_rows.
+- ⏳ **Header H2–H4** — sticky/scroll-aware header · header utility slots (theme toggle, search) · `aria-current` + `h-20` polish.
+- ⏳ HQ `workflow/29-block-library.md` catalogue update.
+
 ---
 
 ## Where we are today (verified)
