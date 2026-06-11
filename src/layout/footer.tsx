@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/ui/container";
+import { socialIcon } from "./social-icons";
 import { siteConfig } from "../../site.config";
 import type { SiteChrome } from "@/lib/cms";
 
@@ -47,19 +48,23 @@ export function Footer({ chrome }: { chrome: SiteChrome }) {
           {f.social.length ? (
             <div>
               <p className="text-sm font-semibold">Follow</p>
-              <ul className="mt-3 space-y-2">
-                {f.social.map((s) => (
-                  <li key={s.href}>
-                    <a
-                      href={s.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rounded text-sm text-surface/70 transition-colors hover:text-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    >
-                      {s.label}
-                    </a>
-                  </li>
-                ))}
+              <ul className="mt-3 flex flex-wrap gap-1">
+                {f.social.map((s) => {
+                  const Icon = socialIcon(`${s.href} ${s.label}`);
+                  return (
+                    <li key={s.href}>
+                      <a
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={s.label}
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-card text-surface/70 transition-colors hover:text-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      >
+                        <Icon className="h-5 w-5" aria-hidden="true" />
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ) : null}
