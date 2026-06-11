@@ -17,6 +17,7 @@ import { keyTakeawaysSchema, KeyTakeaways } from "./key-takeaways";
 import { statWithSourceSchema, StatWithSource } from "./stat-with-source";
 import { comparisonTableSchema, ComparisonTable } from "./comparison-table";
 import { authorBylineSchema, AuthorByline } from "./author-byline";
+import { postGridSchema, PostGrid, type PostGridProps } from "./post-grid";
 
 // ACF layout name → { schema, component }. ONE entry per block.
 // Keys must match `acf_fc_layout` values in wp/acf-fields/*.json exactly.
@@ -57,4 +58,7 @@ export const registry: Record<string, BlockEntry> = {
   stat_with_source: defineBlock(statWithSourceSchema, StatWithSource),
   comparison_table: defineBlock(comparisonTableSchema, ComparisonTable),
   author_byline: defineBlock(authorBylineSchema, AuthorByline),
+  // post_grid is an async (fetching) server component — cast to satisfy the
+  // ComponentType signature; React renders async server components fine.
+  post_grid: defineBlock(postGridSchema, PostGrid as unknown as React.ComponentType<PostGridProps>),
 };

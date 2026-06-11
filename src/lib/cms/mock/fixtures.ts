@@ -21,6 +21,8 @@ export const mockHome: PageBySlugQuery = {
           subheading:
             "This page is the dev mock — every block below is real, served from a committed schema while WordPress is offline.",
           tone: "default",
+          layout: null,
+          image: null,
           cta_label: "Get started",
           cta_url: "#",
           secondary_label: "View the blocks",
@@ -73,6 +75,7 @@ export const mockHome: PageBySlugQuery = {
           body: "media_text composes the shared <Section>; the section_settings contract maps each editor choice to a design-system token. The image leads on mobile and swaps sides on desktop via media_position.",
           cta_label: "How it works",
           cta_url: "#",
+          video_id: null,
           media_position: "right",
           media_ratio: "landscape",
           tone: "default",
@@ -96,3 +99,31 @@ export const mockHome: PageBySlugQuery = {
     },
   },
 };
+
+// Recent posts for the post_grid block in offline/dev mode.
+export const mockPosts = [
+  {
+    databaseId: 101,
+    title: "How headless WordPress speeds up your site",
+    uri: "/blog/headless-speed",
+    date: "2026-06-09T09:00:00",
+    excerpt: "<p>Static-first rendering and a global CDN put load times under a second.</p>",
+    featuredImage: { node: { sourceUrl: "https://picsum.photos/seed/post1/800/450", altText: "" } },
+  },
+  {
+    databaseId: 102,
+    title: "Measurement-first builds for marketing teams",
+    uri: "/blog/measurement-first",
+    date: "2026-06-06T09:00:00",
+    excerpt: "<p>GA4, server-side tagging and a clean dataLayer, on every site by default.</p>",
+    featuredImage: { node: { sourceUrl: "https://picsum.photos/seed/post2/800/450", altText: "" } },
+  },
+  {
+    databaseId: 103,
+    title: "Editing your site without a developer",
+    uri: "/blog/editor-control",
+    date: "2026-06-02T09:00:00",
+    excerpt: "<p>Section settings let editors change layout in WordPress — no rebuild.</p>",
+    featuredImage: { node: { sourceUrl: "https://picsum.photos/seed/post3/800/450", altText: "" } },
+  },
+];

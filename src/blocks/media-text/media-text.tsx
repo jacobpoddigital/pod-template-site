@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Section } from "@/ui/section";
 import { ButtonLink } from "@/ui/button-link";
+import { VideoFacade } from "@/ui/video-facade";
 import { sectionProps } from "@/lib/section-settings";
 import type { MediaTextProps } from "./schema";
 
@@ -19,7 +20,25 @@ const ORDER = {
   left: { text: "order-2", media: "order-1" },
 } as const;
 
-function Media({ image, ratio, className }: { image: MediaTextProps["image"]; ratio: string; className: string }) {
+function Media({
+  image,
+  videoId,
+  ratio,
+  className,
+}: {
+  image: MediaTextProps["image"];
+  videoId?: string | null;
+  ratio: string;
+  className: string;
+}) {
+  // Video variant: a click-to-load facade (the image, if any, is its poster).
+  if (videoId) {
+    return (
+      <div className={className}>
+        <VideoFacade videoId={videoId} image={image} label="Play video" />
+      </div>
+    );
+  }
   if (!image?.sourceUrl) return null;
   return (
     <div className={className}>
@@ -43,6 +62,7 @@ export function MediaText({
   cta_label,
   cta_url,
   image,
+  video_id,
   media_position,
   media_ratio,
   tone,
@@ -67,7 +87,7 @@ export function MediaText({
           ) : null}
         </div>
 
-        <Media image={image} ratio={ratio} className={order.media} />
+        <Media image={image} videoId={video_id} ratio={ratio} className={order.media} />
       </div>
     </Section>
   );

@@ -16,6 +16,7 @@ schema {
 type RootQuery {
   page(id: ID!, idType: PageIdType): Page
   pages(first: Int, where: RootQueryToPageConnectionWhereArgs): RootQueryToPageConnection
+  posts(first: Int, where: RootQueryToPostConnectionWhereArgs): RootQueryToPostConnection
 }
 
 enum PageIdType {
@@ -35,6 +36,29 @@ input RootQueryToPageConnectionWhereArgs {
 
 type RootQueryToPageConnection {
   nodes: [Page!]!
+}
+
+# Posts — drives the post_grid block's listing (a fetching block, not page content).
+input RootQueryToPostConnectionWhereArgs {
+  status: PostStatusEnum
+  categoryName: String
+}
+
+type RootQueryToPostConnection {
+  nodes: [Post!]!
+}
+
+type Post {
+  databaseId: Int!
+  title: String
+  uri: String
+  date: String
+  excerpt: String
+  featuredImage: NodeWithFeaturedImageToMediaItemConnectionEdge
+}
+
+type NodeWithFeaturedImageToMediaItemConnectionEdge {
+  node: MediaItem
 }
 
 type Page {
@@ -66,6 +90,7 @@ union Page_Pagefields_Blocks =
   | Page_Pagefields_Blocks_RichText
   | Page_Pagefields_Blocks_Columns
   | Page_Pagefields_Blocks_Video
+  | Page_Pagefields_Blocks_PostGrid
   | Page_Pagefields_Blocks_KeyTakeaways
   | Page_Pagefields_Blocks_StatWithSource
   | Page_Pagefields_Blocks_ComparisonTable
@@ -79,6 +104,8 @@ type Page_Pagefields_Blocks_Hero {
   ctaUrl: String
   secondaryLabel: String
   secondaryUrl: String
+  image: MediaItem
+  layout: String
   tone: String
 }
 
@@ -141,6 +168,7 @@ type Page_Pagefields_Blocks_MediaText {
   ctaLabel: String
   ctaUrl: String
   image: MediaItem
+  videoId: String
   mediaPosition: String
   mediaRatio: String
   tone: String
@@ -168,6 +196,7 @@ type Page_Pagefields_Blocks_CardGrid {
   heading: String
   intro: String
   columns: Int
+  layout: String
   cards: [Page_Pagefields_Blocks_CardGrid_Cards!]
   tone: String
   spacing: String
@@ -185,6 +214,7 @@ type Page_Pagefields_Blocks_ServicesGrid {
   heading: String
   intro: String
   columns: Int
+  layout: String
   services: [Page_Pagefields_Blocks_ServicesGrid_Services!]
   tone: String
   spacing: String
@@ -215,6 +245,7 @@ type Page_Pagefields_Blocks_Reviews {
   heading: String
   intro: String
   columns: Int
+  layout: String
   reviews: [Page_Pagefields_Blocks_Reviews_Reviews!]
   tone: String
   spacing: String
@@ -308,6 +339,19 @@ type Page_Pagefields_Blocks_AuthorByline {
   bio: String
   profileUrl: String
   avatar: MediaItem
+  tone: String
+  spacing: String
+  container: String
+}
+
+# post_grid lists recent posts — the block's ACF fields control the query; the
+# posts themselves are fetched separately (getRecentPosts), not page content.
+type Page_Pagefields_Blocks_PostGrid {
+  heading: String
+  intro: String
+  category: String
+  count: Int
+  columns: Int
   tone: String
   spacing: String
   container: String

@@ -1,8 +1,11 @@
 import { Star } from "lucide-react";
 import { Section } from "@/ui/section";
 import { Card, CardContent } from "@/ui/card";
+import { Slider, SliderItem } from "@/ui/slider";
 import { sectionProps, columnsClass } from "@/lib/section-settings";
 import type { ReviewsProps } from "./schema";
+
+type ReviewItem = NonNullable<ReviewsProps["reviews"]>[number];
 
 function Rating({ value }: { value: number }) {
   const n = Math.max(0, Math.min(5, Math.round(value)));
@@ -19,7 +22,25 @@ function Rating({ value }: { value: number }) {
   );
 }
 
-export function Reviews({ heading, intro, columns, reviews, tone, spacing, container }: ReviewsProps) {
+function ReviewItemView({ r }: { r: ReviewItem }) {
+  return (
+    <Card className="h-full">
+      <CardContent className="pt-6">
+        {typeof r.rating === "number" ? <Rating value={r.rating} /> : null}
+        <blockquote className="body-lg text-ink">&ldquo;{r.quote}&rdquo;</blockquote>
+        {r.author || r.role ? (
+          <p className="mt-4 text-sm text-ink-muted">
+            {r.author ? <span className="font-semibold text-ink">{r.author}</span> : null}
+            {r.author && r.role ? ", " : null}
+            {r.role}
+          </p>
+        ) : null}
+      </CardContent>
+    </Card>
+  );
+}
+
+export function Reviews({ heading, intro, columns, layout, reviews, tone, spacing, container }: ReviewsProps) {
   const items = Array.isArray(reviews) ? reviews : [];
   if (items.length === 0) return null;
 
@@ -32,23 +53,21 @@ export function Reviews({ heading, intro, columns, reviews, tone, spacing, conta
         </div>
       ) : null}
 
-      <div className={`grid gap-6 ${columnsClass(columns)}`}>
-        {items.map((r, i) => (
-          <Card key={`${r.author ?? "review"}-${i}`}>
-            <CardContent className="pt-6">
-              {typeof r.rating === "number" ? <Rating value={r.rating} /> : null}
-              <blockquote className="body-lg text-ink">&ldquo;{r.quote}&rdquo;</blockquote>
-              {r.author || r.role ? (
-                <p className="mt-4 text-sm text-ink-muted">
-                  {r.author ? <span className="font-semibold text-ink">{r.author}</span> : null}
-                  {r.author && r.role ? ", " : null}
-                  {r.role}
-                </p>
-              ) : null}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {layout === "slider" ? (
+        <Slider label={heading ?? "Reviews"}>
+          {items.map((r, i) => (
+            <SliderItem key={`${r.author ?? "review"}-${i}`}>
+              <ReviewItemView r={r} />
+            </SliderItem>
+          ))}
+        </Slider>
+      ) : (
+        <div className={`grid gap-6 ${columnsClass(columns)}`}>
+          {items.map((r, i) => (
+            <ReviewItemView key={`${r.author ?? "review"}-${i}`} r={r} />
+          ))}
+        </div>
+      )}
     </Section>
   );
 }
