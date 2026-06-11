@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Section } from "@/ui/section";
 import { Card, CardHeader, CardTitle, CardContent } from "@/ui/card";
 import { getRecentPosts } from "@/lib/cms";
+import { sanitize } from "@/lib/sanitize";
 import { sectionProps, columnsClass } from "@/lib/section-settings";
 import type { PostGridProps } from "./schema";
 
@@ -40,14 +41,14 @@ export async function PostGrid({ heading, intro, category, count, columns, tone,
                 </div>
               ) : null}
               <CardHeader>
-                <CardTitle className="text-lg font-semibold text-ink">{p.title}</CardTitle>
+                <CardTitle className="text-lg font-bold text-ink">{p.title}</CardTitle>
               </CardHeader>
             </Link>
             {p.excerpt ? (
               <CardContent>
                 <div
                   className="leading-relaxed text-ink-muted [&_p]:m-0"
-                  dangerouslySetInnerHTML={{ __html: p.excerpt }}
+                  dangerouslySetInnerHTML={{ __html: sanitize(p.excerpt) }}
                 />
               </CardContent>
             ) : null}

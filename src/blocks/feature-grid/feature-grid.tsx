@@ -28,17 +28,17 @@ export function FeatureGrid({ heading, intro, tone, spacing, container, features
         </div>
       ) : null}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((f) => {
+        {items.map((f, i) => {
           const Icon = f.icon ? (ICONS[f.icon] ?? Sparkles) : null;
           return (
-            <Card key={f.title}>
+            <Card key={`${f.title}-${i}`}>
               <CardHeader>
                 {Icon ? (
                   <span className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-card bg-brand-accent/10 text-brand-accent">
                     <Icon className="h-6 w-6" aria-hidden="true" />
                   </span>
                 ) : null}
-                <CardTitle className="text-lg font-semibold text-ink">{f.title}</CardTitle>
+                <CardTitle className="text-lg font-bold text-ink">{f.title}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="leading-relaxed text-ink-muted">{f.body}</p>

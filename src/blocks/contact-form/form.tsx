@@ -47,7 +47,7 @@ export function ContactForm({ submitLabel, successMessage }: { submitLabel: stri
       <div className="space-y-1.5">
         <Label htmlFor="enquiry">Topic</Label>
         <Select name="enquiry">
-          <SelectTrigger id="enquiry" aria-invalid={!!e.enquiry} className="w-full">
+          <SelectTrigger id="enquiry" aria-invalid={!!e.enquiry} aria-describedby={e.enquiry ? "enquiry-err" : undefined} className="w-full">
             <SelectValue placeholder="Choose a topic…" />
           </SelectTrigger>
           <SelectContent>

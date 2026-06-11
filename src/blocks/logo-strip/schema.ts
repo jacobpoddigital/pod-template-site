@@ -6,7 +6,7 @@ const logo = z.object({ name: z.string() });
 export const logoStripSchema = z.object({
   ...sectionSettingsFields,
   heading: z.string().nullish(),
-  logos: z.union([z.array(logo), z.literal(false)]).nullish(),
+  logos: z.array(logo).nullish(),
 });
 
 export type LogoStripProps = z.infer<typeof logoStripSchema>;

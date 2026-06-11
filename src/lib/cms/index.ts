@@ -75,15 +75,19 @@ function buildNavTree(nodes: readonly MenuNode[]): NavItem[] {
   const roots: NavItem[] = [];
   for (const n of nodes) {
     const item = byId.get(n.id)!;
-    const parent = n.parentId ? byId.get(n.parentId) : undefined;
+    const parent = n.parentId && n.parentId !== n.id ? byId.get(n.parentId) : undefined;
     if (parent) parent.children!.push(item);
     else roots.push(item);
   }
-  const clean = (items: NavItem[]): NavItem[] =>
-    items.map(({ label, href, children }) =>
-      children && children.length ? { label, href, children: clean(children) } : { label, href },
-    );
-  return clean(roots);
+  // `seen` breaks any cycle a malformed menu might form (CMS input — defensive).
+  const clean = (items: NavItem[], seen: Set<NavItem>): NavItem[] =>
+    items
+      .filter((i) => !seen.has(i))
+      .map((i) => {
+        seen.add(i);
+        return i.children && i.children.length ? { label: i.label, href: i.href, children: clean(i.children, seen) } : { label: i.label, href: i.href };
+      });
+  return clean(roots, new Set());
 }
 
 // Small normalizers keep getSiteChrome under the complexity bar.

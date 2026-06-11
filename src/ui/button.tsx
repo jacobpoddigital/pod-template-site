@@ -22,10 +22,11 @@ const buttonVariants = cva(
         outline:     "border border-border bg-transparent text-foreground hover:bg-muted",
       },
       size: {
-        sm: "h-8 px-3 text-xs",
-        md: "h-10 px-4",
+        // WCAG 2.5.5 — 44px min touch target (h-11). sm is the compact affordance.
+        sm: "h-10 px-3 text-sm",
+        md: "h-11 px-4",
         lg: "h-12 px-6 text-base",
-        icon: "h-10 w-10",
+        icon: "h-11 w-11",
       },
     },
     defaultVariants: { variant: "primary", size: "md" },

@@ -26,7 +26,7 @@ export function Faq({ heading, items, tone, spacing, container }: FaqProps) {
       ) : null}
       <Accordion type="single" collapsible className="mx-auto max-w-3xl">
         {list.map((i, idx) => (
-          <AccordionItem key={i.question} value={`faq-${idx}`}>
+          <AccordionItem key={`${i.question}-${idx}`} value={`faq-${idx}`}>
             <AccordionTrigger>{i.question}</AccordionTrigger>
             <AccordionContent>{i.answer}</AccordionContent>
           </AccordionItem>
