@@ -12,8 +12,8 @@ export function LogoStrip({ heading, logos, tone, spacing, container }: LogoStri
         <p className="mb-8 text-center label text-ink-muted">{heading}</p>
       ) : null}
       <ul className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
-        {items.map((l) => (
-          <li key={l.name} className="text-lg font-semibold text-ink-muted">
+        {items.map((l, i) => (
+          <li key={`${l.name}-${i}`} className="text-lg font-semibold text-ink-muted">
             {l.name}
           </li>
         ))}

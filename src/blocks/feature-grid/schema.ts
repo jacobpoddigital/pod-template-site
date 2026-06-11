@@ -8,8 +8,7 @@ export const featureGridSchema = z.object({
   ...sectionSettingsFields,
   heading: z.string().nullish(),
   intro: z.string().nullish(),
-  // ACF returns `false` (not []) for an empty repeater.
-  features: z.union([z.array(feature), z.literal(false)]).nullish(),
+  features: z.array(feature).nullish(),
 });
 
 export type FeatureGridProps = z.infer<typeof featureGridSchema>;
