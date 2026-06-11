@@ -156,6 +156,13 @@ union Page_Pagefields_Blocks =
   | Page_Pagefields_Blocks_Timeline
   | Page_Pagefields_Blocks_Newsletter
   | Page_Pagefields_Blocks_Gallery
+  | Page_Pagefields_Blocks_BeforeAfter
+  | Page_Pagefields_Blocks_Toc
+  | Page_Pagefields_Blocks_IntegrationsGrid
+  | Page_Pagefields_Blocks_PricingMatrix
+  | Page_Pagefields_Blocks_LocationsMap
+  | Page_Pagefields_Blocks_VideoTestimonial
+  | Page_Pagefields_Blocks_FeatureRows
 
 type Page_Pagefields_Blocks_Hero {
   eyebrow: String
@@ -628,4 +635,126 @@ type Page_Pagefields_Blocks_Gallery {
 type Page_Pagefields_Blocks_Gallery_Images {
   image: MediaItem
   caption: String
+}
+
+# before_after — two images with a draggable comparison divider.
+type Page_Pagefields_Blocks_BeforeAfter {
+  heading: String
+  intro: String
+  beforeImage: MediaItem
+  afterImage: MediaItem
+  beforeLabel: String
+  afterLabel: String
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+
+# toc — table of contents / in-page nav; links to section anchors.
+type Page_Pagefields_Blocks_Toc {
+  heading: String
+  items: [Page_Pagefields_Blocks_Toc_Items!]
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+type Page_Pagefields_Blocks_Toc_Items {
+  label: String
+  target: String
+}
+
+# integrations_grid — logo/app grid with optional links.
+type Page_Pagefields_Blocks_IntegrationsGrid {
+  heading: String
+  intro: String
+  columns: Int
+  items: [Page_Pagefields_Blocks_IntegrationsGrid_Items!]
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+type Page_Pagefields_Blocks_IntegrationsGrid_Items {
+  name: String
+  url: String
+  logo: MediaItem
+}
+
+# pricing_matrix — feature comparison across up to three plans.
+type Page_Pagefields_Blocks_PricingMatrix {
+  heading: String
+  intro: String
+  planLabels: [Page_Pagefields_Blocks_PricingMatrix_PlanLabels!]
+  rows: [Page_Pagefields_Blocks_PricingMatrix_Rows!]
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+type Page_Pagefields_Blocks_PricingMatrix_PlanLabels {
+  label: String
+}
+type Page_Pagefields_Blocks_PricingMatrix_Rows {
+  feature: String
+  value1: String
+  value2: String
+  value3: String
+}
+
+# locations_map — address cards + map links (no API key on the client).
+type Page_Pagefields_Blocks_LocationsMap {
+  heading: String
+  intro: String
+  columns: Int
+  locations: [Page_Pagefields_Blocks_LocationsMap_Locations!]
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+type Page_Pagefields_Blocks_LocationsMap_Locations {
+  name: String
+  address: String
+  mapsUrl: String
+  phone: String
+}
+
+# video_testimonial — testimonials with a click-to-load video (VideoFacade).
+type Page_Pagefields_Blocks_VideoTestimonial {
+  heading: String
+  intro: String
+  columns: Int
+  items: [Page_Pagefields_Blocks_VideoTestimonial_Items!]
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+type Page_Pagefields_Blocks_VideoTestimonial_Items {
+  videoId: String
+  quote: String
+  author: String
+  role: String
+  facadeImage: MediaItem
+}
+
+# feature_rows — alternating (zig-zag) media + text rows.
+type Page_Pagefields_Blocks_FeatureRows {
+  heading: String
+  intro: String
+  rows: [Page_Pagefields_Blocks_FeatureRows_Rows!]
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+type Page_Pagefields_Blocks_FeatureRows_Rows {
+  eyebrow: String
+  title: String
+  body: String
+  ctaLabel: String
+  ctaUrl: String
+  image: MediaItem
 }

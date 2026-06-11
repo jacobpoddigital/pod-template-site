@@ -28,6 +28,13 @@ import { caseStudiesSchema, CaseStudies } from "./case-studies";
 import { timelineSchema, Timeline } from "./timeline";
 import { newsletterSchema, Newsletter } from "./newsletter";
 import { gallerySchema, Gallery } from "./gallery";
+import { beforeAfterSchema, BeforeAfter } from "./before-after";
+import { tocSchema, Toc } from "./toc";
+import { integrationsGridSchema, IntegrationsGrid } from "./integrations-grid";
+import { pricingMatrixSchema, PricingMatrix } from "./pricing-matrix";
+import { locationsMapSchema, LocationsMap } from "./locations-map";
+import { videoTestimonialSchema, VideoTestimonial } from "./video-testimonial";
+import { featureRowsSchema, FeatureRows } from "./feature-rows";
 
 // ACF layout name → { schema, component }. ONE entry per block.
 // Keys must match `acf_fc_layout` values in wp/acf-fields/*.json exactly.
@@ -78,6 +85,13 @@ export const registry: Record<string, BlockEntry> = {
   timeline: defineBlock(timelineSchema, Timeline),
   newsletter: defineBlock(newsletterSchema, Newsletter),
   gallery: defineBlock(gallerySchema, Gallery),
+  before_after: defineBlock(beforeAfterSchema, BeforeAfter),
+  toc: defineBlock(tocSchema, Toc),
+  integrations_grid: defineBlock(integrationsGridSchema, IntegrationsGrid),
+  pricing_matrix: defineBlock(pricingMatrixSchema, PricingMatrix),
+  locations_map: defineBlock(locationsMapSchema, LocationsMap),
+  video_testimonial: defineBlock(videoTestimonialSchema, VideoTestimonial),
+  feature_rows: defineBlock(featureRowsSchema, FeatureRows),
   // post_grid is an async (fetching) server component — cast to satisfy the
   // ComponentType signature; React renders async server components fine.
   post_grid: defineBlock(postGridSchema, PostGrid as unknown as React.ComponentType<PostGridProps>),

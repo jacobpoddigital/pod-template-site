@@ -488,6 +488,142 @@ query PageBySlug($slug: ID!) {
             }
           }
         }
+        ... on Page_Pagefields_Blocks_BeforeAfter {
+          heading
+          intro
+          before_label: beforeLabel
+          after_label: afterLabel
+          tone
+          spacing
+          container
+          anchor
+          before_image: beforeImage {
+            sourceUrl
+            altText
+            mediaDetails {
+              width
+              height
+            }
+          }
+          after_image: afterImage {
+            sourceUrl
+            altText
+            mediaDetails {
+              width
+              height
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_Toc {
+          heading
+          tone
+          spacing
+          container
+          anchor
+          items {
+            label
+            target
+          }
+        }
+        ... on Page_Pagefields_Blocks_IntegrationsGrid {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          anchor
+          items {
+            name
+            url
+            logo {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_PricingMatrix {
+          heading
+          intro
+          tone
+          spacing
+          container
+          anchor
+          plan_labels: planLabels {
+            label
+          }
+          rows {
+            feature
+            value1
+            value2
+            value3
+          }
+        }
+        ... on Page_Pagefields_Blocks_LocationsMap {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          anchor
+          locations {
+            name
+            address
+            maps_url: mapsUrl
+            phone
+          }
+        }
+        ... on Page_Pagefields_Blocks_VideoTestimonial {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          anchor
+          items {
+            video_id: videoId
+            quote
+            author
+            role
+            facade_image: facadeImage {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_FeatureRows {
+          heading
+          intro
+          tone
+          spacing
+          container
+          anchor
+          rows {
+            eyebrow
+            title
+            body
+            cta_label: ctaLabel
+            cta_url: ctaUrl
+            image {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+        }
       }
     }
   }
