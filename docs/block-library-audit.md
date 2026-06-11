@@ -42,7 +42,7 @@ A point-in-time audit of the 20 blocks in `src/blocks/*` + the shared `src/ui` p
   **Fix:** compound key `${value}-${idx}` (newer blocks like card_grid already do this).
 - [x] **Empty-repeater handling inconsistent.** `faq`, `feature_grid`, `logo_strip` use the legacy `z.union([z.array(...), z.literal(false)]).nullish()`; the other 8 use plain `.array().nullish()`. Over WPGraphQL empty repeaters arrive as `null` (the `false` was REST-era), so the newer pattern is correct and the `false` arm is dead.
   **Fix:** drop the `z.literal(false)` arm in the 3 older blocks. (Behaviour unchanged — all guard with `Array.isArray`.)
-- [ ] **Repeated items aren't semantic lists.** `services_grid` (and the `card_grid`/`feature_grid` card grids) render items as bare `<div>`s; a repeated set should be `<ul>/<li>` (cf. `usp_bar`, `stat_with_source`).
+- [x] **Repeated items aren't semantic lists.** ✅ card_grid / services_grid / feature_grid / reviews grid variants now use `<ul role="list">`/`<li>`. `services_grid` (and the `card_grid`/`feature_grid` card grids) render items as bare `<div>`s; a repeated set should be `<ul>/<li>` (cf. `usp_bar`, `stat_with_source`).
 - [ ] **`comparison_table`** uses arbitrary size `min-w-[34rem]` (no-arbitrary-size rule) → use a scale/token width.
 - [x] **`contact_form` Topic select** sets `aria-invalid` but no `aria-describedby`, so its `ErrorText` (`#enquiry-err`) is never announced.
 - [ ] **`hero` overlay contrast** — `bg-black/50` + `text-white/85` subheading isn't guaranteed AA on a light/busy image. Verify, don't assume; consider a gradient scrim.

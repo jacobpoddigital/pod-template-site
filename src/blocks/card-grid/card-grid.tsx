@@ -64,11 +64,13 @@ export function CardGrid({ heading, intro, columns, layout, cards, tone, spacing
           ))}
         </Slider>
       ) : (
-        <div className={`grid gap-6 ${columnsClass(columns)}`}>
+        <ul role="list" className={`grid gap-6 ${columnsClass(columns)}`}>
           {items.map((c, i) => (
-            <CardItemView key={`${c.title}-${i}`} c={c} />
+            <li key={`${c.title}-${i}`}>
+              <CardItemView c={c} />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </Section>
   );
