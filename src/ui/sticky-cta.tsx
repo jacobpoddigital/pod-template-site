@@ -50,7 +50,7 @@ export function StickyCta({
         {cta ? (
           <Link
             href={cta.href}
-            className="inline-flex h-12 flex-1 items-center justify-center rounded-card bg-primary px-4 body-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            className="inline-flex h-12 flex-1 items-center justify-center rounded-card bg-primary px-4 body-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
           >
             {cta.label}
           </Link>

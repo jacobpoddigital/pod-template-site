@@ -101,11 +101,14 @@ These are codebase-specific musts. They were each a real miss; do not repeat the
 
 **Accessibility (these shipped wrong once).**
 - **Interactive controls ≥ 44px.** `Button` `md`=`h-11`, `icon`=`h-11 w-11`; form controls `h-11`. Icon-only links/buttons need `aria-label`; decorative icons `aria-hidden="true"`.
+- **The focus ring must contrast with the element's OWN background** (2026-06-11 QA). On a coloured control (`bg-primary`/`bg-brand-accent`/inverted bar) a same-hue ring is invisible — `focus-visible:ring-primary` on `bg-primary` disappears. Use the contrasting foreground + offset on that surface: `focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-primary`. On normal surfaces, `ring-ring`/`ring-primary` + `ring-offset-2`. Lint can't catch this (contrast judgement) — it's on the build/QA pass.
+- **A heading ELEMENT must carry heading weight** (2026-06-11 QA). Don't style an `<h2>`/`<h3>` with the small/light `label` token — it's a heading that doesn't read as one. For a widget/utility label (e.g. a TOC "On this page"), use `<p className="label">`; the surrounding `<nav aria-label>` carries the accessible name. Real heading elements are for real section/item headings (`display-*`).
 - **Card titles are real `<h3>`** (`CardTitle` renders `<h3>`), under the section `<h2>` — keep the hierarchy.
 - **Repeated items are semantic lists** — `<ul role="list">`/`<li>` (the `role` is required; Tailwind's reset strips list semantics in Safari/VoiceOver).
 
 **Security.**
-- **WordPress HTML injected via `dangerouslySetInnerHTML` MUST pass through `sanitize()`** (`@/lib/sanitize`, `sanitize-html`) — rich_text, columns, post_grid excerpt. WP content is semi-trusted. **Do NOT use `isomorphic-dompurify`** — its jsdom dep breaks the Turbopack build (`ERR_REQUIRE_ESM`) and is heavy on Vercel.
+- **WordPress HTML injected via `dangerouslySetInnerHTML` MUST pass through `sanitize()`** (`@/lib/sanitize`, `sanitize-html`) — rich_text, columns, post_grid excerpt, tabbed_content. WP content is semi-trusted. **Do NOT use `isomorphic-dompurify`** — its jsdom dep breaks the Turbopack build (`ERR_REQUIRE_ESM`) and is heavy on Vercel.
+- **A CMS string interpolated into a URL or `iframe src` needs a FORMAT regex at the schema, not just `.min(1)`** (2026-06-11 QA). A YouTube `video_id` goes straight into the embed URL, so validate `z.string().regex(/^[A-Za-z0-9_-]{11}$/)`. Anchor targets injected into `href` go through `toAnchorId()` (strips to `[a-z0-9-]`) so a pasted full URL can't escape the fragment.
 - `target="_blank"` always carries `rel="noopener noreferrer"`. CMS-driven hrefs go through `next/link`/`<a>` (no raw `javascript:` execution).
 
 **CMS data discipline.**

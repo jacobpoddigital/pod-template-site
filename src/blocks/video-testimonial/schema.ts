@@ -12,7 +12,8 @@ export const videoTestimonialSchema = z.object({
   items: z
     .array(
       z.object({
-        video_id: z.string().min(1),
+        // 11-char YouTube ID — validated so a CMS value can't inject into the embed URL.
+        video_id: z.string().regex(/^[A-Za-z0-9_-]{11}$/, "Must be an 11-character YouTube video ID"),
         quote: z.string().nullish(),
         author: z.string().nullish(),
         role: z.string().nullish(),
