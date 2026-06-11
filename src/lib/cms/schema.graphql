@@ -115,6 +115,7 @@ type Page_Pagefields_Blocks_FeatureGrid {
   tone: String
   spacing: String
   container: String
+  anchor: String
   features: [Page_Pagefields_Blocks_FeatureGrid_Features!]
 }
 
@@ -129,6 +130,7 @@ type Page_Pagefields_Blocks_Faq {
   tone: String
   spacing: String
   container: String
+  anchor: String
   items: [Page_Pagefields_Blocks_Faq_Items!]
 }
 
@@ -145,6 +147,7 @@ type Page_Pagefields_Blocks_CtaBanner {
   tone: String
   spacing: String
   container: String
+  anchor: String
 }
 
 type Page_Pagefields_Blocks_LogoStrip {
@@ -152,6 +155,7 @@ type Page_Pagefields_Blocks_LogoStrip {
   tone: String
   spacing: String
   container: String
+  anchor: String
   logos: [Page_Pagefields_Blocks_LogoStrip_Logos!]
 }
 
@@ -167,6 +171,7 @@ type Page_Pagefields_Blocks_ContactForm {
   tone: String
   spacing: String
   container: String
+  anchor: String
 }
 
 # media + text block. `spacing` + `container` are the editor-controlled
@@ -184,6 +189,7 @@ type Page_Pagefields_Blocks_MediaText {
   tone: String
   spacing: String
   container: String
+  anchor: String
 }
 
 # WordPress MediaItem (an ACF image field). Minimal subset — regenerating the SDL
@@ -211,6 +217,7 @@ type Page_Pagefields_Blocks_CardGrid {
   tone: String
   spacing: String
   container: String
+  anchor: String
 }
 type Page_Pagefields_Blocks_CardGrid_Cards {
   image: MediaItem
@@ -229,6 +236,7 @@ type Page_Pagefields_Blocks_ServicesGrid {
   tone: String
   spacing: String
   container: String
+  anchor: String
 }
 type Page_Pagefields_Blocks_ServicesGrid_Services {
   image: MediaItem
@@ -244,6 +252,7 @@ type Page_Pagefields_Blocks_UspBar {
   tone: String
   spacing: String
   container: String
+  anchor: String
 }
 type Page_Pagefields_Blocks_UspBar_Items {
   image: MediaItem
@@ -260,6 +269,7 @@ type Page_Pagefields_Blocks_Reviews {
   tone: String
   spacing: String
   container: String
+  anchor: String
 }
 type Page_Pagefields_Blocks_Reviews_Reviews {
   quote: String
@@ -273,6 +283,7 @@ type Page_Pagefields_Blocks_RichText {
   tone: String
   spacing: String
   container: String
+  anchor: String
 }
 
 type Page_Pagefields_Blocks_Columns {
@@ -283,6 +294,7 @@ type Page_Pagefields_Blocks_Columns {
   tone: String
   spacing: String
   container: String
+  anchor: String
 }
 type Page_Pagefields_Blocks_Columns_Columns {
   content: String
@@ -296,6 +308,7 @@ type Page_Pagefields_Blocks_Video {
   tone: String
   spacing: String
   container: String
+  anchor: String
 }
 
 # --- Citation / E-E-A-T blocks (workflow/04 §9). ---
@@ -306,6 +319,7 @@ type Page_Pagefields_Blocks_KeyTakeaways {
   tone: String
   spacing: String
   container: String
+  anchor: String
 }
 type Page_Pagefields_Blocks_KeyTakeaways_Points {
   text: String
@@ -319,6 +333,7 @@ type Page_Pagefields_Blocks_StatWithSource {
   tone: String
   spacing: String
   container: String
+  anchor: String
 }
 type Page_Pagefields_Blocks_StatWithSource_Stats {
   value: String
@@ -335,6 +350,7 @@ type Page_Pagefields_Blocks_ComparisonTable {
   tone: String
   spacing: String
   container: String
+  anchor: String
 }
 type Page_Pagefields_Blocks_ComparisonTable_Rows {
   feature: String
@@ -352,6 +368,7 @@ type Page_Pagefields_Blocks_AuthorByline {
   tone: String
   spacing: String
   container: String
+  anchor: String
 }
 
 # post_grid lists recent posts — the block's ACF fields control the query; the
@@ -365,4 +382,5 @@ type Page_Pagefields_Blocks_PostGrid {
   tone: String
   spacing: String
   container: String
+  anchor: String
 }
