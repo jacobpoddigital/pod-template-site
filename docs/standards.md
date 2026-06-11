@@ -118,6 +118,11 @@ These are codebase-specific musts. They were each a real miss; do not repeat the
 - **Every section block** spreads `...sectionSettingsFields` (tone/spacing/container/anchor) and applies them via `sectionProps(...)` on a `<Section>` root — **including hero** (default its spacing to `"spacious"`). Never a raw `<section>`, never hardcoded tone/padding. `anchor` is applied centrally in `BlockRenderer` (don't render it per-block).
 - **Icons:** `lucide-react` for UI glyphs; **`react-icons/fa6` for social brands** (Simple Icons dropped the major social trademarks, so `react-icons/si` lacks them).
 
+**Dark mode (on by default — device detection + footer toggle).**
+- **Dark lives entirely in the tokens.** Each colour token is `light-dark(LIGHT, DARK)` in `theme.css`; the value flips with `color-scheme` so the whole site (blocks, chrome, section tones) re-derives. **NEVER** use per-component `dark:` utilities or hardcoded colours to theme dark — fix the token.
+- The mechanism ships once: `color-scheme` + `[data-theme]` rules (device-detect default, manual override), the no-flash inline script (`layout.tsx`), `viewport.themeColor`, and the footer `ThemeToggle`. Don't rebuild it per site.
+- Dark surfaces are tinted (never pure `#000`), text is light (not pure white), contrast ≥4.5:1 (KB 01). The footer is a **muted surface** (`bg-surface-muted`), not inverted.
+
 ---
 
 *Exhaustive detail lives in the HQ knowledge base (`web-ai-automation/knowledge-base/01–10`). This file is the in-repo enforceable subset. When they disagree, the HQ KB wins — update this file.*
