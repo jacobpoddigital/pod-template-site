@@ -14,3 +14,12 @@ export interface Page {
   title: string;
   blocks: CmsBlock[];
 }
+
+/** A post summary for listing blocks (post_grid). Normalized from WPGraphQL. */
+export interface PostSummary {
+  title: string;
+  uri: string;
+  date?: string | null;
+  excerpt?: string | null;
+  image?: { sourceUrl: string; altText?: string | null } | null;
+}

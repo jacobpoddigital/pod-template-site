@@ -1,13 +1,14 @@
 import { z } from "zod";
-import { sectionSettingsFields } from "@/lib/section-settings";
+import { sectionSettingsFields, layoutSchema } from "@/lib/section-settings";
 import { imageSchema } from "@/lib/media";
 
-// A grid of image cards (image · title · body · optional link). ACF field names 1:1.
+// A grid (or slider) of image cards (image · title · body · optional link). ACF field names 1:1.
 export const cardGridSchema = z.object({
   ...sectionSettingsFields,
   heading: z.string().nullish(),
   intro: z.string().nullish(),
   columns: z.number().nullish(),
+  layout: layoutSchema,
   cards: z
     .array(
       z.object({

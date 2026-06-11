@@ -23,6 +23,11 @@ export const CONTAINERS = ["default", "narrow", "full"] as const;
 export type ContainerWidth = (typeof CONTAINERS)[number];
 export const containerSchema = z.enum(CONTAINERS).nullish();
 
+/** Repeater block layout: a responsive grid, or a scroll-snap slider. */
+export const LAYOUTS = ["grid", "slider"] as const;
+export type BlockLayout = (typeof LAYOUTS)[number];
+export const layoutSchema = z.enum(LAYOUTS).nullish();
+
 /** Spread into a section block's zod object: z.object({ ...sectionSettingsFields, … }). */
 export const sectionSettingsFields = {
   tone: toneSchema,

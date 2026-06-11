@@ -7,6 +7,7 @@ import type { CmsImage } from "@/lib/media";
 
 // Lite YouTube facade: render a poster + play button; only mount the iframe on
 // click, so the page doesn't pay for YouTube's payload up front (KB performance).
+// Shared primitive — used by the `video` block and `media_text`'s video variant.
 export function VideoFacade({
   videoId,
   image,

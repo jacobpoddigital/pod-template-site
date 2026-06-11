@@ -1,0 +1,19 @@
+# Recent posts for the post_grid block (a fetching listing block). Published only;
+# optional category filter. featuredImage is a connection edge → { node: MediaItem }.
+query RecentPosts($first: Int, $category: String) {
+  posts(first: $first, where: { status: PUBLISH, categoryName: $category }) {
+    nodes {
+      databaseId
+      title
+      uri
+      date
+      excerpt
+      featuredImage {
+        node {
+          sourceUrl
+          altText
+        }
+      }
+    }
+  }
+}

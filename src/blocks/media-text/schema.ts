@@ -11,6 +11,8 @@ export const mediaTextSchema = z.object({
   cta_label: z.string().nullish(),
   cta_url: z.string().nullish(),
   image: imageSchema,
+  // when set, the media slot shows a YouTube facade (image becomes its poster).
+  video_id: z.string().nullish(),
   /** which side the media sits on at md+ (mobile always stacks media above text). */
   media_position: z.enum(["left", "right"]).nullish(),
   /** the media aspect ratio. */

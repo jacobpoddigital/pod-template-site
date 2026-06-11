@@ -1,10 +1,35 @@
 import Image from "next/image";
 import { Section } from "@/ui/section";
 import { ButtonLink } from "@/ui/button-link";
+import { Slider, SliderItem } from "@/ui/slider";
 import { sectionProps, columnsClass } from "@/lib/section-settings";
 import type { ServicesGridProps } from "./schema";
 
-export function ServicesGrid({ heading, intro, columns, services, tone, spacing, container }: ServicesGridProps) {
+type ServiceItem = NonNullable<ServicesGridProps["services"]>[number];
+
+function ServiceItemView({ s }: { s: ServiceItem }) {
+  const hasLink = s.link_label && s.link_url;
+  return (
+    <div>
+      {s.image?.sourceUrl ? (
+        <div className="relative mb-4 h-14 w-14 overflow-hidden rounded-card bg-brand-accent/10">
+          <Image src={s.image.sourceUrl} alt={s.image.altText ?? ""} fill sizes="56px" className="object-cover" />
+        </div>
+      ) : null}
+      <h3 className="text-lg font-semibold text-ink">{s.title}</h3>
+      {s.body ? <p className="mt-2 leading-relaxed text-ink-muted">{s.body}</p> : null}
+      {hasLink ? (
+        <div className="mt-4">
+          <ButtonLink href={s.link_url!} variant="ghost" size="sm">
+            {s.link_label}
+          </ButtonLink>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+export function ServicesGrid({ heading, intro, columns, layout, services, tone, spacing, container }: ServicesGridProps) {
   const items = Array.isArray(services) ? services : [];
   if (items.length === 0) return null;
 
@@ -17,35 +42,21 @@ export function ServicesGrid({ heading, intro, columns, services, tone, spacing,
         </div>
       ) : null}
 
-      <div className={`grid gap-8 ${columnsClass(columns)}`}>
-        {items.map((s, i) => {
-          const hasLink = s.link_label && s.link_url;
-          return (
-            <div key={`${s.title}-${i}`}>
-              {s.image?.sourceUrl ? (
-                <div className="relative mb-4 h-14 w-14 overflow-hidden rounded-card bg-brand-accent/10">
-                  <Image
-                    src={s.image.sourceUrl}
-                    alt={s.image.altText ?? ""}
-                    fill
-                    sizes="56px"
-                    className="object-cover"
-                  />
-                </div>
-              ) : null}
-              <h3 className="text-lg font-semibold text-ink">{s.title}</h3>
-              {s.body ? <p className="mt-2 leading-relaxed text-ink-muted">{s.body}</p> : null}
-              {hasLink ? (
-                <div className="mt-4">
-                  <ButtonLink href={s.link_url!} variant="ghost" size="sm">
-                    {s.link_label}
-                  </ButtonLink>
-                </div>
-              ) : null}
-            </div>
-          );
-        })}
-      </div>
+      {layout === "slider" ? (
+        <Slider label={heading ?? "Services"}>
+          {items.map((s, i) => (
+            <SliderItem key={`${s.title}-${i}`}>
+              <ServiceItemView s={s} />
+            </SliderItem>
+          ))}
+        </Slider>
+      ) : (
+        <div className={`grid gap-8 ${columnsClass(columns)}`}>
+          {items.map((s, i) => (
+            <ServiceItemView key={`${s.title}-${i}`} s={s} />
+          ))}
+        </div>
+      )}
     </Section>
   );
 }

@@ -1,33 +1,81 @@
+import Image from "next/image";
 import { ButtonLink } from "@/ui/button-link";
 import { Section } from "@/ui/section";
 import type { HeroProps } from "./schema";
+import type { CmsImage } from "@/lib/media";
 
-export function Hero({ eyebrow, heading, subheading, cta_label, cta_url, secondary_label, secondary_url, tone }: HeroProps) {
-  const hasPrimary = cta_label && cta_url;
-  const hasSecondary = secondary_label && secondary_url;
+type Copy = Omit<HeroProps, "image" | "layout" | "tone">;
+
+const ONIMAGE = { ink: "text-white", muted: "text-white/85", accent: "text-white" };
+const ONSURFACE = { ink: "text-ink", muted: "text-ink-muted", accent: "text-brand-accent" };
+
+function HeroCtas({ cta_label, cta_url, secondary_label, secondary_url }: Copy) {
+  const primary = cta_label && cta_url;
+  const secondary = secondary_label && secondary_url;
+  if (!primary && !secondary) return null;
+  return (
+    <div className="mt-8 flex flex-wrap items-center gap-4">
+      {primary ? <ButtonLink href={cta_url!}>{cta_label}</ButtonLink> : null}
+      {secondary ? (
+        <ButtonLink href={secondary_url!} variant="ghost">
+          {secondary_label}
+        </ButtonLink>
+      ) : null}
+    </div>
+  );
+}
+
+function HeroCopy({ copy, onImage = false }: { copy: Copy; onImage?: boolean }) {
+  const c = onImage ? ONIMAGE : ONSURFACE;
+  return (
+    <>
+      {copy.eyebrow ? <p className={`mb-4 label ${c.accent}`}>{copy.eyebrow}</p> : null}
+      <h1 className={`display-xl ${c.ink}`}>{copy.heading}</h1>
+      {copy.subheading ? <p className={`mt-6 max-w-[65ch] body-lg ${c.muted}`}>{copy.subheading}</p> : null}
+      <HeroCtas {...copy} />
+    </>
+  );
+}
+
+function HeroOverlay({ image, copy }: { image: NonNullable<CmsImage>; copy: Copy }) {
+  return (
+    <div className="relative isolate flex min-h-[26rem] items-center overflow-hidden rounded-card p-8 md:p-12">
+      <Image src={image.sourceUrl} alt={image.altText ?? ""} fill priority sizes="100vw" className="-z-10 object-cover" />
+      <div className="absolute inset-0 -z-10 bg-black/50" aria-hidden="true" />
+      <div className="max-w-3xl">
+        <HeroCopy copy={copy} onImage />
+      </div>
+    </div>
+  );
+}
+
+function HeroSplit({ image, copy }: { image: NonNullable<CmsImage>; copy: Copy }) {
+  return (
+    <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2 lg:gap-16">
+      <div>
+        <HeroCopy copy={copy} />
+      </div>
+      <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-surface-muted">
+        <Image src={image.sourceUrl} alt={image.altText ?? ""} fill priority sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+      </div>
+    </div>
+  );
+}
+
+export function Hero({ image, layout, tone, ...copy }: HeroProps) {
+  const img = image?.sourceUrl ? image : null;
+  const mode = img ? (layout ?? "text") : "text";
   return (
     <Section dataBlock="hero" tone={tone} padding="hero">
-      <div className="max-w-3xl">
-        {eyebrow ? (
-          <p className="mb-4 label text-brand-accent">{eyebrow}</p>
-        ) : null}
-        <h1 className="display-xl text-ink">
-          {heading}
-        </h1>
-        {subheading ? (
-          <p className="mt-6 max-w-[65ch] body-lg text-ink-muted">{subheading}</p>
-        ) : null}
-        {hasPrimary || hasSecondary ? (
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            {hasPrimary ? <ButtonLink href={cta_url!}>{cta_label}</ButtonLink> : null}
-            {hasSecondary ? (
-              <ButtonLink href={secondary_url!} variant="ghost">
-                {secondary_label}
-              </ButtonLink>
-            ) : null}
-          </div>
-        ) : null}
-      </div>
+      {mode === "overlay" && img ? (
+        <HeroOverlay image={img} copy={copy} />
+      ) : mode === "split" && img ? (
+        <HeroSplit image={img} copy={copy} />
+      ) : (
+        <div className="max-w-3xl">
+          <HeroCopy copy={copy} />
+        </div>
+      )}
     </Section>
   );
 }

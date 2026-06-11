@@ -27,6 +27,7 @@ const LAYOUT: Record<BlockNode["__typename"], string> = {
   Page_Pagefields_Blocks_RichText: "rich_text",
   Page_Pagefields_Blocks_Columns: "columns",
   Page_Pagefields_Blocks_Video: "video",
+  Page_Pagefields_Blocks_PostGrid: "post_grid",
   Page_Pagefields_Blocks_KeyTakeaways: "key_takeaways",
   Page_Pagefields_Blocks_StatWithSource: "stat_with_source",
   Page_Pagefields_Blocks_ComparisonTable: "comparison_table",

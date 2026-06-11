@@ -1,6 +1,6 @@
 import { Section } from "@/ui/section";
 import { sectionProps } from "@/lib/section-settings";
-import { VideoFacade } from "./video-facade";
+import { VideoFacade } from "@/ui/video-facade";
 import type { VideoProps } from "./schema";
 
 export function Video({ heading, video_id, facade_image, button_text, tone, spacing, container }: VideoProps) {
