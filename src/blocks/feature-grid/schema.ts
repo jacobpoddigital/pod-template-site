@@ -1,13 +1,13 @@
 import { z } from "zod";
-import { toneSchema } from "@/lib/tone";
+import { sectionSettingsFields } from "@/lib/section-settings";
 
 // `icon` is a Lucide icon name (see the ICONS map in feature-grid.tsx); optional.
 const feature = z.object({ title: z.string(), body: z.string(), icon: z.string().nullish() });
 
 export const featureGridSchema = z.object({
+  ...sectionSettingsFields,
   heading: z.string().nullish(),
   intro: z.string().nullish(),
-  tone: toneSchema,
   // ACF returns `false` (not []) for an empty repeater.
   features: z.union([z.array(feature), z.literal(false)]).nullish(),
 });

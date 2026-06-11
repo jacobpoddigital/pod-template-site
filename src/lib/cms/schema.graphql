@@ -113,6 +113,8 @@ type Page_Pagefields_Blocks_FeatureGrid {
   heading: String
   intro: String
   tone: String
+  spacing: String
+  container: String
   features: [Page_Pagefields_Blocks_FeatureGrid_Features!]
 }
 
@@ -125,6 +127,8 @@ type Page_Pagefields_Blocks_FeatureGrid_Features {
 type Page_Pagefields_Blocks_Faq {
   heading: String
   tone: String
+  spacing: String
+  container: String
   items: [Page_Pagefields_Blocks_Faq_Items!]
 }
 
@@ -139,11 +143,15 @@ type Page_Pagefields_Blocks_CtaBanner {
   ctaLabel: String
   ctaUrl: String
   tone: String
+  spacing: String
+  container: String
 }
 
 type Page_Pagefields_Blocks_LogoStrip {
   heading: String
   tone: String
+  spacing: String
+  container: String
   logos: [Page_Pagefields_Blocks_LogoStrip_Logos!]
 }
 
@@ -157,6 +165,8 @@ type Page_Pagefields_Blocks_ContactForm {
   submitLabel: String
   successMessage: String
   tone: String
+  spacing: String
+  container: String
 }
 
 # media + text block. `spacing` + `container` are the editor-controlled
