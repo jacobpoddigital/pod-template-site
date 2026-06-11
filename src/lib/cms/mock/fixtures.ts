@@ -143,3 +143,37 @@ export const mockPosts = [
     featuredImage: { node: { sourceUrl: "https://picsum.photos/seed/post3/800/450", altText: "" } },
   },
 ];
+
+// Editor-managed chrome (header/footer) for offline/dev mode — mirrors what real WP
+// menus (PRIMARY/FOOTER) + the Site Options ACF page would return. "What we do" has
+// children so the mobile menu drills; footer top-level items are columns.
+export const mockChrome = {
+  primary: {
+    nodes: [
+      { id: "p1", parentId: null, label: "Home", uri: "/" },
+      { id: "p2", parentId: null, label: "What we do", uri: "/#services" },
+      { id: "p2a", parentId: "p2", label: "SEO", uri: "/services/seo" },
+      { id: "p2b", parentId: "p2", label: "PPC", uri: "/services/ppc" },
+      { id: "p2c", parentId: "p2", label: "Web design", uri: "/services/web" },
+      { id: "p3", parentId: null, label: "Contact", uri: "/#contact" },
+    ],
+  },
+  footer: {
+    nodes: [
+      { id: "f1", parentId: null, label: "Company", uri: "#" },
+      { id: "f1a", parentId: "f1", label: "About", uri: "/about" },
+      { id: "f1b", parentId: "f1", label: "Contact", uri: "/#contact" },
+      { id: "f2", parentId: null, label: "Services", uri: "#" },
+      { id: "f2a", parentId: "f2", label: "SEO", uri: "/services/seo" },
+      { id: "f2b", parentId: "f2", label: "PPC", uri: "/services/ppc" },
+    ],
+  },
+  siteOptions: {
+    strapline: "AI-built, human-reviewed websites.",
+    address: null,
+    headerCtaLabel: "Get in touch",
+    headerCtaUrl: "/#contact",
+    logo: null,
+    social: [{ label: "LinkedIn", url: "https://www.linkedin.com" }],
+  },
+};

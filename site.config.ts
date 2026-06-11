@@ -1,5 +1,7 @@
-// All client-specific configuration lives here, in app/, or in src/styles/theme.css —
-// nothing client-specific anywhere else (workflow/02). Rebrand/reuse = edit these files only.
+// Build-identity config — nothing client-content here. The editor-managed CHROME
+// (logo, nav, footer columns, social, strapline, address, header CTA) now comes
+// from WordPress (menus + the "Site Options" ACF page) via getSiteChrome(); see
+// src/lib/cms. Rebrand/reuse = edit these files + the WP menus/options.
 // TEMPLATE: every value below is a placeholder — set during workflow/01 Phase 4.
 
 export const siteConfig = {
@@ -10,52 +12,10 @@ export const siteConfig = {
   /** Canonical FRONTEND origin. All canonical/og/sitemap URLs use this, never the WP origin. */
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   locale: "en_GB",
-  /** Brand logo image. `src` empty → the name wordmark. Local /public path or a remote
-   *  host (add the host to next.config `images.remotePatterns`). */
-  logo: { src: "", alt: "" },
-  /** Optional header call-to-action button. `label` empty → hidden. */
-  headerCta: { label: "Get in touch", href: "/#contact" },
-  /** Primary nav. Items may have `children` → the mobile menu drills into them
-   *  (multi-level, with back navigation); desktop shows top-level links. */
-  nav: [
-    { label: "Home", href: "/" },
-    {
-      label: "What we do",
-      href: "/#services",
-      children: [
-        { label: "SEO", href: "/services/seo" },
-        { label: "PPC", href: "/services/ppc" },
-        { label: "Web design", href: "/services/web" },
-      ],
-    },
-    { label: "Contact", href: "/#contact" },
-  ],
   footer: {
+    /** Shown in the © line; the rest of the footer is editor-managed in WP. */
     company: "Pod Digital",
-    strapline: "AI-built, human-reviewed websites.",
-    /** Business address / NAP — helps local SEO + E-E-A-T. Empty → hidden. */
-    address: "",
-    /** Footer link columns. */
-    columns: [
-      {
-        title: "Company",
-        links: [
-          { label: "About", href: "/about" },
-          { label: "Contact", href: "/#contact" },
-        ],
-      },
-      {
-        title: "Services",
-        links: [
-          { label: "SEO", href: "/services/seo" },
-          { label: "PPC", href: "/services/ppc" },
-          { label: "Web design", href: "/services/web" },
-        ],
-      },
-    ],
-    /** Social links (text labels — no brand icons). */
-    social: [{ label: "LinkedIn", href: "https://www.linkedin.com" }],
-    /** Legal links shown in the footer bottom bar. */
+    /** Legal links in the footer bottom bar (rarely change → kept in code). */
     legal: [
       { label: "Privacy", href: "/privacy" },
       { label: "Terms", href: "/terms" },

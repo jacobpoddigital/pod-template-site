@@ -9,12 +9,7 @@ import { useState, useEffect, type MouseEvent } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, ChevronLeft, X, Menu } from "lucide-react";
-
-export interface NavItem {
-  label: string;
-  href: string;
-  children?: readonly NavItem[];
-}
+import type { NavItem } from "@/lib/cms";
 
 interface Level {
   title: string;

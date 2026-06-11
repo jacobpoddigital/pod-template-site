@@ -2,16 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/ui/container";
 import { ButtonLink } from "@/ui/button-link";
-import { MobileNavDrawer, type NavItem } from "./mobile-nav-drawer";
+import { MobileNavDrawer } from "./mobile-nav-drawer";
 import { siteConfig } from "../../site.config";
+import type { SiteChrome } from "@/lib/cms";
 
-// Server Component shell — passes nav links down to the Client Component leaf
-// (slot-bridge pattern, workflow/02, KB 09 §Mobile nav pattern). The header
-// itself never uses "use client".
+// Server Component shell — chrome (logo/nav/CTA) is editor-managed in WP, fetched
+// at the layout and passed in. Nav is passed down to the Client Component drawer
+// leaf (slot-bridge pattern, workflow/02). The header never uses "use client".
 
-export function Header() {
-  const { logo, nav, headerCta, name } = siteConfig;
-  const cta = headerCta.label && headerCta.href ? { label: headerCta.label, href: headerCta.href } : null;
+export function Header({ chrome }: { chrome: SiteChrome }) {
+  const { name } = siteConfig;
+  const { logo, nav, headerCta } = chrome;
 
   return (
     <header className="border-b border-border bg-surface" aria-label="Main">
@@ -22,8 +23,8 @@ export function Header() {
             aria-label={name}
             className="flex items-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            {logo.src ? (
-              <Image src={logo.src} alt={logo.alt || name} width={160} height={40} className="h-8 w-auto" priority />
+            {logo?.sourceUrl ? (
+              <Image src={logo.sourceUrl} alt={logo.altText || name} width={160} height={40} className="h-8 w-auto" priority />
             ) : (
               <span className="text-lg font-bold text-ink">{name}</span>
             )}
@@ -45,13 +46,13 @@ export function Header() {
               </ul>
             </nav>
 
-            {cta ? (
-              <ButtonLink href={cta.href} size="sm" className="hidden lg:inline-flex">
-                {cta.label}
+            {headerCta ? (
+              <ButtonLink href={headerCta.href} size="sm" className="hidden lg:inline-flex">
+                {headerCta.label}
               </ButtonLink>
             ) : null}
 
-            <MobileNavDrawer links={nav as readonly NavItem[]} cta={cta} />
+            <MobileNavDrawer links={nav} cta={headerCta} />
           </div>
         </div>
       </Container>
