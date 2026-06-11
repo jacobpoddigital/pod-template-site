@@ -1,10 +1,11 @@
 import Image from "next/image";
 import { ButtonLink } from "@/ui/button-link";
 import { Section } from "@/ui/section";
+import { sectionProps } from "@/lib/section-settings";
 import type { HeroProps } from "./schema";
 import type { CmsImage } from "@/lib/media";
 
-type Copy = Omit<HeroProps, "image" | "layout" | "tone">;
+type Copy = Omit<HeroProps, "image" | "layout" | "tone" | "spacing" | "container">;
 
 const ONIMAGE = { ink: "text-white", muted: "text-white/85", accent: "text-white" };
 const ONSURFACE = { ink: "text-ink", muted: "text-ink-muted", accent: "text-brand-accent" };
@@ -62,11 +63,12 @@ function HeroSplit({ image, copy }: { image: NonNullable<CmsImage>; copy: Copy }
   );
 }
 
-export function Hero({ image, layout, tone, ...copy }: HeroProps) {
+export function Hero({ image, layout, tone, spacing, container, ...copy }: HeroProps) {
   const img = image?.sourceUrl ? image : null;
   const mode = img ? (layout ?? "text") : "text";
   return (
-    <Section dataBlock="hero" tone={tone} padding="hero">
+    // Defaults to the big "hero" padding (spacing="spacious"); editor can override.
+    <Section dataBlock="hero" {...sectionProps({ tone, spacing: spacing ?? "spacious", container })}>
       {mode === "overlay" && img ? (
         <HeroOverlay image={img} copy={copy} />
       ) : mode === "split" && img ? (
