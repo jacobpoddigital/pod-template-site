@@ -9,15 +9,19 @@ This roadmap answers two questions: **which card variants and which UI patterns 
 
 **Shipped (building green: typecheck + lint + `pnpm build`):**
 - ✅ **Tier 0** — Card variant axes (`elevation`/`emphasis`/`interaction`, backward-compatible) · Avatar · Tabs primitives.
-- ✅ **Tier 1 blocks** — `pricing` (featured + monthly/annual Tabs toggle) · `team` · `stats_band` · `reviews` extended with avatar + company logo. All on `/blocks` + dev mock.
+- ✅ **Tier 1 blocks** — `pricing` (featured + monthly/annual Tabs toggle) · `team` · `stats_band` · `reviews` extended with avatar + company logo.
+- ✅ **Tier 2 blocks** — `tabbed_content` · `process_steps` · `bento_grid` · `case_studies` · `timeline` · `newsletter` · `gallery`.
+- ✅ **Tier 3 blocks** — `before_after` · `toc` · `integrations_grid` · `pricing_matrix` · `locations_map` · `video_testimonial` · `feature_rows`.
 - ✅ **Globals** — announcement bar (dismissible) · sticky mobile CTA (site.config-driven).
 - ✅ **Header H1** — desktop flyout / sub-menus (Radix navigation-menu; nested `children` now render on desktop).
+- ✅ **`/blocks` variant showcase** — every block under its tone/layout/columns/media-position variants.
 
-**Remaining (next batches, same branch — mechanical repeats of the proven pattern):**
-- ⏳ **Tier 2** — tabbed_content · process_steps · bento_grid · case_studies · timeline · newsletter · gallery.
-- ⏳ **Tier 3** — before_after · toc · integrations_grid · pricing_matrix · locations_map · video_testimonial · feature_rows.
-- ⏳ **Header H2–H4** — sticky/scroll-aware header · header utility slots (theme toggle, search) · `aria-current` + `h-20` polish.
+All 14 new blocks wired end-to-end: SDL → fragment → `pnpm codegen` → adapter → schema/component/registry → `/blocks` samples + dev mock. `wp/acf-fields/` stays empty by design (per-client ACF is generated at provision time — FRICTION #70).
+
+**Remaining:**
+- ⏳ **Header H2–H4** — sticky/scroll-aware header · header utility slots (theme toggle in header, search) · `aria-current` + `h-20` polish.
 - ⏳ HQ `workflow/29-block-library.md` catalogue update.
+- ⏳ When a real WP is provisioned: generate the per-client ACF field JSON for the 14 new layouts + run `pnpm codegen` against the live schema.
 
 ---
 
