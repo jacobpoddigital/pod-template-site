@@ -54,7 +54,7 @@ export default async function RootLayout({
   const { announcement, stickyMobileCta } = siteConfig;
   const stickyPhone = chrome.phoneNumbers[0]?.number ?? null;
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="en" className="h-full scroll-pt-20 antialiased">
       <body className="flex min-h-full flex-col bg-surface text-ink font-sans">
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
         <a

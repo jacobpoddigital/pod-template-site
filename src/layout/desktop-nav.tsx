@@ -2,10 +2,15 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { NavItem } from "@/lib/cms";
+
+function current(href: string, pathname: string): "page" | undefined {
+  return href === pathname ? "page" : undefined;
+}
 
 // Desktop primary nav with flyout sub-menus (roadmap H1). Top-level items with
 // children render a Radix NavigationMenu trigger + panel (keyboard-operable,
@@ -15,11 +20,15 @@ import type { NavItem } from "@/lib/cms";
 const linkClass =
   "block rounded body-sm font-medium text-ink-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
-function TopLink({ item }: { item: NavItem }) {
+function TopLink({ item, pathname }: { item: NavItem; pathname: string }) {
   return (
     <NavigationMenu.Item>
       <NavigationMenu.Link asChild>
-        <Link href={item.href} className={linkClass}>
+        <Link
+          href={item.href}
+          aria-current={current(item.href, pathname)}
+          className={cn(linkClass, current(item.href, pathname) && "text-ink")}
+        >
           {item.label}
         </Link>
       </NavigationMenu.Link>
@@ -27,7 +36,7 @@ function TopLink({ item }: { item: NavItem }) {
   );
 }
 
-function TopFlyout({ item }: { item: NavItem }) {
+function TopFlyout({ item, pathname }: { item: NavItem; pathname: string }) {
   const children = item.children ?? [];
   return (
     <NavigationMenu.Item>
@@ -48,7 +57,11 @@ function TopFlyout({ item }: { item: NavItem }) {
           {children.map((c) => (
             <li key={c.href}>
               <NavigationMenu.Link asChild>
-                <Link href={c.href} className={cn(linkClass, "px-3 py-2 hover:bg-muted")}>
+                <Link
+                  href={c.href}
+                  aria-current={current(c.href, pathname)}
+                  className={cn(linkClass, "px-3 py-2 hover:bg-muted", current(c.href, pathname) && "text-ink")}
+                >
                   {c.label}
                 </Link>
               </NavigationMenu.Link>
@@ -61,14 +74,15 @@ function TopFlyout({ item }: { item: NavItem }) {
 }
 
 export function DesktopNav({ nav }: { nav: NavItem[] }) {
+  const pathname = usePathname();
   return (
     <NavigationMenu.Root className="relative hidden lg:block" aria-label="Main">
       <NavigationMenu.List className="flex items-center gap-6">
         {nav.map((item) =>
           item.children?.length ? (
-            <TopFlyout key={item.href} item={item} />
+            <TopFlyout key={item.href} item={item} pathname={pathname} />
           ) : (
-            <TopLink key={item.href} item={item} />
+            <TopLink key={item.href} item={item} pathname={pathname} />
           ),
         )}
       </NavigationMenu.List>
