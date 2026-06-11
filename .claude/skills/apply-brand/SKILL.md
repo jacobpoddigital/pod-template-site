@@ -45,8 +45,20 @@ npx playwright screenshot --full-page --viewport-size=1280,900 http://localhost:
 ```
 Read the screenshot and confirm: **primary + accent** match the brand; **headings render in the display font**; the **type scale** ladders (hero `display-xl` → section `display-md` → card title `display-xs`); **radius** matches. If a colour/size is off → fix the **token**, re-verify.
 
-## Dark sites
-Background = `--brand-surface` / `-raised` / `-muted`; text = `--brand-ink` / `-muted`. A **dark site** is just dark surface + light ink values in `tokens.css` — the whole site flips (the `[data-tone="inverted"]` section tone already proves dark surfaces render correctly). A **light↔dark toggle** is NOT wired yet (the contract is a single `:root`); supporting it needs a `.dark` / `prefers-color-scheme` token set — a contract extension (raise at the design_system agent + ADR 0015), don't hand-roll per component.
+## Dark mode (on by default — device detection + a footer toggle)
+The mechanism ships in the template; you only supply the **dark colour values**.
+- **Each colour token is `light-dark(LIGHT, DARK)`** in `theme.css` (`--brand-surface`/`-raised`/`-muted`,
+  `--brand-ink`/`-muted`, `--brand-border`, `--brand-shadow-*`, and tuned `--brand-primary`/`-accent`/
+  semantic). Dark = tinted dark (never pure `#000`), light ink (not pure white), KB 01. The value flips
+  with `color-scheme`, so **everything (blocks, chrome, the section tones) re-derives** — no component work.
+- **Already wired (don't rebuild):** `color-scheme` + the `[data-theme]` rules in `theme.css` (device
+  detection by default, manual override), the **no-flash inline script** in `layout.tsx`, the
+  `viewport.themeColor`, and the **footer `ThemeToggle`** (light/dark/system, persisted).
+- **A light-only brand** simply provides equal light/dark values (or delete the dark halves).
+- **Verify both modes:** `npx playwright screenshot --color-scheme=dark …` (+ light). Confirm contrast
+  (≥4.5:1, KB), the three section tones are distinct, accent still pops, no pure black, footer reads as a
+  subtle muted surface (it uses `bg-surface-muted` — not inverted). NEVER use per-component `dark:`
+  utilities or hardcoded colours — dark lives entirely in the tokens.
 
 ## Commit
 One commit: `feat(brand): apply <client> design system (tokens + fonts)`. Note the design run / approval that authorised the brand. Never commit a `*-tokens.css` *override* into a client repo — fold the values into `theme.css`.

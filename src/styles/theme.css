@@ -2,20 +2,25 @@
    globals.css TRANSLATES every group into the Tailwind @theme + shadcn bridge. All values are plain
    CSS (no shorthands). These defaults are Pod's house style; a client tokens.css overrides them. */
 :root {
-  /* ---- Colour (roles) ---- */
-  --brand-primary: oklch(0.45 0.15 255);
-  --brand-primary-ink: oklch(0.99 0 0);
-  --brand-accent: oklch(0.8 0.16 85);
-  --brand-accent-ink: oklch(0.25 0.03 85);
-  --brand-surface: oklch(1 0 0);
-  --brand-surface-raised: oklch(0.99 0.003 255);
-  --brand-surface-muted: oklch(0.97 0.005 255);
-  --brand-ink: oklch(0.22 0.02 255);
-  --brand-ink-muted: oklch(0.5 0.02 255);
-  --brand-border: oklch(0.9 0.005 255);
-  --brand-success: oklch(0.65 0.15 162);
-  --brand-warning: oklch(0.77 0.16 70);
-  --brand-error: oklch(0.55 0.22 25);
+  color-scheme: light;
+
+  /* ---- Colour (roles) — each is light-dark(LIGHT, DARK). The value flips with the
+     element's color-scheme (set below): device-detected by default, overridable by the
+     footer toggle via [data-theme]. Everything downstream (bridge, tones, blocks) re-derives.
+     Dark = tinted dark surfaces (never pure #000), light ink (not pure white), KB 01. ---- */
+  --brand-primary: light-dark(oklch(0.45 0.15 255), oklch(0.62 0.15 255));
+  --brand-primary-ink: light-dark(oklch(0.99 0 0), oklch(0.99 0 0));
+  --brand-accent: light-dark(oklch(0.8 0.16 85), oklch(0.83 0.16 85));
+  --brand-accent-ink: light-dark(oklch(0.25 0.03 85), oklch(0.2 0.04 85));
+  --brand-surface: light-dark(oklch(1 0 0), oklch(0.18 0.012 255));
+  --brand-surface-raised: light-dark(oklch(0.99 0.003 255), oklch(0.21 0.014 255));
+  --brand-surface-muted: light-dark(oklch(0.97 0.005 255), oklch(0.235 0.016 255));
+  --brand-ink: light-dark(oklch(0.22 0.02 255), oklch(0.95 0.005 255));
+  --brand-ink-muted: light-dark(oklch(0.5 0.02 255), oklch(0.72 0.012 255));
+  --brand-border: light-dark(oklch(0.9 0.005 255), oklch(0.32 0.014 255));
+  --brand-success: light-dark(oklch(0.65 0.15 162), oklch(0.72 0.15 162));
+  --brand-warning: light-dark(oklch(0.77 0.16 70), oklch(0.82 0.16 70));
+  --brand-error: light-dark(oklch(0.55 0.22 25), oklch(0.68 0.2 25));
 
   /* ---- Fonts (family only; loading is a per-client next/font line) ---- */
   --brand-font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
@@ -67,14 +72,30 @@
   /* ---- Radius (base; the scale derives) ---- */
   --brand-radius: 0.625rem;
 
-  /* ---- Shadow / elevation ---- */
-  --brand-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.06);
-  --brand-shadow-card: 0 4px 16px 0 rgb(0 0 0 / 0.08);
-  --brand-shadow-modal: 0 20px 60px 0 rgb(0 0 0 / 0.18);
+  /* ---- Shadow / elevation (stronger on dark, where soft shadows vanish) ---- */
+  --brand-shadow-sm: light-dark(0 1px 2px 0 rgb(0 0 0 / 0.06), 0 1px 2px 0 rgb(0 0 0 / 0.5));
+  --brand-shadow-card: light-dark(0 4px 16px 0 rgb(0 0 0 / 0.08), 0 4px 16px 0 rgb(0 0 0 / 0.55));
+  --brand-shadow-modal: light-dark(0 20px 60px 0 rgb(0 0 0 / 0.18), 0 20px 60px 0 rgb(0 0 0 / 0.7));
 
   /* ---- Motion ---- */
   --brand-duration-fast: 150ms;
   --brand-duration-base: 220ms;
   --brand-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --brand-ease-emphasis: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* DARK MODE — the light-dark() tokens above resolve from `color-scheme`. Default = follow
+   the OS (device detection); the footer toggle sets [data-theme] on <html> to override, and
+   the no-flash script in layout.tsx applies the saved choice before paint. A light-only brand
+   deletes this block (tokens then stay light). No per-component work — everything flips here. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
 }
