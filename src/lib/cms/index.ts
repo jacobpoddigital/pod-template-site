@@ -102,6 +102,9 @@ function toHeaderCta(o: ChromeOptions): SiteChrome["headerCta"] {
 function toSocial(o: ChromeOptions): SiteChrome["footer"]["social"] {
   return (o?.social ?? []).map((s) => ({ label: s.label ?? "", href: s.url ?? "#" }));
 }
+function toPhones(o: ChromeOptions): SiteChrome["phoneNumbers"] {
+  return (o?.phoneNumbers ?? []).filter((p) => p?.number).map((p) => ({ location: p.location ?? "", number: p.number ?? "" }));
+}
 function toColumns(tree: NavItem[]): SiteChrome["footer"]["columns"] {
   return tree.map((c) => ({
     title: c.label,
@@ -116,6 +119,7 @@ export async function getSiteChrome(): Promise<SiteChrome> {
   return {
     logo: toLogo(o),
     headerCta: toHeaderCta(o),
+    phoneNumbers: toPhones(o),
     nav: buildNavTree(data.primary?.nodes ?? []),
     footer: {
       strapline: o?.strapline ?? null,

@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Phone } from "lucide-react";
 import { Container } from "@/ui/container";
 import { ButtonLink } from "@/ui/button-link";
 import { MobileNavDrawer } from "./mobile-nav-drawer";
+import { PhoneMenu } from "./phone-menu";
 import { siteConfig } from "../../site.config";
 import type { SiteChrome } from "@/lib/cms";
 
@@ -12,7 +14,8 @@ import type { SiteChrome } from "@/lib/cms";
 
 export function Header({ chrome }: { chrome: SiteChrome }) {
   const { name } = siteConfig;
-  const { logo, nav, headerCta } = chrome;
+  const { logo, nav, headerCta, phoneNumbers } = chrome;
+  const singlePhone = phoneNumbers.length === 1 ? phoneNumbers[0] : null;
 
   return (
     <header className="border-b border-border bg-surface" aria-label="Main">
@@ -30,7 +33,20 @@ export function Header({ chrome }: { chrome: SiteChrome }) {
             )}
           </Link>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 lg:gap-6">
+            {/* Phone — always visible (important on mobile). 1 → tel: link, 2+ → dropdown. */}
+            {singlePhone ? (
+              <a
+                href={`tel:${singlePhone.number.replace(/\s+/g, "")}`}
+                className="inline-flex h-11 items-center gap-2 rounded-card px-2 text-sm font-medium text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <Phone className="h-4 w-4" aria-hidden="true" />
+                <span className="hidden sm:inline">{singlePhone.number}</span>
+              </a>
+            ) : phoneNumbers.length > 1 ? (
+              <PhoneMenu numbers={phoneNumbers} />
+            ) : null}
+
             <nav aria-label="Main" className="hidden lg:block">
               <ul className="flex gap-6">
                 {nav.map((item) => (

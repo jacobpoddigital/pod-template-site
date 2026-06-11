@@ -54,11 +54,19 @@ type SiteOptions {
   headerCtaLabel: String
   headerCtaUrl: String
   social: [SiteOptionsSocial!]
+  phoneNumbers: [SiteOptionsPhone!]
 }
 
 type SiteOptionsSocial {
   label: String
   url: String
+}
+
+# Header phone(s) — one renders as a tel: link, multiple as a location dropdown
+# (multi-location numbers, mirrors Great White's location_phone_numbers).
+type SiteOptionsPhone {
+  location: String
+  number: String
 }
 
 enum PageIdType {
