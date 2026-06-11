@@ -27,11 +27,12 @@ export function FeatureGrid({ heading, intro, tone, spacing, container, features
           {intro ? <p className="mt-4 max-w-[65ch] body-lg text-ink-muted">{intro}</p> : null}
         </div>
       ) : null}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <ul role="list" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((f, i) => {
           const Icon = f.icon ? (ICONS[f.icon] ?? Sparkles) : null;
           return (
-            <Card key={`${f.title}-${i}`}>
+            <li key={`${f.title}-${i}`}>
+            <Card>
               <CardHeader>
                 {Icon ? (
                   <span className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-card bg-brand-accent/10 text-brand-accent">
@@ -44,9 +45,10 @@ export function FeatureGrid({ heading, intro, tone, spacing, container, features
                 <p className="leading-relaxed text-ink-muted">{f.body}</p>
               </CardContent>
             </Card>
+            </li>
           );
         })}
-      </div>
+      </ul>
     </Section>
   );
 }

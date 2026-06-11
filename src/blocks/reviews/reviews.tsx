@@ -62,11 +62,13 @@ export function Reviews({ heading, intro, columns, layout, reviews, tone, spacin
           ))}
         </Slider>
       ) : (
-        <div className={`grid gap-6 ${columnsClass(columns)}`}>
+        <ul role="list" className={`grid gap-6 ${columnsClass(columns)}`}>
           {items.map((r, i) => (
-            <ReviewItemView key={`${r.author ?? "review"}-${i}`} r={r} />
+            <li key={`${r.author ?? "review"}-${i}`}>
+              <ReviewItemView r={r} />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </Section>
   );

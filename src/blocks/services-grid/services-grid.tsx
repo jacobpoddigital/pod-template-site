@@ -51,11 +51,13 @@ export function ServicesGrid({ heading, intro, columns, layout, services, tone, 
           ))}
         </Slider>
       ) : (
-        <div className={`grid gap-8 ${columnsClass(columns)}`}>
+        <ul role="list" className={`grid gap-8 ${columnsClass(columns)}`}>
           {items.map((s, i) => (
-            <ServiceItemView key={`${s.title}-${i}`} s={s} />
+            <li key={`${s.title}-${i}`}>
+              <ServiceItemView s={s} />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </Section>
   );
