@@ -146,6 +146,9 @@ union Page_Pagefields_Blocks =
   | Page_Pagefields_Blocks_StatWithSource
   | Page_Pagefields_Blocks_ComparisonTable
   | Page_Pagefields_Blocks_AuthorByline
+  | Page_Pagefields_Blocks_Pricing
+  | Page_Pagefields_Blocks_Team
+  | Page_Pagefields_Blocks_StatsBand
 
 type Page_Pagefields_Blocks_Hero {
   eyebrow: String
@@ -330,6 +333,8 @@ type Page_Pagefields_Blocks_Reviews_Reviews {
   author: String
   role: String
   rating: Int
+  avatar: MediaItem
+  companyLogo: MediaItem
 }
 
 type Page_Pagefields_Blocks_RichText {
@@ -437,4 +442,70 @@ type Page_Pagefields_Blocks_PostGrid {
   spacing: String
   container: String
   anchor: String
+}
+
+# pricing — plan tiers with an optional monthly/annual toggle; one "featured" plan
+# may be highlighted. Plans carry a nested feature list (repeater within repeater).
+type Page_Pagefields_Blocks_Pricing {
+  heading: String
+  intro: String
+  plans: [Page_Pagefields_Blocks_Pricing_Plans!]
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+type Page_Pagefields_Blocks_Pricing_Plans {
+  name: String
+  price: String
+  priceAnnual: String
+  period: String
+  description: String
+  featured: Boolean
+  badge: String
+  ctaLabel: String
+  ctaUrl: String
+  features: [Page_Pagefields_Blocks_Pricing_Plans_Features!]
+}
+type Page_Pagefields_Blocks_Pricing_Plans_Features {
+  text: String
+}
+
+# team — profile cards (photo, name, role, bio, social links).
+type Page_Pagefields_Blocks_Team {
+  heading: String
+  intro: String
+  columns: Int
+  members: [Page_Pagefields_Blocks_Team_Members!]
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+type Page_Pagefields_Blocks_Team_Members {
+  name: String
+  role: String
+  bio: String
+  image: MediaItem
+  linkedinUrl: String
+  twitterUrl: String
+  websiteUrl: String
+}
+
+# stats_band — a clean KPI row (value + label + optional description). Supporting
+# proof only (raw numbers have the lowest recall — KB conversion); not a hero.
+type Page_Pagefields_Blocks_StatsBand {
+  heading: String
+  intro: String
+  columns: Int
+  stats: [Page_Pagefields_Blocks_StatsBand_Stats!]
+  tone: String
+  spacing: String
+  container: String
+  anchor: String
+}
+type Page_Pagefields_Blocks_StatsBand_Stats {
+  value: String
+  label: String
+  description: String
 }

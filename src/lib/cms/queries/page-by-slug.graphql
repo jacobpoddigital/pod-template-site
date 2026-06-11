@@ -190,6 +190,22 @@ query PageBySlug($slug: ID!) {
             author
             role
             rating
+            avatar {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+            company_logo: companyLogo {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
           }
         }
         ... on Page_Pagefields_Blocks_RichText {
@@ -295,6 +311,67 @@ query PageBySlug($slug: ID!) {
               width
               height
             }
+          }
+        }
+        ... on Page_Pagefields_Blocks_Pricing {
+          heading
+          intro
+          tone
+          spacing
+          container
+          anchor
+          plans {
+            name
+            price
+            price_annual: priceAnnual
+            period
+            description
+            featured
+            badge
+            cta_label: ctaLabel
+            cta_url: ctaUrl
+            features {
+              text
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_Team {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          anchor
+          members {
+            name
+            role
+            bio
+            linkedin_url: linkedinUrl
+            twitter_url: twitterUrl
+            website_url: websiteUrl
+            image {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+        }
+        ... on Page_Pagefields_Blocks_StatsBand {
+          heading
+          intro
+          columns
+          tone
+          spacing
+          container
+          anchor
+          stats {
+            value
+            label
+            description
           }
         }
       }

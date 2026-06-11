@@ -63,15 +63,4 @@ const AvatarFallback = React.forwardRef<
 ));
 AvatarFallback.displayName = "AvatarFallback";
 
-/** Initials from a name, for the fallback (e.g. "Jane Doe" → "JD"). */
-export function initials(name?: string | null): string {
-  if (!name) return "";
-  return name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
-}
-
 export { Avatar, AvatarImage, AvatarFallback, avatarVariants };

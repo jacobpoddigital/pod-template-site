@@ -32,6 +32,9 @@ const LAYOUT: Record<BlockNode["__typename"], string> = {
   Page_Pagefields_Blocks_StatWithSource: "stat_with_source",
   Page_Pagefields_Blocks_ComparisonTable: "comparison_table",
   Page_Pagefields_Blocks_AuthorByline: "author_byline",
+  Page_Pagefields_Blocks_Pricing: "pricing",
+  Page_Pagefields_Blocks_Team: "team",
+  Page_Pagefields_Blocks_StatsBand: "stats_band",
 };
 
 export function toBlocks(

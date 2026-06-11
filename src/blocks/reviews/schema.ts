@@ -1,7 +1,9 @@
 import { z } from "zod";
 import { sectionSettingsFields, layoutSchema } from "@/lib/section-settings";
+import { imageSchema } from "@/lib/media";
 
-// Testimonials (quote · author · role · 1–5 rating), as a grid or slider. ACF names 1:1.
+// Testimonials (quote · author · role · 1–5 rating · optional avatar + company logo),
+// as a grid or slider. A face lifts testimonial recall sharply (KB conversion). ACF names 1:1.
 export const reviewsSchema = z.object({
   ...sectionSettingsFields,
   heading: z.string().nullish(),
@@ -15,6 +17,8 @@ export const reviewsSchema = z.object({
         author: z.string().nullish(),
         role: z.string().nullish(),
         rating: z.number().nullish(),
+        avatar: imageSchema,
+        company_logo: imageSchema,
       }),
     )
     .nullish(),

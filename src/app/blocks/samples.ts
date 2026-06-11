@@ -1,6 +1,9 @@
 import type { CmsBlock } from "@/lib/cms";
+import { extraSamples } from "./samples-extra";
 
-export const samples: { label: string; block: CmsBlock }[] = [
+export type BlockSample = { label: string; block: CmsBlock };
+
+const coreSamples: BlockSample[] = [
   {
     label: "hero",
     block: {
@@ -285,3 +288,7 @@ export const samples: { label: string; block: CmsBlock }[] = [
     block: { layout: "post_grid", data: { heading: "From the blog", intro: "Fetched live (mock posts in dev).", count: 3 } },
   },
 ];
+
+// Roadmap Tier-1 additions live in a separate file to keep each under the
+// max-lines lint cap; the gallery renders core + extra in order.
+export const samples: BlockSample[] = [...coreSamples, ...extraSamples];
