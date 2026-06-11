@@ -1,31 +1,96 @@
 "use client";
 
-// Slot-bridge pattern: this Client Component leaf receives nav links from the
-// Server Component Header parent. Only this file uses "use client" — never the
-// Header itself (workflow/02, KB 09 §Mobile nav pattern).
+// Multi-level drill-down mobile menu — mirrors the pod-digital-mobile-menu plugin:
+// tap a parent to slide into its submenu, "Back" goes up one level, "Close" exits.
+// Stack-based (the `path` array), reimplemented in React (no DOM walking).
+// Slot-bridge pattern: only this leaf is "use client", never the Header (workflow/02).
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ChevronRight, ChevronLeft, X, Menu } from "lucide-react";
 
-interface NavLink {
-  href: string;
+export interface NavItem {
   label: string;
+  href: string;
+  children?: readonly NavItem[];
 }
 
-export function MobileNavDrawer({ links }: { links: NavLink[] }) {
+interface Level {
+  title: string;
+  items: readonly NavItem[];
+}
+
+// Walk the nav tree along `path` → the chain of levels currently in view.
+function buildLevels(links: readonly NavItem[], path: readonly number[]): Level[] {
+  const levels: Level[] = [{ title: "Menu", items: links }];
+  let cursor: readonly NavItem[] = links;
+  for (const idx of path) {
+    const item = cursor[idx];
+    if (!item?.children?.length) break;
+    levels.push({ title: item.label, items: item.children });
+    cursor = item.children;
+  }
+  return levels;
+}
+
+function Panel({
+  level,
+  active,
+  basePath,
+  onDrill,
+  onNavigate,
+}: {
+  level: Level;
+  active: boolean;
+  basePath: readonly number[];
+  onDrill: (path: number[]) => void;
+  onNavigate: () => void;
+}) {
+  return (
+    <ul className="h-full w-full shrink-0 overflow-y-auto px-6 py-4" inert={!active}>
+      {level.items.map((item, i) =>
+        item.children?.length ? (
+          <li key={item.href}>
+            <button
+              type="button"
+              onClick={() => onDrill([...basePath, i])}
+              className="flex w-full items-center justify-between border-b border-border py-4 text-left text-xl font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {item.label}
+              <ChevronRight className="h-5 w-5 text-ink-muted" aria-hidden="true" />
+            </button>
+          </li>
+        ) : (
+          <li key={item.href}>
+            <Link
+              href={item.href}
+              onClick={onNavigate}
+              className="block border-b border-border py-4 text-xl font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {item.label}
+            </Link>
+          </li>
+        ),
+      )}
+    </ul>
+  );
+}
+
+export function MobileNavDrawer({ links, cta }: { links: readonly NavItem[]; cta?: { label: string; href: string } | null }) {
   const [open, setOpen] = useState(false);
+  const [path, setPath] = useState<number[]>([]);
   const pathname = usePathname();
 
-  // Close on route change — reset during render (React's recommended pattern; no effect),
-  // covering back/forward nav too, not just link clicks.
+  // Close + reset on route change (covers back/forward nav, not just clicks).
   const [lastPath, setLastPath] = useState(pathname);
   if (pathname !== lastPath) {
     setLastPath(pathname);
     setOpen(false);
+    setPath([]);
   }
 
-  // Escape key + body scroll lock
+  // Escape closes; lock body scroll while open.
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -39,50 +104,81 @@ export function MobileNavDrawer({ links }: { links: NavLink[] }) {
     };
   }, [open]);
 
+  const levels = buildLevels(links, path);
+  const depth = levels.length - 1;
+  const close = () => {
+    setOpen(false);
+    setPath([]);
+  };
+
   return (
     <div className="lg:hidden">
       <button
-        aria-label={open ? "Close menu" : "Open menu"}
+        aria-label="Open menu"
         aria-expanded={open}
         aria-controls="mobile-nav"
-        onClick={() => setOpen((v) => !v)}
-        className="p-2 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        onClick={() => setOpen(true)}
+        className="p-2 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
-        <span
-          className="block h-px w-5 bg-current transition-transform motion-safe:duration-200"
-          style={{ transform: open ? "rotate(45deg) translateY(4px)" : undefined }}
-          aria-hidden="true"
-        />
-        <span
-          className="my-1.5 block h-px w-5 bg-current transition-opacity motion-safe:duration-200"
-          style={{ opacity: open ? 0 : 1 }}
-          aria-hidden="true"
-        />
-        <span
-          className="block h-px w-5 bg-current transition-transform motion-safe:duration-200"
-          style={{ transform: open ? "rotate(-45deg) translateY(-4px)" : undefined }}
-          aria-hidden="true"
-        />
+        <Menu className="h-6 w-6" aria-hidden="true" />
       </button>
 
-      {open && (
-        <nav
-          id="mobile-nav"
-          aria-label="Mobile"
-          className="fixed inset-0 z-40 flex flex-col bg-surface px-6 pb-12 pt-24"
-        >
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="border-b border-secondary py-4 text-2xl font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-              onClick={() => setOpen(false)}
+      {open ? (
+        <div id="mobile-nav" className="fixed inset-0 z-50 flex flex-col bg-surface" aria-label="Mobile">
+          <div className="flex h-16 shrink-0 items-center justify-between border-b border-border px-6">
+            {depth > 0 ? (
+              <button
+                type="button"
+                onClick={() => setPath(path.slice(0, -1))}
+                className="-ml-1 flex items-center gap-1 rounded text-sm font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+                {levels[depth]?.title}
+              </button>
+            ) : (
+              <span className="text-sm font-semibold text-ink-muted">Menu</span>
+            )}
+            <button
+              type="button"
+              aria-label="Close menu"
+              onClick={close}
+              className="-mr-2 p-2 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-      )}
+              <X className="h-6 w-6" aria-hidden="true" />
+            </button>
+          </div>
+
+          <div className="relative flex-1 overflow-hidden">
+            <div
+              className="flex h-full transition-transform duration-300 ease-out motion-reduce:transition-none"
+              style={{ transform: `translateX(-${depth * 100}%)` }}
+            >
+              {levels.map((lvl, li) => (
+                <Panel
+                  key={li}
+                  level={lvl}
+                  active={li === depth}
+                  basePath={path.slice(0, li)}
+                  onDrill={setPath}
+                  onNavigate={close}
+                />
+              ))}
+            </div>
+          </div>
+
+          {cta ? (
+            <div className="shrink-0 border-t border-border p-6">
+              <Link
+                href={cta.href}
+                onClick={close}
+                className="flex w-full items-center justify-center rounded-card bg-primary px-5 py-3 font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                {cta.label}
+              </Link>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }
