@@ -1,0 +1,55 @@
+import { z } from "zod";
+import { toneSchema, type Tone } from "@/lib/tone";
+
+// EDITOR-CONTROLLED section settings (workflow/29 — the headless translation of
+// Great White's `section_settings`). A section block exposes these so an editor
+// changes a section's surface / spacing / width IN WORDPRESS — no rebuild.
+//
+// Curated + token-backed, NOT freeform CSS: each is a bounded select that resolves
+// to a design-system value (the tone surfaces, the Section padding scale, the
+// Container widths) — never a raw hex or arbitrary px (ADR 0014/0015 + KB "no raw
+// values"). This is the one deliberate improvement over classic Great White.
+//
+// `tone` (surface) already exists in @/lib/tone; this adds `spacing` + `container`
+// and bundles all three so every section block includes them the same way.
+
+/** Vertical space around the section → maps to a <Section> padding preset. */
+export const SPACINGS = ["default", "compact", "spacious", "none"] as const;
+export type Spacing = (typeof SPACINGS)[number];
+export const spacingSchema = z.enum(SPACINGS).nullish();
+
+/** Content max-width → maps to a <Container> width. (`default` is the agency width.) */
+export const CONTAINERS = ["default", "narrow", "full"] as const;
+export type ContainerWidth = (typeof CONTAINERS)[number];
+export const containerSchema = z.enum(CONTAINERS).nullish();
+
+/** Spread into a section block's zod object: z.object({ ...sectionSettingsFields, … }). */
+export const sectionSettingsFields = {
+  tone: toneSchema,
+  spacing: spacingSchema,
+  container: containerSchema,
+} as const;
+
+export interface SectionSettings {
+  tone?: Tone | null;
+  spacing?: Spacing | null;
+  container?: ContainerWidth | null;
+}
+
+// spacing (editor vocabulary) → <Section> padding preset (the spacing scale).
+const SPACING_TO_PADDING = {
+  default: "default",
+  compact: "compact",
+  spacious: "hero",
+  none: "none",
+} as const;
+
+/** Settings from the CMS → the <Section> props that apply them. Spread onto <Section>:
+ *  <Section dataBlock="…" {...sectionProps({ tone, spacing, container })}>. */
+export function sectionProps(s: SectionSettings) {
+  return {
+    tone: s.tone ?? undefined,
+    padding: SPACING_TO_PADDING[s.spacing ?? "default"],
+    container: s.container ?? "default",
+  } as const;
+}

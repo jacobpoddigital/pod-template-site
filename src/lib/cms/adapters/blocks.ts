@@ -19,6 +19,7 @@ const LAYOUT: Record<BlockNode["__typename"], string> = {
   Page_Pagefields_Blocks_CtaBanner: "cta_banner",
   Page_Pagefields_Blocks_LogoStrip: "logo_strip",
   Page_Pagefields_Blocks_ContactForm: "contact_form",
+  Page_Pagefields_Blocks_MediaText: "media_text",
 };
 
 export function toBlocks(
