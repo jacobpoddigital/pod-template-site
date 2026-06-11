@@ -2,8 +2,13 @@ import type { CmsBlock } from "@/lib/cms";
 import { extraSamples } from "./samples-extra";
 import { tier2Samples } from "./samples-tier2";
 import { tier3Samples } from "./samples-tier3";
+import { variantSamples } from "./samples-variants";
 
 export type BlockSample = { label: string; block: CmsBlock };
+
+// One representative instance per block (the gallery) + a variant showcase (the
+// same blocks under different editor settings: tone, layout, columns, …).
+export { variantSamples };
 
 const coreSamples: BlockSample[] = [
   {
