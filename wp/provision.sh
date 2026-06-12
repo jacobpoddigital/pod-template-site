@@ -6,6 +6,9 @@
 #
 # From-zero rebuild: docker compose down -v && ACF_PRO_ZIP=… bash wp/provision.sh
 # Idempotent: safe to re-run on an existing stack.
+# Stale-volume gotcha (earned 2026-06-12): a half-initialised db_data volume corrupts
+# MariaDB (e.g. "ib_logfile0 not found"). If the DB never becomes ready below, the fix is
+# `docker compose down -v --remove-orphans` then re-run — NOT deleting individual files.
 # Must be run as root inside the cli container (provision.sh handles this via docker run).
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -79,10 +82,15 @@ for gqlplugin in wp-graphql wpgraphql-acf; do
   fi
 done
 
-echo "==> Copying mu-plugin and ACF field groups from repo"
+echo "==> Copying mu-plugins and ACF field groups from repo"
+# Copy ALL mu-plugins (*.php), not a named one — pod-chrome-register.php (menus +
+# siteOptions GraphQL) ships alongside pod-blocks-register.php and is required for the
+# header/footer chrome the frontend's getSiteChrome query reads. (Earned 2026-06-12:
+# the chrome plugin existed in the build repo but provision only copied the blocks plugin,
+# so live WP 500'd on the siteOptions query while mock mode passed.)
 docker compose run --rm --user root --entrypoint bash cli -c "
   mkdir -p /var/www/html/wp-content/mu-plugins
-  cp /opt/pod-wp/mu-plugins/pod-blocks-register.php /var/www/html/wp-content/mu-plugins/
+  cp /opt/pod-wp/mu-plugins/*.php /var/www/html/wp-content/mu-plugins/
   if ls /opt/pod-wp/acf-fields/*.json 1>/dev/null 2>&1; then
     mkdir -p /var/www/html/wp-content/acf-fields
     cp /opt/pod-wp/acf-fields/*.json /var/www/html/wp-content/acf-fields/

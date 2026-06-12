@@ -131,4 +131,35 @@ These are codebase-specific musts. They were each a real miss; do not repeat the
 
 ---
 
+## 12. Headless-WP integration — earned on the Website Navigator build (2026-06-12)
+The first full client-style site built on this template end-to-end. These were each a real stumble — the block path had **never run against live WordPress** before, only against mock mode. Detail + symptoms are in `FRICTION.md`; the rules:
+
+**wpgraphql-acf 2.x type names (the big one).**
+- Installed wpgraphql-acf 2.6.x emits **`PageFieldsBlocks<Layout>Layout`** for flexible-content layouts (e.g. `PageFieldsBlocksHeroLayout`) — **not** the old `Page_Pagefields_Blocks_*` convention. A committed `schema.graphql` / query / adapter using the old names compiles and passes mock mode but **500s against live WP**.
+- Repeaters inside a layout go **GENERIC**: `PageFieldsBlocksItems`, not `…Hero…Items`.
+- **Always regenerate the SDL from the live endpoint** before trusting block typenames: `pnpm dlx get-graphql-schema $WPGRAPHQL_URL > src/lib/cms/schema.graphql`. The adapter maps `__typename` → block key, so the names must match reality, not memory.
+
+**ACF image = a connection edge, not a flat object.**
+- wpgraphql-acf 2.x exposes an ACF image field as `AcfMediaItemConnectionEdge`. Query it as `image { node { sourceUrl altText mediaDetails { width height } } }` and **flatten `.node` in the adapter**. Querying `image { altText }` flat fails codegen.
+- The client's WP/Atlas media host must be added to `next.config` `images.remotePatterns` (per project) or `<Image>` throws at runtime.
+
+**Chrome is WP-side infrastructure — it must be registered, not assumed.**
+- The header/footer chrome (`getSiteChrome`: `siteOptions` + `PRIMARY`/`FOOTER` menus) needs `wp/mu-plugins/pod-chrome-register.php` (ships in the template) + a `*-site-options.json` field group. Without it the app queries types live WP doesn't expose → 500. Mock mode hides this.
+- **Hand-register the `siteOptions` GraphQL type** (done in the chrome plugin) — do NOT rely on wpgraphql-acf auto-exposing an ACF options page: 2.6.x nests it self-referentially (`SiteOptions.siteOptions: SiteOptions`) and can't produce a flat `siteOptions { strapline … }`.
+- `provision.sh` copies **all** `mu-plugins/*.php` (not a named file) so the chrome plugin ships with the blocks plugin.
+
+**CSS that isn't Tailwind must be imported in `layout.tsx`.**
+- Tailwind v4 does **not** inline a plain-CSS `@import "../x.css"` from `globals.css`. Vendored / non-Tailwind stylesheets (e.g. a ported widget's CSS) must be `import "../styles/x.css"` in `src/app/layout.tsx`, or they silently don't load.
+- A CSS **comment must not contain `*/`** (e.g. listing `.wa-*/.pf-*` selectors) — it closes the comment early → `CssSyntaxError: Unclosed string`.
+
+**The `reverse` (flip) section setting — now standard.**
+- `sectionSettingsFields` includes `reverse: z.boolean().nullish()` + the `flipOrder(reverse)` helper in `src/lib/section-settings.ts` (returns `{a,b}` order classes). A media↔content block reads `flipOrder()` and applies `order.a`/`order.b` to its two columns. Surface it as a `true_false` ACF field (`reverse`, "Flip (content right / media left)") on any split block. This is the headless equivalent of the old Great White theme's section flip.
+
+**Porting a bespoke animated widget (the recipe).**
+- Vendor the source CSS **verbatim** under a single scope class (e.g. `.wn-widget`) so it can't leak into or inherit from the design system; import it via `layout.tsx` (above).
+- Port the engine JS **1:1** into a `'use client'` component (dispatch tables keep eslint complexity ≤10); gate animation on `IntersectionObserver` so it only runs in view.
+- **Per-instance frame sizing (width/height) lives in the source *page* CSS, not `components.css`.** Carry it through as explicit config on the scenario/instance (`frameWidth`/`frameHeight`) — a widget rendered without its frame looks broken even when the internals are correct.
+
+---
+
 *Exhaustive detail lives in the HQ knowledge base (`web-ai-automation/knowledge-base/01–10`). This file is the in-repo enforceable subset. When they disagree, the HQ KB wins — update this file.*
