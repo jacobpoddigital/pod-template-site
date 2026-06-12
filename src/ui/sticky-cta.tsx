@@ -36,6 +36,10 @@ export function StickyCta({
         (shown ? "translate-y-0" : "translate-y-full")
       }
       aria-hidden={!shown}
+      // When off-screen the bar is only translated away, so its links would stay
+      // focusable. `inert` removes the whole subtree from focus order + the a11y
+      // tree (Lighthouse: aria-hidden must not wrap focusable descendants).
+      inert={!shown}
     >
       <div className="flex items-center gap-3 px-4 py-3">
         {phone ? (
