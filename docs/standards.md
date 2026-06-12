@@ -159,6 +159,7 @@ The first full client-style site built on this template end-to-end. These were e
 - Vendor the source CSS **verbatim** under a single scope class (e.g. `.wn-widget`) so it can't leak into or inherit from the design system; import it via `layout.tsx` (above).
 - Port the engine JS **1:1** into a `'use client'` component (dispatch tables keep eslint complexity ≤10); gate animation on `IntersectionObserver` so it only runs in view.
 - **Per-instance frame sizing (width/height) lives in the source *page* CSS, not `components.css`.** Carry it through as explicit config on the scenario/instance (`frameWidth`/`frameHeight`) — a widget rendered without its frame looks broken even when the internals are correct.
+- **A ported widget brings its OWN motion** (JS timers/loops + CSS keyframes/transitions) — the design system's `prefers-reduced-motion` handling does NOT reach inside the vendored scope. Gate it in BOTH places (§4 mandates it): (a) a `@media (prefers-reduced-motion: reduce)` blanket inside the widget's scope class zeroing animation/transition duration; (b) the JS engine renders its **END STATE** immediately (the final frame/content) so a reduced-motion user gets the content, not a frozen or blank widget. Defer that end-state `setState` in a `requestAnimationFrame` so it isn't a synchronous setState in the effect body (lint `set-state-in-effect`). *(Earned: QA pass on the first ported widgets, 2026-06-12.)*
 
 ---
 
