@@ -29,7 +29,7 @@ export function Header({ chrome }: { chrome: SiteChrome }) {
           <Link
             href="/"
             aria-label={name}
-            className="flex items-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex items-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             {logo?.sourceUrl ? (
               <Image src={logo.sourceUrl} alt={logo.altText || name} width={160} height={40} className="h-8 w-auto" priority />

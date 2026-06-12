@@ -9,7 +9,7 @@ export function Toc({ heading, items, tone, spacing, container }: TocProps) {
   return (
     <Section dataBlock="toc" {...sectionProps({ tone, spacing, container: container ?? "narrow" })}>
       <nav aria-label={heading || "On this page"} className="rounded-card border border-border p-6">
-        {heading ? <h2 className="label text-ink-muted">{heading}</h2> : null}
+        {heading ? <p className="label text-ink-muted">{heading}</p> : null}
         <ul className="mt-3 flex flex-col gap-2">
           {links.map((l, i) => (
             <li key={`${l.target}-${i}`}>

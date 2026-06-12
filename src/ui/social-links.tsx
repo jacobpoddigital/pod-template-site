@@ -61,10 +61,10 @@ export function SocialLinks({
   if (!links.length) return null;
   return (
     <ul className={cn("flex flex-wrap items-center gap-1", className)}>
-      {links.map((s) => {
+      {links.map((s, i) => {
         const Icon = socialIcon(`${s.href} ${s.label}`);
         return (
-          <li key={s.href}>
+          <li key={`${s.href}-${i}`}>
             <a
               href={s.href}
               target="_blank"

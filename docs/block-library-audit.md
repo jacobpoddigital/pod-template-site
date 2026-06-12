@@ -84,4 +84,23 @@ A point-in-time audit of the 20 blocks in `src/blocks/*` + the shared `src/ui` p
 
 ---
 
-*Audit method: 3 read-only agents over `src/blocks/*` + `src/ui/*` + `src/lib/cms/*`, cross-checked and synthesised. Findings are code-verified, not speculative.*
+## Round 2 — Tier 0–3 expansion audit (2026-06-11, PR #38 follow-up)
+
+4 read-only agents (a11y · security · standards/KB · correctness) over the 17 new blocks + new primitives + globals + header. **Standards & correctness: PASS, zero hard-rule violations** — the new blocks follow the established pattern exactly (Section contract, type-scale tokens, semantic lists, compound keys, server-shell/client-leaf slot-bridge, sanitised HTML). A11y + security surfaced a small set of real items, all **fixed** in the same pass (`fix/block-library-qa`):
+
+| Sev | Issue | Fix |
+|---|---|---|
+| High | `sticky-cta` primary CTA: `ring-primary` on `bg-primary` → focus ring invisible | `ring-primary-foreground` + `ring-offset-primary` → **standards §11 a11y rule added** |
+| Med | `video_testimonial` `video_id` interpolated into the embed URL with only `.min(1)` | YouTube-ID regex on the schema → **§11 security rule added** |
+| Med | `toc` heading was a `label`-weight `<h2>` (heading that doesn't read as one) | → `<p className="label">` (nav already labelled) → **§11 a11y rule added** |
+| Med | `social-links` `key={s.href}` collides on duplicate URLs | compound `key={`${href}-${i}`}` |
+| Low | before/after labels `bg-black/60` over photos (contrast) | `bg-black/70` |
+| Low | header logo link missing `ring-offset-2` | added |
+
+**False alarms recorded (so they're not re-raised):** Tailwind's bare `transition` utility is a curated property set, **not** CSS `transition: all`; `next.config` `remotePatterns` is a per-client provisioning step, not a code bug; `toc` target is already URL-safe via `toAnchorId()`.
+
+**Out of scope (pre-existing, prior-round code):** `phone-menu` item focus rings, `mobile-nav-drawer` back/close target sizes — flag for a future pre-existing-code sweep.
+
+---
+
+*Audit method: read-only review agents over `src/blocks/*` + `src/ui/*` + `src/layout/*` + `src/lib/cms/*`, cross-checked and synthesised. Findings are code-verified, not speculative. Round 2 lessons encoded in `docs/standards.md §11`.*

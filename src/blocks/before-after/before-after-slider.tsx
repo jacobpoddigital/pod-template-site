@@ -37,12 +37,12 @@ export function BeforeAfterSlider({
           style={{ left: `${pos}%` }}
         />
         {beforeLabel ? (
-          <span className="absolute left-3 top-3 rounded-card bg-black/60 px-2 py-1 label text-white">
+          <span className="absolute left-3 top-3 rounded-card bg-black/70 px-2 py-1 label text-white">
             {beforeLabel}
           </span>
         ) : null}
         {afterLabel ? (
-          <span className="absolute right-3 top-3 rounded-card bg-black/60 px-2 py-1 label text-white">
+          <span className="absolute right-3 top-3 rounded-card bg-black/70 px-2 py-1 label text-white">
             {afterLabel}
           </span>
         ) : null}
