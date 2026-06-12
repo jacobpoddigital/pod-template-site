@@ -45,6 +45,7 @@ type MenuItem {
   label: String
   uri: String
   target: String
+  description: String
 }
 
 type SiteOptions {
