@@ -1,0 +1,34 @@
+{
+  "key": "group_{{SITESLUG}}_site_options",
+  "title": "Site Options",
+  "show_in_graphql": 0,
+  "_note": "Editor UI for the header/footer chrome. The GraphQL surface is hand-registered in wp/mu-plugins/pod-chrome-register.php (RootQuery.siteOptions), so show_in_graphql is 0 here. Field KEYS are site-prefixed ({{SITESLUG}}); field NAMES are the contract the chrome resolver reads and MUST NOT change (strapline, header_cta_label, header_cta_url, social, social_in_header, phone_numbers, logo, address). Rename this file to <siteslug>-site-options.json and replace {{SITESLUG}}.",
+  "fields": [
+    { "key": "field_{{SITESLUG}}_so_logo", "name": "logo", "label": "Logo", "type": "image", "return_format": "id", "preview_size": "medium" },
+    { "key": "field_{{SITESLUG}}_so_strapline", "name": "strapline", "label": "Strapline", "type": "text", "show_in_graphql": 1 },
+    { "key": "field_{{SITESLUG}}_so_address", "name": "address", "label": "Address", "type": "textarea", "rows": 3, "show_in_graphql": 1 },
+    { "key": "field_{{SITESLUG}}_so_header_cta_label", "name": "header_cta_label", "label": "Header CTA label", "type": "text", "show_in_graphql": 1 },
+    { "key": "field_{{SITESLUG}}_so_header_cta_url", "name": "header_cta_url", "label": "Header CTA URL", "type": "text", "show_in_graphql": 1 },
+    {
+      "key": "field_{{SITESLUG}}_so_social", "name": "social", "label": "Social links", "type": "repeater", "layout": "table", "button_label": "Add social link", "show_in_graphql": 1,
+      "sub_fields": [
+        { "key": "field_{{SITESLUG}}_so_social_label", "name": "label", "label": "Label", "type": "text", "show_in_graphql": 1 },
+        { "key": "field_{{SITESLUG}}_so_social_url", "name": "url", "label": "URL", "type": "text", "show_in_graphql": 1 }
+      ]
+    },
+    { "key": "field_{{SITESLUG}}_so_social_in_header", "name": "social_in_header", "label": "Show social in header", "type": "true_false", "ui": 1, "show_in_graphql": 1 },
+    {
+      "key": "field_{{SITESLUG}}_so_phone_numbers", "name": "phone_numbers", "label": "Phone numbers", "type": "repeater", "layout": "table", "button_label": "Add phone number", "show_in_graphql": 1,
+      "sub_fields": [
+        { "key": "field_{{SITESLUG}}_so_phone_location", "name": "location", "label": "Location", "type": "text", "show_in_graphql": 1 },
+        { "key": "field_{{SITESLUG}}_so_phone_number", "name": "number", "label": "Number", "type": "text", "show_in_graphql": 1 }
+      ]
+    }
+  ],
+  "location": [
+    [
+      { "param": "options_page", "operator": "==", "value": "site-options" }
+    ]
+  ],
+  "active": true
+}
