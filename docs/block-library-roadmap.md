@@ -13,7 +13,7 @@ This roadmap answers two questions: **which card variants and which UI patterns 
 - ✅ **Tier 2 blocks** — `tabbed_content` · `process_steps` · `bento_grid` · `case_studies` · `timeline` · `newsletter` · `gallery`.
 - ✅ **Tier 3 blocks** — `before_after` · `toc` · `integrations_grid` · `pricing_matrix` · `locations_map` · `video_testimonial` · `feature_rows`.
 - ✅ **Globals** — announcement bar (dismissible) · sticky mobile CTA (site.config-driven).
-- ✅ **Header H1–H4** — desktop flyout / sub-menus (Radix navigation-menu; nested `children` now render on desktop) · sticky/scroll-aware header (hide-on-scroll-down, reveal-on-up, opaque) · in-header theme toggle · `aria-current` on the active link · `lg:h-20` + `scroll-pt-20`.
+- ✅ **Header H1–H4** — desktop flyout / sub-menus (Radix navigation-menu; nested `children` now render on desktop) · **mega-menu panels** (multi-column, driven by WP menu depth — a 2-level item becomes columns + optional per-link `description`; no per-client code) · sticky/scroll-aware header (hide-on-scroll-down, reveal-on-up, opaque) · in-header theme toggle · `aria-current` on the active link · `lg:h-20` + `scroll-pt-20`.
 - ✅ **`/blocks` variant showcase** — every block under its tone/layout/columns/media-position variants.
 
 All 14 new blocks wired end-to-end: SDL → fragment → `pnpm codegen` → adapter → schema/component/registry → `/blocks` samples + dev mock. `wp/acf-fields/` stays empty by design (per-client ACF is generated at provision time — FRICTION #70).

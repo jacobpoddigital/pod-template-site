@@ -24,10 +24,12 @@ export interface PostSummary {
   image?: { sourceUrl: string; altText?: string | null } | null;
 }
 
-/** A nav link, with optional children for the mobile drill-down menu. */
+/** A nav link. `children` drives sub-menus (desktop flyout/mega + mobile drill-down);
+ *  `description` is the optional one-liner a mega-menu column link can show. */
 export interface NavItem {
   label: string;
   href: string;
+  description?: string;
   children?: NavItem[];
 }
 

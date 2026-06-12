@@ -67,11 +67,18 @@ interface MenuNode {
   parentId?: string | null;
   label?: string | null;
   uri?: string | null;
+  description?: string | null;
 }
 
 function buildNavTree(nodes: readonly MenuNode[]): NavItem[] {
   const byId = new Map<string, NavItem>();
-  for (const n of nodes) byId.set(n.id, { label: n.label ?? "", href: n.uri ?? "#", children: [] });
+  for (const n of nodes)
+    byId.set(n.id, {
+      label: n.label ?? "",
+      href: n.uri ?? "#",
+      description: n.description ?? undefined,
+      children: [],
+    });
   const roots: NavItem[] = [];
   for (const n of nodes) {
     const item = byId.get(n.id)!;
@@ -85,7 +92,8 @@ function buildNavTree(nodes: readonly MenuNode[]): NavItem[] {
       .filter((i) => !seen.has(i))
       .map((i) => {
         seen.add(i);
-        return i.children && i.children.length ? { label: i.label, href: i.href, children: clean(i.children, seen) } : { label: i.label, href: i.href };
+        const base = { label: i.label, href: i.href, description: i.description };
+        return i.children && i.children.length ? { ...base, children: clean(i.children, seen) } : base;
       });
   return clean(roots, new Set());
 }

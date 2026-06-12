@@ -8,6 +8,7 @@ query SiteChrome {
       parentId
       label
       uri
+      description
     }
   }
   footer: menuItems(where: { location: FOOTER }) {
