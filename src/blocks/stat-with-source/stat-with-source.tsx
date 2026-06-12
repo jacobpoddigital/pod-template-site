@@ -15,15 +15,18 @@ export function StatWithSource({ heading, intro, columns, stats, tone, spacing, 
         </div>
       ) : null}
 
-      <dl className={`grid gap-8 ${columnsClass(columns ?? Math.min(items.length, 4))}`}>
+      {/* Plain list, not a <dl>: the label is optional and the source line doesn't fit
+          a dt/dd pair, so a definition list would be malformed (2026-06-12 Lighthouse
+          audit). Reading order (value → label → source) conveys the pairing to AT. */}
+      <ul role="list" className={`grid gap-8 ${columnsClass(columns ?? Math.min(items.length, 4))}`}>
         {items.map((s, i) => (
-          <div key={i}>
-            <dd className="display-lg text-brand-accent">{s.value}</dd>
-            {s.label ? <dt className="mt-2 body font-medium text-ink">{s.label}</dt> : null}
+          <li key={`${s.value}-${i}`}>
+            <p className="display-lg text-brand-accent">{s.value}</p>
+            {s.label ? <p className="mt-2 body font-medium text-ink">{s.label}</p> : null}
             {s.source ? <p className="mt-1 body-sm text-ink-muted">{s.source}</p> : null}
-          </div>
+          </li>
         ))}
-      </dl>
+      </ul>
     </Section>
   );
 }

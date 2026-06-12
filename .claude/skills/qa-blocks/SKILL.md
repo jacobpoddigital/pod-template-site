@@ -28,9 +28,10 @@ Run these in parallel (one message, multiple Agent calls). Trim the redundant on
 
 ### 1. Accessibility (highest yield — gates can't see contrast or focus management)
 - **Focus ring CONTRAST** — on a coloured control (`bg-primary`/`bg-brand-accent`/inverted/announcement bar) a same-hue ring is invisible. Demand `ring-<contrasting-foreground>` + `ring-offset-<that-surface>`. *(This shipped wrong once — sticky-cta.)*
-- **Focus management on interactive leaves** — Dialog/lightbox (focus trap + return), tabs, sliders, the range input in before/after, sticky header (does hiding it strand focus?), drawer (Esc + return to trigger).
+- **Focus management on interactive leaves** — Dialog/lightbox (focus trap + return), tabs, sliders, the range input in before/after, sticky header (does hiding it strand focus?), drawer (Esc + return to trigger). **A region hidden by transform/offset (not unmounted) needs `inert` when hidden** — `aria-hidden` alone leaves its links focusable (off-screen tab stop). *(Shipped wrong once — sticky-cta.)*
+- **Radix `Tabs` only for real tab/panel sets** — a `Tabs`/`TabsTrigger` with no matching `TabsContent` leaves a dangling `aria-controls` (invalid ARIA). A "pick one" segmented toggle (monthly/annual) is a `role="radiogroup"` of `role="radio"` buttons. *(Shipped wrong once — pricing.)*
 - **Heading element ↔ weight** — a real `<h2>/<h3>` must read as a heading; a `label`-token heading is a bug. Widget labels are `<p className="label">` with the landmark's `aria-label` carrying the name. *(Shipped wrong once — toc.)*
-- 44px targets + ≥8px spacing; heading hierarchy (h2 section → h3 item, no skips); list semantics (`<ul role="list">` / `<dl>` / `<ol>`); image alt correctness; icon-only controls named; `prefers-reduced-motion` on everything animated; overlay-text contrast on images.
+- 44px targets + ≥8px spacing; heading hierarchy (h2 section → h3 item, no skips); list semantics (`<ul role="list">` / `<ol>`); **a `<dl>` holds only term-first `<dt>`/`<dd>` (in `<div>` groups), never a stray `<p>` — if the label is optional or there's an extra line, use `<ul role="list">` not `<dl>`** *(shipped wrong once — stats-band/stat-with-source)*; image alt correctness; icon-only controls named; `prefers-reduced-motion` on everything animated; overlay-text contrast on images.
 
 ### 2. Security (untrusted CMS input)
 - **Every `dangerouslySetInnerHTML` is `sanitize()`-d on the SERVER** before it reaches a client leaf (trace the path; the client must not receive raw HTML).
