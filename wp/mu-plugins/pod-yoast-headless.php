@@ -12,9 +12,21 @@
  *   headless WP pattern, version-proof, no string-replace hacks. The Next frontend ALSO sets
  *   canonical from the route path (belt and braces). See docs/seo.md §Yoast headless.
  *
- * This file only disables Yoast's own XML sitemap: the frontend owns /sitemap.xml
- * (src/app/sitemap.ts), and a second sitemap on the WP origin pointing at WP URLs would
- * confuse crawlers.
+ * XML sitemap: the frontend owns /sitemap.xml (src/app/sitemap.ts). A second sitemap on the WP
+ * origin pointing at WP URLs would confuse crawlers, so we suppress Yoast's. NOTE: the
+ * `wpseo_enable_xml_sitemap` filter is NO LONGER sufficient on its own (verified false on Yoast
+ * 27.8 yet the route still served), so we ALSO 404 the sitemap URLs deterministically — version-proof.
  */
 
 add_filter( 'wpseo_enable_xml_sitemap', '__return_false' );
+
+// Deterministic kill-switch: 404 any *sitemap*.xml / .xsl request on the WP origin, before Yoast
+// (or core) can render one. Runs early on parse_request so it beats Yoast's own handler.
+add_action( 'parse_request', function ( $wp ) {
+	$uri = isset( $_SERVER['REQUEST_URI'] ) ? (string) $_SERVER['REQUEST_URI'] : '';
+	if ( preg_match( '#sitemap[^/]*\.(xml|xsl)$#i', $uri ) ) {
+		status_header( 404 );
+		nocache_headers();
+		exit;
+	}
+}, 0 );
