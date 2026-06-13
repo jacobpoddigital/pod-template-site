@@ -58,7 +58,7 @@ are not suggestions — training defaults are wrong here; this is right. A viola
 - Fonts: **`next/font` self-hosted**, `display:'swap'`, variable fonts, subset axes. No Google Fonts `<link>`.
 - ISR + on-demand revalidation default; **tag every `fetch()` from day one** (`{ next: { tags, revalidate } }`). SSR only for request-specific data.
 - `remotePatterns` locked to the WP origin `/wp-content/uploads/**` (never `hostname:'*'`).
-- No synchronous third-party scripts in `<head>`. Defer chat widgets (button first, load on click). PostHog default analytics.
+- No synchronous third-party scripts in `<head>`. Defer chat widgets (button first, load on click). Measurement-first is the standard build — GA4/GTM/Consent Mode v2 (ADR 0003 amended, `docs/measurement-and-consent.md`); PostHog is complementary product analytics/errors. SEO meta/OG/JSON-LD come from **Yoast** (ADR 0018, `docs/seo.md`).
 
 **Third-party scripts — the policy (boilerplate §7).** Every external tag goes through
 `next/script` with an explicit strategy — never a raw `<script src>`:

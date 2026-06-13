@@ -83,6 +83,21 @@ Exactly: `src/blocks/<kebab>/` → `schema.ts` (Zod; ACF field names 1:1; **empt
 - **Auth / member-only content** → **WPGraphQL-JWT** (no REST; ADR 0013). Gated content is dynamic/uncached. Opt-in, not in the base — verify the plugin vs WPGraphQL 2.x before the first login site (HQ `workflow/28` Step 10).
 - **Commerce** → **WooCommerce Store API + Cart-Token + Server Actions + Stripe Checkout** (reads via WooGraphQL). A different product with its own go/no-go — opt-in module, not the base (HQ `workflow/14`).
 
+## SEO, redirects & preview (see `docs/seo.md`)
+- **Per-page meta/OG/JSON-LD = Yoast (free) via "Add WPGraphQL SEO"** (ADR 0018). The page query
+  reads `seo { … }` → a source-agnostic `PageSeo` → `pageMetadata()` builds Next `Metadata`;
+  Yoast's `schema.raw` is injected by `<SeoSchema>`. Use `pageMetadata(page, path)` in every
+  content route's `generateMetadata` — don't hand-roll meta. `provision.sh` installs Yoast +
+  `add-wpgraphql-seo`; set WP `home` to the frontend origin so canonical/OG/schema use it.
+- **Sitemap** (`app/sitemap.ts`) covers pages **and** posts. **robots.ts** blocks non-production.
+  Yoast's own sitemap is killed by `wp/mu-plugins/pod-yoast-headless.php`.
+- **Redirects** (`docs/seo.md §Redirects`): `redirects.json` (migration map) + optional
+  `WP_REDIRECTS_URL` (the WP "301 Redirects" plugin via `pod-redirects-export.php`) → merged into
+  `next.config.ts redirects()`. Free Yoast has no redirect manager → enforce at the edge.
+- **Draft preview** (`docs/preview.md`): `/api/preview` scaffold + `getPage({preview})`. **GEO**:
+  `/llms.txt`, FAQ-block FAQPage JSON-LD, answer-first E-E-A-T blocks; submit the sitemap to Bing.
+- **Images:** ACF image = a connection edge → `image { node { … } }` + flatten (`docs/images.md`).
+
 ## Gotchas (earned — see CLAUDE.md for more)
 - **`WPGRAPHQL_URL` is the data endpoint** (e.g. `http://localhost:{{WP_PORT}}/graphql`). Unset (or `CMS_MODE=mock`) → the dev mock renders blocks offline. There is **no REST `/wp-json` content path** (ADR 0013).
 - **ACF empty repeater/flex** — comes back typed via GraphQL (`null`, not `false`); the schemas already tolerate both (`.nullish()`). Don't assume `[]`.
