@@ -54,3 +54,13 @@ Cookieless PostHog only, no GTM/GA4/Ads/Meta, no consent banner needed for stric
 
 ## Checklist hooks
 The go-live checklist (`docs/go-live-checklist.md → Analytics, consent & monitoring`) gates this. Don't launch a paid-media client without it.
+
+## Global Privacy Control (GPC)
+
+`src/lib/analytics/consent.ts` honours **GPC** — the browser/extension "do not sell or
+share" opt-out (CCPA/CPRA, actively enforced; see `research/2026-06-13-build-gap-analysis`
+§1.1). `gpcEnabled()` reads `navigator.globalPrivacyControl`; `updateConsent()` forces
+`ad_storage`/`ad_user_data`/`ad_personalization` to **denied** whenever GPC is on,
+regardless of any CMP choice. `analytics_storage` stays per-choice (GPC targets sale/
+sharing — i.e. advertising — not first-party measurement). Default consent is already
+denied, so GPC's job here is to prevent a later *grant* of ad/targeting consent.

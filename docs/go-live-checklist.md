@@ -43,5 +43,8 @@ flagged as launch-phase. Tick every box; anything that can't be ticked is a laun
 ## Reliability & content
 - [ ] Deleted-page behaviour confirmed — a removed/unpublished page serves ISR last-good, then the branded 404 (`app/not-found.tsx`) on rebuild; **if the old URL had SEO value, add a 301 instead** (`docs/seo.md §Redirect-on-delete`) and `curl -I` confirms the redirect.
 - [ ] Broken-link check run pre- and post-launch — `pnpm links` reports **zero broken internal links** (`docs/links.md`). Run when content is complete (it flags placeholder/unbuilt routes by design).
+- [ ] **Structured-data valid** — `pnpm jsonld` passes (every JSON-LD block parses, has @context/@type, one Article per post). Confirm with Google's Rich Results Test on a real page too.
+- [ ] **GPC honoured** — `consent.ts` denies ads/targeting when the browser sends Global Privacy Control (CCPA/CPRA; verify with a GPC-enabled browser that `ad_storage` stays denied).
+- [ ] **Form spam guard live** — the contact form's honeypot + time-trap drop bots; consider Cloudflare Turnstile for a high-spam client (per-project key).
 - [ ] Draft preview decision made — scaffold ships (`/api/preview`, `/api/exit-preview`, `getPage({preview})`). To enable: add a dynamic preview route + WP app-password auth per `docs/preview.md`.
 - [ ] A non-builder did a fresh `provision.sh` + `pnpm dev` and reached a rendered page without help (the real maturity test).

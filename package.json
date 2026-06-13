@@ -11,7 +11,9 @@
     "codegen": "graphql-codegen --config codegen.ts",
     "lhci": "lhci autorun",
     "links": "start-server-and-test start http://localhost:3000 links:run",
-    "links:run": "linkinator http://localhost:3000 --config linkinator.config.json"
+    "links:run": "linkinator http://localhost:3000 --config linkinator.config.json",
+    "jsonld": "start-server-and-test start http://localhost:3000 jsonld:run",
+    "jsonld:run": "node scripts/validate-jsonld.mjs"
   },
   "dependencies": {
     "@graphql-typed-document-node/core": "^3.2.0",
