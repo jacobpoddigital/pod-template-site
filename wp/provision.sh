@@ -82,6 +82,22 @@ for gqlplugin in wp-graphql wpgraphql-acf; do
   fi
 done
 
+echo "==> Installing WPGraphQL Offset Pagination (path-based /blog/page/N — the standard blog, workflow/33)"
+# Adds `where.offsetPagination { offset size }` + `pageInfo.offsetPagination.total`, which
+# the blog cms layer (getBlogPosts) needs for SEO-clean numbered pagination. Not always on
+# wp.org under this slug; if the install fails, add valu-digital's release manually (non-fatal).
+if ! wpcli "plugin is-installed wp-graphql-offset-pagination" 2>/dev/null; then
+  wpcli "plugin install wp-graphql-offset-pagination --activate" \
+    || echo "    !! Install manually: https://github.com/valu-digital/wp-graphql-offset-pagination (composer or release zip), then 'wp plugin activate wp-graphql-offset-pagination'."
+else
+  wpcli "plugin activate wp-graphql-offset-pagination"
+fi
+# Blog category banner image (Great White port): register an ACF image field `categoryImage`
+# on the Category taxonomy with "Show in GraphQL" ON + GraphQL Field Name `categoryImage`, then
+# `pnpm dlx get-graphql-schema "$WPGRAPHQL_URL" > src/lib/cms/schema.graphql` + `pnpm codegen`.
+# Fields-as-code is per-project (ACF UI or a field group export) — see docs/blog.md.
+echo "==> NOTE: register the ACF 'categoryImage' field on the Category taxonomy (Show in GraphQL) — see docs/blog.md"
+
 echo "==> Installing Yoast SEO (free) + Add WPGraphQL SEO (per-page meta/OG/JSON-LD, boilerplate §6)"
 # wp.org slugs. Yoast = the SEO source of truth (agency default, 2026-06-13); add-wpgraphql-seo
 # exposes Yoast's `seo` field on Page/Post to WPGraphQL (free; the page-by-slug query reads it).

@@ -1,11 +1,11 @@
-# Every published post — drives the sitemap (boilerplate §6). URL = the WP `uri`
-# (the post's permalink); `modified` becomes <lastmod>. NOTE: the template ships
-# PAGES-only routes — a blog post needs a matching frontend route (e.g.
-# app/blog/[slug]) before these URLs resolve. See docs/seo.md.
+# Every published post — drives the sitemap (boilerplate §6). The frontend owns the
+# permalink: posts resolve at /blog/<slug> (the standard blog route, workflow/33), so
+# the sitemap uses `slug`, not WP's `uri`. `modified` becomes <lastmod>.
 query AllPosts {
   posts(first: 1000, where: { status: PUBLISH }) {
     nodes {
       databaseId
+      slug
       uri
       date
       modified

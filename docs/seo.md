@@ -44,10 +44,9 @@ JSON-LD**. Multiple JSON-LD blocks are valid and additive.
 `src/app/sitemap.ts` is the **only** sitemap (Yoast's is disabled). It lists every published
 **page and post**, frontend URLs only, with `lastModified` on posts.
 
-> ⚠️ **Posts need a frontend route.** The template ships **pages-only** routes
-> (`app/[...slug]`). Posts are included in the sitemap using their WordPress `uri`, but they
-> won't resolve until you add a matching route (e.g. `app/blog/[slug]/page.tsx`). If a site has
-> no blog, `getAllPosts()` returns `[]` and nothing is added — safe by default.
+> **Posts** resolve at the standard blog route `/blog/<slug>` (the template ships the blog
+> by default — see `docs/blog.md`, workflow/33); the sitemap lists them there. If a site
+> has no published posts, `getAllPosts()` returns `[]` and nothing is added — safe by default.
 
 Submit `/sitemap.xml` to Google Search Console + Bing Webmaster Tools at go-live (see
 `docs/go-live-checklist.md`).

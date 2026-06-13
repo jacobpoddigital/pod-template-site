@@ -17,6 +17,11 @@ type RootQuery {
   page(id: ID!, idType: PageIdType): Page
   pages(first: Int, where: RootQueryToPageConnectionWhereArgs): RootQueryToPageConnection
   posts(first: Int, where: RootQueryToPostConnectionWhereArgs): RootQueryToPostConnection
+  post(id: ID!, idType: PostIdType): Post
+  categories(first: Int, where: RootQueryToCategoryConnectionWhereArgs): RootQueryToCategoryConnection
+  category(id: ID!, idType: TermNodeIdTypeEnum): Category
+  tags(first: Int, where: RootQueryToTagConnectionWhereArgs): RootQueryToTagConnection
+  tag(id: ID!, idType: TermNodeIdTypeEnum): Tag
   menuItems(where: RootQueryToMenuItemConnectionWhereArgs): RootQueryToMenuItemConnection
   siteOptions: SiteOptions
 }
@@ -77,6 +82,21 @@ enum PageIdType {
   DATABASE_ID
 }
 
+enum PostIdType {
+  SLUG
+  URI
+  DATABASE_ID
+}
+
+# Shared id-type for taxonomy terms (categories + tags) — WPGraphQL's TermNodeIdTypeEnum.
+enum TermNodeIdTypeEnum {
+  SLUG
+  ID
+  DATABASE_ID
+  NAME
+  URI
+}
+
 enum PostStatusEnum {
   PUBLISH
   DRAFT
@@ -90,28 +110,123 @@ type RootQueryToPageConnection {
   nodes: [Page!]!
 }
 
-# Posts — drives the post_grid block's listing (a fetching block, not page content).
+# Posts — drives the post_grid block's listing AND the standard blog (workflow/33).
+# `offsetPagination` REQUIRES the free "WPGraphQL Offset Pagination" addon on WP — it
+# powers the blog's path-based /blog/page/[n] (SEO-clean offsets, not cursors). Without
+# the addon this where-field is not in the real schema and the query fails validation —
+# provision.sh installs it (workflow/33). `tag` = tag slug; `search` = full-text;
+# `notIn` excludes the featured post from page 1's grid.
 input RootQueryToPostConnectionWhereArgs {
   status: PostStatusEnum
   categoryName: String
+  tag: String
+  search: String
+  notIn: [ID]
+  offsetPagination: OffsetPagination
+}
+
+# WPGraphQL Offset Pagination addon input.
+input OffsetPagination {
+  offset: Int
+  size: Int
 }
 
 type RootQueryToPostConnection {
   nodes: [Post!]!
+  pageInfo: RootQueryToPostConnectionPageInfo
+}
+
+# pageInfo.offsetPagination is contributed by the addon — `total` drives page counts.
+type RootQueryToPostConnectionPageInfo {
+  offsetPagination: OffsetPaginationPageInfo
+}
+type OffsetPaginationPageInfo {
+  total: Int
+  hasMore: Boolean
+  hasPrevious: Boolean
 }
 
 type Post {
   databaseId: Int!
   title: String
+  slug: String
   uri: String
   date: String
   modified: String
   excerpt: String
+  # Full rendered post HTML (Gutenberg/classic editor output) — the blog renders this
+  # sanitized in a prose container (workflow/33; rendered-WP-content model, ADR 0013).
+  content: String
   featuredImage: NodeWithFeaturedImageToMediaItemConnectionEdge
+  author: NodeWithAuthorToUserConnectionEdge
+  categories: PostToCategoryConnection
+  tags: PostToTagConnection
+  seo: PostTypeSEO
 }
 
 type NodeWithFeaturedImageToMediaItemConnectionEdge {
   node: MediaItem
+}
+
+type NodeWithAuthorToUserConnectionEdge {
+  node: User
+}
+
+# Post author — WPGraphQL User. `avatar` is Gravatar; `seo.social` / ACF user-meta can
+# supply a richer profile image once registered (regenerate the SDL then).
+type User {
+  databaseId: Int!
+  name: String
+  slug: String
+  description: String
+  uri: String
+  avatar: Avatar
+}
+type Avatar {
+  url: String
+}
+
+type PostToCategoryConnection {
+  nodes: [Category!]!
+}
+type PostToTagConnection {
+  nodes: [Tag!]!
+}
+
+# --- Taxonomies (workflow/33) ---
+input RootQueryToCategoryConnectionWhereArgs {
+  hideEmpty: Boolean
+}
+type RootQueryToCategoryConnection {
+  nodes: [Category!]!
+}
+input RootQueryToTagConnectionWhereArgs {
+  hideEmpty: Boolean
+}
+type RootQueryToTagConnection {
+  nodes: [Tag!]!
+}
+
+# Category. `categoryImage` is an ACF image field registered on the category taxonomy
+# and exposed to WPGraphQL (the archive banner background — Great White's category
+# featured image, ported). Register it per project, then regenerate the SDL.
+type Category {
+  databaseId: Int!
+  name: String
+  slug: String
+  description: String
+  uri: String
+  count: Int
+  categoryImage: MediaItem
+}
+
+type Tag {
+  databaseId: Int!
+  name: String
+  slug: String
+  description: String
+  uri: String
+  count: Int
 }
 
 type Page {

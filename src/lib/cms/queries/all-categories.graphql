@@ -1,0 +1,16 @@
+# All non-empty categories — drives the filter UI + category archive static params
+# (workflow/33). categoryImage is the ACF term-meta banner (Great White port).
+query AllCategories {
+  categories(first: 100, where: { hideEmpty: true }) {
+    nodes {
+      databaseId
+      name
+      slug
+      count
+      categoryImage {
+        sourceUrl
+        altText
+      }
+    }
+  }
+}

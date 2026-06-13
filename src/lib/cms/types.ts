@@ -40,9 +40,10 @@ export interface Page {
   seo?: PageSeo | null;
 }
 
-/** A post reference for the sitemap — frontend permalink + last-modified. */
+/** A post reference for the sitemap — slug (→ /blog/<slug>) + last-modified. */
 export interface PostRef {
-  uri: string;
+  slug: string;
+  uri?: string | null;
   date?: string | null;
   modified?: string | null;
 }
@@ -54,6 +55,74 @@ export interface PostSummary {
   date?: string | null;
   excerpt?: string | null;
   image?: { sourceUrl: string; altText?: string | null } | null;
+}
+
+// --- Blog (workflow/33). The standard blog every site ships: rendered WP post
+// content + category/tag archives, path-based pagination. All WordPress shapes are
+// normalized here so the routes/components never see a WPGraphQL edge. ---
+
+/** A taxonomy term (category or tag) as the UI consumes it. `image` is the ACF
+ *  category banner (categories only); `count` drives "hide empty" + page math. */
+export interface BlogTerm {
+  name: string;
+  slug: string;
+  /** Frontend archive path, e.g. /blog/category/<slug> (we own the route, not WP's uri). */
+  href: string;
+  count: number;
+  description?: string | null;
+  image?: { sourceUrl: string; altText?: string | null } | null;
+}
+
+/** A post author for the byline + author box. */
+export interface BlogAuthor {
+  name: string;
+  slug: string;
+  bio?: string | null;
+  avatarUrl?: string | null;
+}
+
+/** A post as it appears in a listing/card (index, archives, related). */
+export interface PostListItem {
+  databaseId: number;
+  title: string;
+  slug: string;
+  /** Frontend permalink — always /blog/<slug> (we own the route). */
+  href: string;
+  date?: string | null;
+  /** Sanitized excerpt HTML (WP returns a <p>-wrapped string). */
+  excerpt?: string | null;
+  image?: { sourceUrl: string; altText?: string | null } | null;
+  author?: { name: string; slug: string } | null;
+  categories: { name: string; slug: string; href: string }[];
+  /** Whole minutes, ceil(words/200); null when content wasn't fetched. */
+  readingTime: number | null;
+}
+
+/** A single post for the article page. `contentHtml` is RAW rendered WP HTML —
+ *  the PostBody component sanitizes before injecting (same chokepoint as RichText). */
+export interface BlogPost {
+  databaseId: number;
+  title: string;
+  slug: string;
+  href: string;
+  date?: string | null;
+  modified?: string | null;
+  contentHtml: string;
+  image: SeoImage | null;
+  author: BlogAuthor | null;
+  categories: { name: string; slug: string; href: string }[];
+  tags: { name: string; slug: string; href: string }[];
+  readingTime: number | null;
+  seo?: PageSeo | null;
+}
+
+/** A page of posts + the totals needed for path-based pagination + rel=prev/next. */
+export interface PaginatedPosts {
+  items: PostListItem[];
+  total: number;
+  page: number;
+  perPage: number;
+  totalPages: number;
 }
 
 /** A nav link. `children` drives sub-menus (desktop flyout/mega + mobile drill-down);

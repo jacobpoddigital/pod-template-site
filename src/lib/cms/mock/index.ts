@@ -1,45 +1,74 @@
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
-import { PageBySlugDocument, AllPagesDocument, AllPostsDocument, RecentPostsDocument, SiteChromeDocument } from "../generated/graphql";
+import {
+  PageBySlugDocument,
+  AllPagesDocument,
+  AllPostsDocument,
+  RecentPostsDocument,
+  SiteChromeDocument,
+  BlogPostsDocument,
+  PostBySlugDocument,
+  PostSlugsDocument,
+  AllCategoriesDocument,
+  CategoryBySlugDocument,
+  AllTagsDocument,
+  TagBySlugDocument,
+} from "../generated/graphql";
 import { mockHome, mockPosts, mockChrome } from "./fixtures";
+import { mockBlogPosts, mockCategories, mockTags } from "./blog";
 
 // DEV-ONLY GraphQL mock (ADR 0013 amendment). Serves the committed-schema queries
 // from curated fixtures so the template builds + renders with no WordPress. It is
 // NOT shipped: client.ts imports this dynamically only when WPGRAPHQL_URL is unset
-// or CMS_MODE=mock. Alternative: @graphql-tools/mock can auto-generate random data
-// from schema.graphql — fixtures are used here for a deterministic, real demo.
-//
-// Document identity (===) keys the response — both sides import the same const.
+// or CMS_MODE=mock. A document→handler table keyed by document identity (===) — both
+// sides import the same const. Add a query? Add one row.
+
+type Vars = Record<string, unknown>;
+
+// Blog index/archives: filter + offset-paginate the fixtures so /blog, /blog/page/[n]
+// and the category/tag archives all render real pages offline (workflow/33).
+function blogPostsHandler(variables: Vars) {
+  const { offset = 0, size = 12, category, tag, search, notIn } = variables as {
+    offset?: number;
+    size?: number;
+    category?: string | null;
+    tag?: string | null;
+    search?: string | null;
+    notIn?: string[] | null;
+  };
+  const excluded = new Set((notIn ?? []).map(String));
+  const filtered = mockBlogPosts.filter((p) => {
+    if (excluded.has(String(p.databaseId))) return false;
+    if (category && !p.categories.nodes.some((c) => c.slug === category)) return false;
+    if (tag && !p.tags.nodes.some((t) => t.slug === tag)) return false;
+    if (search && !p.title.toLowerCase().includes(search.toLowerCase())) return false;
+    return true;
+  });
+  return { posts: { pageInfo: { offsetPagination: { total: filtered.length } }, nodes: filtered.slice(offset, offset + size) } };
+}
+
+const HANDLERS: [unknown, (v: Vars) => unknown][] = [
+  [PageBySlugDocument, (v) => {
+    const slug = v.slug as string | undefined;
+    return slug === "home" || slug === "/" || slug === "" ? mockHome : { page: null };
+  }],
+  [AllPagesDocument, () => ({ pages: { nodes: [{ databaseId: 1, title: "Home", slug: "home", uri: "/" }] } })],
+  [AllPostsDocument, () => ({ posts: { nodes: mockBlogPosts.map((p) => ({ databaseId: p.databaseId, slug: p.slug, uri: p.uri, date: p.date, modified: p.modified })) } })],
+  [RecentPostsDocument, () => ({ posts: { nodes: mockPosts } })],
+  [BlogPostsDocument, blogPostsHandler],
+  [PostBySlugDocument, (v) => ({ post: mockBlogPosts.find((p) => p.slug === v.slug) ?? null })],
+  [PostSlugsDocument, () => ({ posts: { nodes: mockBlogPosts.map((p) => ({ slug: p.slug, date: p.date })) } })],
+  [AllCategoriesDocument, () => ({ categories: { nodes: mockCategories } })],
+  [CategoryBySlugDocument, (v) => ({ category: mockCategories.find((c) => c.slug === v.slug) ?? null })],
+  [AllTagsDocument, () => ({ tags: { nodes: mockTags } })],
+  [TagBySlugDocument, (v) => ({ tag: mockTags.find((t) => t.slug === v.slug) ?? null })],
+  [SiteChromeDocument, () => mockChrome],
+];
 
 export async function mockRequest<TResult>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   document: TypedDocumentNode<TResult, any>,
-  variables: Record<string, unknown>,
+  variables: Vars,
 ): Promise<TResult> {
-  if ((document as unknown) === PageBySlugDocument) {
-    const slug = variables.slug as string | undefined;
-    const isHome = slug === "home" || slug === "/" || slug === "";
-    return (isHome ? mockHome : { page: null }) as TResult;
-  }
-
-  if ((document as unknown) === AllPagesDocument) {
-    return {
-      pages: { nodes: [{ databaseId: 1, title: "Home", slug: "home", uri: "/" }] },
-    } as TResult;
-  }
-
-  if ((document as unknown) === AllPostsDocument) {
-    return {
-      posts: { nodes: mockPosts.map((p) => ({ databaseId: p.databaseId, uri: p.uri, date: p.date, modified: p.date })) },
-    } as TResult;
-  }
-
-  if ((document as unknown) === RecentPostsDocument) {
-    return { posts: { nodes: mockPosts } } as TResult;
-  }
-
-  if ((document as unknown) === SiteChromeDocument) {
-    return mockChrome as TResult;
-  }
-
-  return {} as TResult;
+  const match = HANDLERS.find(([doc]) => (document as unknown) === doc);
+  return (match ? match[1](variables) : {}) as TResult;
 }

@@ -183,6 +183,11 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* Offset in-page anchor jumps + focus scroll by the sticky header height, so a
+     targeted heading/card isn't hidden under it (WCAG 2.4.11; research 2026-06-13 §2.3). */
+  html {
+    scroll-padding-top: 5rem;
+  }
   body {
     @apply bg-background text-foreground;
     font-family: var(--brand-font-sans);
