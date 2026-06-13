@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { loadRedirects } from "./redirects.config";
 
 // Security headers applied to every route (checklist §21 — Frontend & API Layer).
 // CSP is intentionally omitted here as a default: a correct CSP is per-site (it must
@@ -29,13 +30,12 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
-  // Redirects from old URLs (checklist §13). When migrating an existing site, map every
-  // changed URL here so its SEO value 301s to the new path — losing these on a migration
-  // loses ranking. Keep this list in sync with the client's pre-migration URL inventory.
+  // Redirects from old URLs (checklist §13). Sourced from redirects.json (committed
+  // migration map) + an optional WP redirects plugin (WP_REDIRECTS_URL) so editors keep
+  // managing 301s in WordPress. Losing these on a migration loses ranking. Applied at
+  // build/deploy — see redirects.config.ts + docs/seo.md §Redirects.
   async redirects() {
-    return [
-      // { source: "/old-path", destination: "/new-path", permanent: true },
-    ];
+    return loadRedirects();
   },
 };
 

@@ -1,15 +1,22 @@
 import { cmsRequest } from "./client";
 import { toBlocks } from "./adapters/blocks";
-import { PageBySlugDocument, AllPagesDocument, RecentPostsDocument, SiteChromeDocument } from "./generated/graphql";
-import type { SiteChromeQuery } from "./generated/graphql";
-import type { Page, PostSummary, SiteChrome, NavItem } from "./types";
+import {
+  PageBySlugDocument,
+  AllPagesDocument,
+  AllPostsDocument,
+  RecentPostsDocument,
+  SiteChromeDocument,
+} from "./generated/graphql";
+import type { PageBySlugQuery, SiteChromeQuery } from "./generated/graphql";
+import type { Page, PageSeo, PostRef, PostSummary, SiteChrome, NavItem } from "./types";
 
 // The CMS public API — the ONLY entry point the rest of the app may import
 // (lint-enforced, workflow/02). WPGraphQL is the sole content layer (ADR 0013):
 // no REST, no fallback content. Missing page → null (caller 404s); malformed
 // content fails loud at build/ISR (zod parse in BlockRenderer).
 
-export type { CmsBlock, Page, PostSummary, SiteChrome, NavItem } from "./types";
+export type { CmsBlock, Page, PageSeo, SeoImage, PostRef, PostSummary, SiteChrome, NavItem } from "./types";
+export { pageMetadata } from "./metadata";
 
 /** Cache tag convention: revalidateTag("pages") / ("page:<slug>") via /api/revalidate. */
 export const PAGES_TAG = "pages";
@@ -20,16 +27,57 @@ export const POSTS_TAG = "posts";
 /** Cache tag for the header/footer chrome (menus + options). */
 export const CHROME_TAG = "chrome";
 
-/** Fetch a page by slug. Returns null when the page does not exist (caller calls notFound()). */
-export async function getPage(slug: string): Promise<Page | null> {
-  const data = await cmsRequest(PageBySlugDocument, { slug }, [PAGES_TAG, `page:${slug}`]);
+// Yoast SEO → normalized PageSeo (null when nothing usable, so callers fall back).
+type RawSeo = NonNullable<PageBySlugQuery["page"]>["seo"];
+function toSeoImage(img: { sourceUrl?: string | null; altText?: string | null; mediaDetails?: { width?: number | null; height?: number | null } | null } | null | undefined) {
+  return img?.sourceUrl
+    ? { sourceUrl: img.sourceUrl, altText: img.altText, width: img.mediaDetails?.width, height: img.mediaDetails?.height }
+    : null;
+}
+function toSeo(seo: RawSeo): PageSeo | null {
+  if (!seo) return null;
+  const ogImage = toSeoImage(seo.opengraphImage);
+  // Yoast empties come back as "" — coalesce to null so the frontend fallback chain fires.
+  const v = (s?: string | null) => (s ? s : null);
+  const result: PageSeo = {
+    title: v(seo.title),
+    description: v(seo.metaDesc),
+    ogTitle: v(seo.opengraphTitle),
+    ogDescription: v(seo.opengraphDescription),
+    ogImage,
+    twitterTitle: v(seo.twitterTitle),
+    twitterDescription: v(seo.twitterDescription),
+    twitterImage: toSeoImage(seo.twitterImage),
+    // Yoast returns "noindex"/"index" (and "nofollow"/"follow") as strings.
+    noindex: seo.metaRobotsNoindex === "noindex",
+    nofollow: seo.metaRobotsNofollow === "nofollow",
+    schemaRaw: v(seo.schema?.raw),
+  };
+  const hasAny = Object.values(result).some((x) => x !== null && x !== false);
+  return hasAny ? result : null;
+}
+
+/** Fetch a page by slug. Returns null when the page does not exist (caller calls notFound()).
+ *  `preview` bypasses the ISR cache for draft preview (boilerplate §4). */
+export async function getPage(slug: string, opts: { preview?: boolean } = {}): Promise<Page | null> {
+  const data = await cmsRequest(PageBySlugDocument, { slug }, [PAGES_TAG, `page:${slug}`], opts);
   const page = data.page;
   if (!page) return null;
   return {
     slug: page.slug ?? slug,
     title: page.title ?? slug,
     blocks: toBlocks(page.pageFields?.blocks),
+    seo: toSeo(page.seo),
   };
+}
+
+/** Every published post for the sitemap (boilerplate §6). Frontend URL = the WP `uri`;
+ *  needs a matching post route to resolve (template ships pages-only — see docs/seo.md). */
+export async function getAllPosts(): Promise<PostRef[]> {
+  const data = await cmsRequest(AllPostsDocument, {}, [POSTS_TAG]);
+  return (data.posts?.nodes ?? [])
+    .filter((n) => n.uri)
+    .map((n) => ({ uri: n.uri as string, date: n.date, modified: n.modified }));
 }
 
 /** List published pages (slugs + titles) — drives generateStaticParams + the sitemap. */
@@ -59,6 +107,22 @@ export async function getRecentPosts(opts: { first?: number; category?: string |
       image: img?.sourceUrl ? { sourceUrl: img.sourceUrl, altText: img.altText } : null,
     };
   });
+}
+
+/** Related posts for an article footer / "you might also like" (boilerplate §18 —
+ *  content relationships). The taxonomy pattern: pull recent posts in the SAME
+ *  category, drop the current one, take `first`. Category-driven keeps it editor-
+ *  controlled with no extra fields; swap `category` for a tag/ACF relationship the
+ *  same way when a project needs it. See docs/seo.md §Content relationships. */
+export async function getRelatedPosts(opts: {
+  category: string | null;
+  excludeUri?: string | null;
+  first?: number;
+}): Promise<PostSummary[]> {
+  const want = opts.first ?? 3;
+  // Over-fetch by one so removing the current post still leaves `want` results.
+  const posts = await getRecentPosts({ first: want + 1, category: opts.category });
+  return posts.filter((p) => p.uri !== opts.excludeUri).slice(0, want);
 }
 
 // Flat WPGraphQL menu items (parentId) → a nav tree. Empty children are dropped.

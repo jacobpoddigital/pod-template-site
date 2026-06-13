@@ -9,10 +9,42 @@ export interface CmsBlock {
   data: Record<string, unknown>;
 }
 
+/** Per-page SEO, normalized from Yoast (free) via "Add WPGraphQL SEO". Source-agnostic
+ *  so the frontend never changes if the source does. All optional — generateMetadata
+ *  falls back to the page title + site description + default OG. */
+export interface SeoImage {
+  sourceUrl: string;
+  altText?: string | null;
+  width?: number | null;
+  height?: number | null;
+}
+export interface PageSeo {
+  title: string | null;
+  description: string | null;
+  ogTitle: string | null;
+  ogDescription: string | null;
+  ogImage: SeoImage | null;
+  twitterTitle: string | null;
+  twitterDescription: string | null;
+  twitterImage: SeoImage | null;
+  noindex: boolean;
+  nofollow: boolean;
+  /** Yoast's per-page JSON-LD graph (a JSON string), injected on the page for AI/search. */
+  schemaRaw: string | null;
+}
+
 export interface Page {
   slug: string;
   title: string;
   blocks: CmsBlock[];
+  seo?: PageSeo | null;
+}
+
+/** A post reference for the sitemap — frontend permalink + last-modified. */
+export interface PostRef {
+  uri: string;
+  date?: string | null;
+  modified?: string | null;
 }
 
 /** A post summary for listing blocks (post_grid). Normalized from WPGraphQL. */

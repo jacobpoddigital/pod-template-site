@@ -1,0 +1,17 @@
+[
+  {
+    "source": "/old-services-page",
+    "destination": "/services",
+    "permanent": true
+  },
+  {
+    "source": "/blog/2019/:slug",
+    "destination": "/insights/:slug",
+    "permanent": true
+  },
+  {
+    "source": "/promo",
+    "destination": "/offers/spring",
+    "permanent": false
+  }
+]

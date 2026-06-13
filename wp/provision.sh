@@ -82,6 +82,26 @@ for gqlplugin in wp-graphql wpgraphql-acf; do
   fi
 done
 
+echo "==> Installing Yoast SEO (free) + Add WPGraphQL SEO (per-page meta/OG/JSON-LD, boilerplate §6)"
+# wp.org slugs. Yoast = the SEO source of truth (agency default, 2026-06-13); add-wpgraphql-seo
+# exposes Yoast's `seo` field on Page/Post to WPGraphQL (free; the page-by-slug query reads it).
+# Free Yoast has no redirect manager — redirects live in Next (redirects.json / WP_REDIRECTS_URL).
+for seoplugin in wordpress-seo add-wpgraphql-seo; do
+  if ! wpcli "plugin is-installed $seoplugin" 2>/dev/null; then
+    wpcli "plugin install $seoplugin --activate"
+  else
+    wpcli "plugin activate $seoplugin"
+  fi
+done
+
+# Headless URL pattern: set the WordPress "Site Address (home)" to the FRONTEND origin so
+# Yoast/WP build canonical + OG + schema URLs against the frontend (see pod-yoast-headless.php).
+# WordPress Address (siteurl) stays the WP backend so /wp-admin + /graphql keep working.
+if [[ -n "${FRONTEND_URL:-}" ]]; then
+  echo "==> Pointing WP 'home' at the frontend ($FRONTEND_URL) for headless canonical/OG/schema"
+  wpcli "option update home '$FRONTEND_URL'"
+fi
+
 echo "==> Copying mu-plugins and ACF field groups from repo"
 # Copy ALL mu-plugins (*.php), not a named one — pod-chrome-register.php (menus +
 # siteOptions GraphQL) ships alongside pod-blocks-register.php and is required for the
