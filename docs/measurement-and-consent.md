@@ -1,8 +1,32 @@
 # Measurement & consent — the standard build
 
-**Status: the agency standard (ADR 0003, amended), DECIDED but not yet wired into this template.**
-This doc is the contract for what "measurement-first" means and how to add it to a site, so it's done the
-same way every time rather than ad hoc. Wire it as part of every build; verify it on the go-live checklist.
+**Status: the agency standard (ADR 0003, amended). CORE NOW WIRED (Batch 3) — INERT until a GTM ID
+lands; the CMP vendor is the remaining decision.** GTM + Consent Mode v2 (default-denied) ship in
+`src/app/analytics.tsx`; the consent-update API is `src/lib/analytics/consent.ts`. GA4 / Ads / Meta
+are configured **inside the GTM container** (UI), not in code. Verify it on the go-live checklist.
+
+## What's coded now (CMP-agnostic, inert)
+- `src/app/analytics.tsx` — renders, **only when `NEXT_PUBLIC_GTM_ID` is set AND `NODE_ENV=production`**:
+  (1) a Consent Mode v2 `default` (all ad/analytics storage **denied**, `wait_for_update:500`, exposes
+  `window.gtag`) as a `beforeInteractive` script; (2) the GTM loader (`afterInteractive`); (3) the GTM
+  `<noscript>` iframe. Local/dev/mock emit **nothing**.
+- `src/lib/analytics/consent.ts` — `updateConsent({analytics,ads})` / `grantAll()` / `denyAll()` push
+  Consent Mode v2 updates. **This is the CMP adapter point.**
+
+## CMP — Cookiebot (the agency standard, chosen 2026-06-13)
+Wired CMP-agnostically on top of the consent API:
+- `src/app/analytics.tsx` loads the Cookiebot script (`consent.cookiebot.com/uc.js`,
+  `data-blockingmode="auto"`) as `beforeInteractive` when `NEXT_PUBLIC_COOKIEBOT_ID` is set + production.
+- `src/app/cookiebot-bridge.tsx` (`'use client'`) listens for `CookiebotOnAccept`/`CookiebotOnDecline`
+  and maps Cookiebot categories → Consent Mode v2 (`statistics`→analytics, `marketing`→ads) via
+  `updateConsent()`. Mounted by layout only when the CMP is enabled.
+- Swapping CMP later = replace the loader + bridge; the consent API and GTM stay put.
+
+## Remaining (needs your input)
+1. **Cookiebot account** → set `NEXT_PUBLIC_COOKIEBOT_ID` (the domain-group "cbid"). Register the
+   client's domain in Cookiebot.
+2. **Provide `NEXT_PUBLIC_GTM_ID`** (+ build GA4/Ads/Meta tags inside the GTM container).
+3. **Conversion tracking** for the primary action — configured in GTM, triggered on the form success.
 
 > Why it's the standard, not an option: PodDigital is a digital marketing agency. Measurement **is** the
 > product. GA4 + GTM + Consent Mode v2 + a CMP + conversion tracking are the default build. The opt-out
