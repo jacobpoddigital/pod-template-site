@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "codegen": "graphql-codegen --config codegen.ts",
-    "lhci": "lhci autorun"
+    "lhci": "lhci autorun",
+    "links": "start-server-and-test start http://localhost:3000 links:run",
+    "links:run": "linkinator http://localhost:3000 --config linkinator.config.json"
   },
   "dependencies": {
     "@graphql-typed-document-node/core": "^3.2.0",
@@ -52,6 +54,8 @@
     "eslint-config-next": "16.2.7",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-boundaries": "^5.4.0",
+    "linkinator": "^7.6.1",
+    "start-server-and-test": "^3.0.11",
     "tailwindcss": "^4",
     "typescript": "^5"
   },

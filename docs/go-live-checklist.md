@@ -41,6 +41,6 @@ flagged as launch-phase. Tick every box; anything that can't be ticked is a laun
 
 ## Reliability & content
 - [ ] Deleted-page behaviour confirmed (ISR last-good + `notFound()`; redirect-on-delete if the URL had value).
-- [ ] Broken-link check run pre- and post-launch.
+- [ ] Broken-link check run pre- and post-launch — `pnpm links` reports **zero broken internal links** (`docs/links.md`). Run when content is complete (it flags placeholder/unbuilt routes by design).
 - [ ] Draft preview decision made — scaffold ships (`/api/preview`, `/api/exit-preview`, `getPage({preview})`). To enable: add a dynamic preview route + WP app-password auth per `docs/preview.md`.
 - [ ] A non-builder did a fresh `provision.sh` + `pnpm dev` and reached a rendered page without help (the real maturity test).

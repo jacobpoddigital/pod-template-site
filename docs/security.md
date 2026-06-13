@@ -20,7 +20,7 @@ and the lockdown runbook in `web-ai-automation/workflow/01`.
 - **Flip CSP to enforcing** — the default CSP ships report-only (see above). Before launch: set the media host + any embed origins, confirm the report console is clean, then set `CSP_MODE=enforce`. No `default-src *`, ever.
 - **WordPress lockdown** (`workflow/01`): `/wp-admin` behind an IP allowlist; login protected (2FA where the host supports it); only ACF Pro + WPGraphQL + wpgraphql-acf installed; unused plugins/themes removed; `blog_public = 0`.
 - **Staging frontend `noindex`** — `robots.ts` blocks non-production deploys (Vercel preview / `NEXT_PUBLIC_NOINDEX=1`).
-- **Broken-link check** — run pre- and post-launch, e.g. `npx linkinator https://<url> --recurse --skip "mailto:|tel:"` (or `lychee`). Fix or redirect 404s before launch.
+- **Broken-link check** — `pnpm links` (linkinator, pre-configured) crawls the built site and fails on broken internal links; run pre-launch once content is complete. See `docs/links.md`.
 
 ## Process
 

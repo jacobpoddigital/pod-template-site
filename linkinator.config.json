@@ -1,0 +1,5 @@
+{
+  "//": "Broken-link checker (checklist §22) — a PRE-LAUNCH go-live gate, not a per-PR CI blocker. Crawls the running site (pnpm start) and fails on broken INTERNAL links. Only external links + mailto/tel are skipped (they flake — rate-limits, bot-403s; external link-rot is a manual check). Run `pnpm links` once content is COMPLETE (all linked routes exist). On the bare template or an in-progress build it will report the sample/placeholder links (e.g. /services/*, /about, /blog/*, /privacy, /terms) and unbuilt pages as broken — that is EXPECTED; the gate is meaningful at go-live when every linked page should resolve. See docs/links.md.",
+  "recurse": true,
+  "skip": "^(mailto:|tel:|https?://(?!localhost))"
+}
