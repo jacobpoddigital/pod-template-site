@@ -86,6 +86,26 @@ two ways and merged at build/deploy (`redirects.config.ts` → `next.config.ts r
 > Next 308, a `302` row → Next 307. For a different plugin, adapt the shim's query or just export
 > to `redirects.json` at migration time.
 
+### Redirect-on-delete (§22 — don't let a removed page 404 away its ranking)
+
+When you **delete or unpublish** a page (or change its slug) that had traffic or backlinks, its old
+URL must **301 to the closest live page** — otherwise that ranking + any inbound links die at a 404.
+The editor/agent flow:
+
+1. **Before/at delete:** add the old path to redirects → the closest relevant live page (the
+   replacement, its parent category, or `/`). Either add a row to **`redirects.json`** (commit) or
+   add it in the **WP "301 Redirects" plugin** (synced via `WP_REDIRECTS_URL`).
+2. **Redeploy** (redirects apply at build — wire the WP save→deploy hook for immediacy).
+3. **Verify:** `curl -I https://<site>/old-path` → `308`/`307` with the right `Location`.
+
+If the URL had **no** SEO value (never linked/indexed), skip it — the branded 404 (`app/not-found.tsx`)
+is the correct graceful landing. Until the next deploy, a just-deleted page keeps serving its
+**ISR last-good** render (it doesn't break instantly); the redirect/404 lands on the rebuild.
+
+> **`permanent` → status:** Next emits **308** for `permanent: true` and **307** for `permanent: false`
+> (modern, method-preserving). Google treats **308 as a 301-equivalent** for ranking transfer, so use
+> `permanent: true` for a real move/delete; `false` (307) only for genuinely temporary redirects.
+
 ## Content relationships (§18)
 
 `getRelatedPosts({ category, excludeUri, first })` (`src/lib/cms/index.ts`) is the taxonomy

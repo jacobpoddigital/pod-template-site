@@ -40,7 +40,7 @@ flagged as launch-phase. Tick every box; anything that can't be ticked is a laun
 - [ ] Uptime/deploy-failure alerting active (Vercel→Slack deploy notifications + an uptime monitor).
 
 ## Reliability & content
-- [ ] Deleted-page behaviour confirmed (ISR last-good + `notFound()`; redirect-on-delete if the URL had value).
+- [ ] Deleted-page behaviour confirmed — a removed/unpublished page serves ISR last-good, then the branded 404 (`app/not-found.tsx`) on rebuild; **if the old URL had SEO value, add a 301 instead** (`docs/seo.md §Redirect-on-delete`) and `curl -I` confirms the redirect.
 - [ ] Broken-link check run pre- and post-launch — `pnpm links` reports **zero broken internal links** (`docs/links.md`). Run when content is complete (it flags placeholder/unbuilt routes by design).
 - [ ] Draft preview decision made — scaffold ships (`/api/preview`, `/api/exit-preview`, `getPage({preview})`). To enable: add a dynamic preview route + WP app-password auth per `docs/preview.md`.
 - [ ] A non-builder did a fresh `provision.sh` + `pnpm dev` and reached a rendered page without help (the real maturity test).
