@@ -17,8 +17,8 @@ flagged as launch-phase. Tick every box; anything that can't be ticked is a laun
 - [ ] Pagination handled correctly on any archive/listing pages.
 
 ## Security (the items that are OFF in dev by design)
-- [ ] **GraphQL introspection DISABLED in production.** It is enabled in dev to debug the schema — it must be off live. (WPGraphQL settings / `graphql_introspection_enabled` filter.)
-- [ ] GraphQL query depth/complexity limiting configured (prevent endpoint abuse).
+- [ ] **GraphQL introspection DISABLED in production** — auto-enforced by `wp/mu-plugins/pod-graphql-hardening.php` (filters `public_introspection_enabled` → off when `wp_get_environment_type()` is `production`). Dev keeps it via `WP_ENVIRONMENT_TYPE=local`. **Verify live:** a public `{ __schema { queryType { name } } }` query is rejected.
+- [ ] **GraphQL query depth limiting** — auto-enforced by the same mu-plugin (max depth 15). **Verify live:** a deliberately over-deep query errors; the real page query still 200s.
 - [ ] Security headers verified live (`next.config.ts → headers()` ships X-Frame-Options, nosniff, HSTS, Referrer-Policy, Permissions-Policy).
 - [ ] **Per-site CSP added** (`Content-Security-Policy`) allowing only this site's WP media host, GTM/GA4, the CMP, and any embeds. No `default-src *`.
 - [ ] `/wp-admin` behind IP allowlist; WP login protected; only ACF Pro + WPGraphQL + wpgraphql-acf installed; unused plugins/themes removed.

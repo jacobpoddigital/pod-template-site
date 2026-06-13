@@ -33,6 +33,12 @@ services:
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
+      # Mark LOCAL dev as 'local' so pod-graphql-hardening.php stays inert here — it
+      # hardens only 'production', and wp_get_environment_type() DEFAULTS to 'production'
+      # when unset (verified). Without this, local dev would lose GraphQL introspection
+      # (needed for `get-graphql-schema` regen). Production (Atlas) leaves it unset.
+      WORDPRESS_CONFIG_EXTRA: |
+        define( 'WP_ENVIRONMENT_TYPE', 'local' );
     volumes:
       - wp_data:/var/www/html
 
