@@ -1,0 +1,2 @@
+# Drop the realfavicongenerator.net output here (generated with path "/favicons/").
+# Then uncomment the icons/manifest block in src/app/layout.tsx. See docs/favicons.md.
