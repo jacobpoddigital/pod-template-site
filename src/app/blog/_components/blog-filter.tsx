@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronDown, Tag as TagIcon, Search } from "lucide-react";
+import { ChevronDown, Tag as TagIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BLOG_BASE, type BlogTerm } from "@/lib/cms";
+import { BlogSearchForm } from "./blog-search-form";
 
 // Blog filter (Great White's filter-content, ported to React + tokens). Navigation,
 // not search: category pills + an expandable tag list drive the archive routes (no
@@ -68,23 +69,22 @@ export function BlogFilter({
           </button>
         ) : null}
 
-        <Link href={`${BLOG_BASE}/search`} className={cn(pill, idle, "ml-auto gap-2")}>
-          <Search aria-hidden className="size-4" />
-          Search
-        </Link>
-
-        {tags.length ? (
-          <button
-            type="button"
-            onClick={() => setShowTags((v) => !v)}
-            aria-expanded={showTags}
-            className={cn(pill, idle, "gap-2")}
-          >
-            <TagIcon aria-hidden className="size-4" />
-            Topics
-            <ChevronDown aria-hidden className={cn("size-4 transition-transform", showTags && "rotate-180")} />
-          </button>
-        ) : null}
+        {/* Search + Topics sit together on the right (full-width wrap on mobile). */}
+        <div className="ml-auto flex w-full items-center gap-2 sm:w-auto">
+          <BlogSearchForm variant="inline" />
+          {tags.length ? (
+            <button
+              type="button"
+              onClick={() => setShowTags((v) => !v)}
+              aria-expanded={showTags}
+              className={cn(pill, idle, "shrink-0 gap-2")}
+            >
+              <TagIcon aria-hidden className="size-4" />
+              Topics
+              <ChevronDown aria-hidden className={cn("size-4 transition-transform", showTags && "rotate-180")} />
+            </button>
+          ) : null}
+        </div>
       </div>
 
       {showTags && tags.length ? <TagDrawer tags={tags} current={current} /> : null}
