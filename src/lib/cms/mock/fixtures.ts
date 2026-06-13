@@ -12,6 +12,21 @@ export const mockHome: PageBySlugQuery = {
     title: "Home",
     slug: "home",
     uri: "/",
+    // Yoast SEO (free) via "Add WPGraphQL SEO". canonical is the WP origin — the frontend OVERRIDES it.
+    seo: {
+      title: "Pod template — a headless WordPress starter",
+      metaDesc: "A headless WordPress + Next.js starter, rendered with no backend. Yoast drives per-page meta, OG and JSON-LD.",
+      canonical: "https://wp.example.com/",
+      metaRobotsNoindex: "index",
+      metaRobotsNofollow: "follow",
+      opengraphTitle: "Pod template — a headless WordPress starter",
+      opengraphDescription: "Every block below is real, served from a committed schema while WordPress is offline.",
+      opengraphImage: { sourceUrl: "https://picsum.photos/seed/og/1200/630", altText: "Pod template", mediaDetails: { width: 1200, height: 630 } },
+      twitterTitle: null,
+      twitterDescription: null,
+      twitterImage: null,
+      schema: { raw: '{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://wp.example.com/#webpage","name":"Home"}]}' },
+    },
     pageFields: {
       blocks: [
         {

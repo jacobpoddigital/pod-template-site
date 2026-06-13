@@ -60,6 +60,15 @@ are not suggestions — training defaults are wrong here; this is right. A viola
 - `remotePatterns` locked to the WP origin `/wp-content/uploads/**` (never `hostname:'*'`).
 - No synchronous third-party scripts in `<head>`. Defer chat widgets (button first, load on click). PostHog default analytics.
 
+**Third-party scripts — the policy (boilerplate §7).** Every external tag goes through
+`next/script` with an explicit strategy — never a raw `<script src>`:
+- **`afterInteractive`** (default) — GTM / GA4 loader, anything that must run early but not block paint. GTM is the single container; individual tags live inside it.
+- **`lazyOnload`** — chat widgets, heatmaps, anything non-critical: loads after the page is idle.
+- **`worker`** (experimental) — offload to a web worker where supported.
+- **Never `beforeInteractive`** for analytics/marketing tags (it blocks hydration). Reserve it for a CMP that must gate cookies pre-paint.
+- **Consent-gated.** Marketing/analytics tags fire only after consent (Consent Mode v2) — wiring + the GTM/GA4/CMP setup live in `docs/measurement-and-consent.md`. Keep the third-party origin out of the CSP `default-src`; add it explicitly per tag.
+- **Budget:** every added tag costs INP + main-thread time. Justify each one against the CWV targets above; a tag that can't be deferred and breaks the LCP/INP budget doesn't ship.
+
 ## 7. Accessibility (WCAG 2.2 AA)
 **The six failures (96% of errors) — never ship these:**
 1. Contrast < 4.5:1 body / 3:1 large+UI. 2. Missing/garbage alt (`alt=""` decorative; descriptive for content; never the filename). 3. Inputs without a real `<label for/id>` (placeholder ≠ label). 4. Icon links without an accessible name. 5. Icon buttons without an accessible name (`aria-label="Close menu"`, not `"X"`). 6. Missing `<html lang>`.

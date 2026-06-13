@@ -105,6 +105,7 @@ type Post {
   title: String
   uri: String
   date: String
+  modified: String
   excerpt: String
   featuredImage: NodeWithFeaturedImageToMediaItemConnectionEdge
 }
@@ -118,7 +119,33 @@ type Page {
   title: String
   slug: String
   uri: String
+  seo: PostTypeSEO
   pageFields: Page_Pagefields
+}
+
+# Per-page SEO from Yoast, exposed by the "Add WPGraphQL SEO" plugin (boilerplate §6 —
+# Yoast is the agency default, ADR/decision 2026-06-13). A MINIMAL subset of Yoast's
+# PostTypeSEO — the fields generateMetadata maps. Regenerate the full SDL from live WP
+# once Yoast is installed (codegen.ts). The frontend OVERRIDES canonical + OG url to the
+# frontend origin (Yoast emits the WP origin); opengraphImage's WP media URL is fine
+# (add the media host to next.config remotePatterns). schema.raw = Yoast's JSON-LD graph.
+type PostTypeSEO {
+  title: String
+  metaDesc: String
+  canonical: String
+  metaRobotsNoindex: String
+  metaRobotsNofollow: String
+  opengraphTitle: String
+  opengraphDescription: String
+  opengraphImage: MediaItem
+  twitterTitle: String
+  twitterDescription: String
+  twitterImage: MediaItem
+  schema: SEOSchema
+}
+
+type SEOSchema {
+  raw: String
 }
 
 # ACF field group "Page Fields" → the `blocks` Flexible Content field.

@@ -8,6 +8,35 @@ query PageBySlug($slug: ID!) {
     title
     slug
     uri
+    # Yoast SEO via "Add WPGraphQL SEO" (free). canonical is fetched but the frontend
+    # OVERRIDES it to the frontend origin (Yoast emits the WP origin). schema.raw is
+    # Yoast's per-page JSON-LD graph, injected on the page.
+    seo {
+      title
+      metaDesc
+      canonical
+      metaRobotsNoindex
+      metaRobotsNofollow
+      opengraphTitle
+      opengraphDescription
+      opengraphImage {
+        sourceUrl
+        altText
+        mediaDetails {
+          width
+          height
+        }
+      }
+      twitterTitle
+      twitterDescription
+      twitterImage {
+        sourceUrl
+        altText
+      }
+      schema {
+        raw
+      }
+    }
     pageFields {
       blocks {
         __typename

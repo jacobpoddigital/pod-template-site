@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlockRenderer } from "@/blocks/block-renderer";
-import { getPage, getPages } from "@/lib/cms";
+import { getPage, getPages, pageMetadata } from "@/lib/cms";
+import { SeoSchema } from "../seo-schema";
 
 // Generic CMS page (workflow/02 canonical tree): any published WP page renders
 // through the block registry. THIN composition only.
@@ -24,17 +25,20 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const page = await getPage(slug.join("/"));
+  const path = slug.join("/");
+  const page = await getPage(path);
   if (!page) notFound();
-  return {
-    title: page.title,
-    alternates: { canonical: `/${slug.join("/")}` },
-  };
+  return pageMetadata(page, `/${path}`);
 }
 
 export default async function CmsPage({ params }: Props) {
   const { slug } = await params;
   const page = await getPage(slug.join("/"));
   if (!page) notFound();
-  return <BlockRenderer blocks={page.blocks} />;
+  return (
+    <>
+      <SeoSchema raw={page.seo?.schemaRaw} />
+      <BlockRenderer blocks={page.blocks} />
+    </>
+  );
 }

@@ -1,5 +1,5 @@
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
-import { PageBySlugDocument, AllPagesDocument, RecentPostsDocument, SiteChromeDocument } from "../generated/graphql";
+import { PageBySlugDocument, AllPagesDocument, AllPostsDocument, RecentPostsDocument, SiteChromeDocument } from "../generated/graphql";
 import { mockHome, mockPosts, mockChrome } from "./fixtures";
 
 // DEV-ONLY GraphQL mock (ADR 0013 amendment). Serves the committed-schema queries
@@ -24,6 +24,12 @@ export async function mockRequest<TResult>(
   if ((document as unknown) === AllPagesDocument) {
     return {
       pages: { nodes: [{ databaseId: 1, title: "Home", slug: "home", uri: "/" }] },
+    } as TResult;
+  }
+
+  if ((document as unknown) === AllPostsDocument) {
+    return {
+      posts: { nodes: mockPosts.map((p) => ({ databaseId: p.databaseId, uri: p.uri, date: p.date, modified: p.date })) },
     } as TResult;
   }
 

@@ -22,17 +22,22 @@ export async function cmsRequest<TResult>(
   document: TypedDocumentNode<TResult, any>,
   variables: Record<string, unknown>,
   tags: string[],
+  // Preview (draft) reads bypass the ISR cache so an editor sees unpublished content
+  // immediately (boilerplate §4 — draft preview). Off for all normal traffic.
+  opts: { preview?: boolean } = {},
 ): Promise<TResult> {
   if (useMock) {
     const { mockRequest } = await import("./mock");
     return mockRequest(document, variables);
   }
 
+  const next: { tags?: string[]; revalidate?: number } = opts.preview ? { revalidate: 0 } : { tags };
   const client = new GraphQLClient(endpoint as string, {
     // Tag every fetch for on-demand ISR: WP publish webhook → /api/revalidate →
     // revalidateTag (use { expire: 0 } there if a publish must show instantly).
+    // Preview reads use { revalidate: 0 } (uncached) so drafts are always fresh.
     fetch: (input: RequestInfo | URL, init?: RequestInit) =>
-      fetch(input, { ...init, next: { tags } }),
+      fetch(input, { ...init, cache: opts.preview ? "no-store" : undefined, next }),
   });
 
   // graphql-request v7's overloads use a conditional variables tuple that can't

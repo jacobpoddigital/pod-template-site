@@ -7,13 +7,15 @@ flagged as launch-phase. Tick every box; anything that can't be ticked is a laun
 > Origin: the Website Navigator build (2026-06-12) was the template's first fresh-start. It exposed that
 > these launch-phase concerns had no single home. This is that home.
 
-## SEO & indexability
-- [ ] `metadataBase` is the **frontend** domain; canonical is correct on every page type (never the WP origin).
-- [ ] `robots.ts` + `sitemap.ts` output the right URLs; sitemap covers all published content.
-- [ ] Google Search Console verified; sitemap submitted.
+## SEO & indexability  (detail: `docs/seo.md`)
+- [ ] `metadataBase` is the **frontend** domain; canonical is correct on every page type (never the WP origin). WP "Site Address (home)" points at the frontend so Yoast emits frontend canonical/OG/schema (`FRONTEND_URL=… provision.sh`).
+- [ ] Yoast SEO (free) + "Add WPGraphQL SEO" active; per-page title/description/OG editable and rendering via `pageMetadata`. Yoast's own XML sitemap disabled (`pod-yoast-headless.php`).
+- [ ] `robots.ts` + `sitemap.ts` output the right URLs; sitemap covers all published **pages and posts**. If the site has a blog, a post route (`app/blog/[slug]`) exists so post URLs resolve.
+- [ ] Google Search Console **and Bing Webmaster Tools** verified; sitemap submitted to both (Bing powers ChatGPT/Copilot search). Consider IndexNow.
+- [ ] `/llms.txt` reachable and lists the right pages; AI-crawler policy in `robots.ts` reviewed per client (allow retrieval vs training).
 - [ ] OG + Twitter card tags tested in a real link-preview tool (not just present in markup).
-- [ ] JSON-LD present for relevant types (FAQ ✅ from the block; add LocalBusiness / Breadcrumb / Article as needed).
-- [ ] 301 redirects mapped for every changed URL from the old site (`next.config.ts → redirects()`). Migration SEO depends on this.
+- [ ] JSON-LD present for relevant types: site-wide (Organization/WebSite), Yoast per-page graph, FAQ ✅ from the block; add LocalBusiness / Breadcrumb / Article as needed.
+- [ ] 301 redirects mapped for every changed URL from the old site — `redirects.json` (committed inventory) and/or a WP redirects plugin via `WP_REDIRECTS_URL` (`docs/seo.md §Redirects`). Migration SEO depends on this.
 - [ ] Pagination handled correctly on any archive/listing pages.
 
 ## Security (the items that are OFF in dev by design)
@@ -40,5 +42,5 @@ flagged as launch-phase. Tick every box; anything that can't be ticked is a laun
 ## Reliability & content
 - [ ] Deleted-page behaviour confirmed (ISR last-good + `notFound()`; redirect-on-delete if the URL had value).
 - [ ] Broken-link check run pre- and post-launch.
-- [ ] Draft preview decision made (wire `draftMode()` if the client needs to preview unpublished content).
+- [ ] Draft preview decision made — scaffold ships (`/api/preview`, `/api/exit-preview`, `getPage({preview})`). To enable: add a dynamic preview route + WP app-password auth per `docs/preview.md`.
 - [ ] A non-builder did a fresh `provision.sh` + `pnpm dev` and reached a rendered page without help (the real maturity test).
