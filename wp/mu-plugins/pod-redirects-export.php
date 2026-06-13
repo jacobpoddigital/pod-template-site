@@ -8,12 +8,13 @@
  *
  * GET /wp-json/pod/v1/redirects  →  [ { "source": "/old", "destination": "/new", "permanent": true }, ... ]
  *
- * Reads the WebFactory "301 Redirects" plugin (slug eps-301-redirects) option `eps_redirects`
- * by default — Pod's usual plugin. Other plugins: adapt $rows below (or export to redirects.json).
+ * Reads the WebFactory "301 Redirects" plugin (slug eps-301-redirects) — Pod's usual plugin.
+ * VERIFIED 2026-06-13 against the installed plugin: it stores rules in a CUSTOM TABLE
+ * `{$wpdb->prefix}redirects` (cols: url_from, url_to, status), NOT an option. `status` holds
+ * the HTTP code ('301'|'302'|'307') or 'inactive'/'404'. (An earlier version of this shim wrongly
+ * read a `eps_redirects` option — that's the settings-framework slug, not the redirect data.)
  *
- * ⚠️ Confirm the option's exact sub-keys against your installed version (introspect with
- *    `wp option get eps_redirects --format=json`): historically url/from = source,
- *    redirect/to = destination, redirect_type ('301'/'302') = permanent, status = enable/disable.
+ * Different plugin? Swap the query below, or export to redirects.json at migration time.
  */
 
 add_action( 'rest_api_init', function () {
@@ -21,25 +22,29 @@ add_action( 'rest_api_init', function () {
 		'methods'             => 'GET',
 		'permission_callback' => '__return_true', // read-only, non-sensitive (public 301 map)
 		'callback'            => function () {
-			$raw = get_option( 'eps_redirects', [] );
-			$rows = is_array( $raw ) ? $raw : [];
-			$out  = [];
-			foreach ( $rows as $r ) {
-				if ( ! is_array( $r ) ) {
-					continue;
-				}
-				// Skip disabled rules if the plugin records a status.
-				$status = $r['status'] ?? 'enable';
-				if ( $status === 'disable' || $status === '0' ) {
-					continue;
-				}
-				$source      = $r['url']      ?? $r['from'] ?? $r['source']      ?? null;
-				$destination = $r['redirect'] ?? $r['to']   ?? $r['destination'] ?? null;
+			global $wpdb;
+			$table = $wpdb->prefix . 'redirects';
+
+			// Plugin not installed / table absent → no redirects (safe default).
+			if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
+				return [];
+			}
+
+			// Skip disabled ('inactive') and 404-log rows; keep real redirects.
+			$rows = $wpdb->get_results(
+				"SELECT url_from, url_to, status FROM `{$table}` WHERE status NOT IN ('inactive','404')",
+				ARRAY_A
+			);
+
+			$out = [];
+			foreach ( (array) $rows as $r ) {
+				$source      = $r['url_from'] ?? null;
+				$destination = $r['url_to'] ?? null;
 				if ( ! $source || ! $destination ) {
 					continue;
 				}
-				$type      = (string) ( $r['redirect_type'] ?? $r['type'] ?? '301' );
-				$permanent = $type !== '302' && $type !== '307';
+				$status    = (string) ( $r['status'] ?? '301' );
+				$permanent = $status === '301' || $status === '308';
 				$out[]     = [
 					'source'      => $source,
 					'destination' => $destination,

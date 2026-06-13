@@ -70,19 +70,21 @@ two ways and merged at build/deploy (`redirects.config.ts` → `next.config.ts r
 2. **`WP_REDIRECTS_URL`** *(optional)* — a normalized JSON endpoint so editors keep managing 301s
    in the **familiar WP plugin UI**. Pod's usual plugin is **"301 Redirects" by WebFactory**
    (`eps-301-redirects`). It has no public export endpoint, so the template ships a tiny read-only
-   shim mu-plugin — **`wp/mu-plugins/pod-redirects-export.php`** — that re-publishes its
-   `eps_redirects` option as `GET /wp-json/pod/v1/redirects` →
-   `[{ source, destination, permanent }]`. Point `WP_REDIRECTS_URL` at that. On deploy we fetch +
-   merge it. **Enforcement moves from the WP server to the edge** — the plugin is just the store.
+   shim mu-plugin — **`wp/mu-plugins/pod-redirects-export.php`** — that re-publishes its redirects
+   as `GET /wp-json/pod/v1/redirects` → `[{ source, destination, permanent }]`. Point
+   `WP_REDIRECTS_URL` at that. On deploy we fetch + merge it. **Enforcement moves from the WP
+   server to the edge** — the plugin is just the store.
 
    A WP redirect added after a deploy applies on the **next build**; wire a WP "save → deploy
    hook" (Vercel Deploy Hook) for near-immediate effect. Redirects never fail the build — a bad
    row or unreachable endpoint is logged and skipped; file rules win on a source collision.
 
-> ⚠️ Confirm the `eps_redirects` sub-key names against the installed version
-> (`wp option get eps_redirects --format=json`) and adjust the shim's mapping if needed — the
-> defaults cover url/from→source, redirect/to→destination, redirect_type→permanent, status→skip.
-> For a different plugin, adapt the shim or just export to `redirects.json` at migration time.
+> **Verified 2026-06-13** against the installed plugin: it stores rules in a CUSTOM TABLE
+> `{prefix}redirects` (cols `url_from`, `url_to`, `status` = `301`/`302`/`307`/`inactive`) — **not**
+> an option. The shim queries that table, maps `url_from`→source / `url_to`→destination /
+> `status==='301'`→permanent, and skips `inactive`/`404` rows. End-to-end proven: a `301` row →
+> Next 308, a `302` row → Next 307. For a different plugin, adapt the shim's query or just export
+> to `redirects.json` at migration time.
 
 ## Content relationships (§18)
 
