@@ -9,9 +9,11 @@ import {
   CategoryBySlugDocument,
   AllTagsDocument,
   TagBySlugDocument,
+  AuthorBySlugDocument,
+  AuthorSlugsDocument,
 } from "./generated/graphql";
-import type { BlogPostsQuery, PostBySlugQuery } from "./generated/graphql";
-import type { BlogTerm, BlogAuthor, PostListItem, BlogPost, PaginatedPosts, SeoImage } from "./types";
+import type { BlogPostsQuery, PostBySlugQuery, AuthorBySlugQuery } from "./generated/graphql";
+import type { BlogTerm, BlogAuthor, BlogAuthorSocial, PostListItem, BlogPost, PaginatedPosts, SeoImage } from "./types";
 
 // --- The standard blog (workflow/34). Rendered-WP-content model: getBlogPosts
 // paginates via the WPGraphQL Offset Pagination addon; getPost returns one article;
@@ -25,6 +27,7 @@ export const BLOG_PER_PAGE = 12;
 const postHref = (slug: string) => `${BLOG_BASE}/${slug}`;
 const categoryHref = (slug: string) => `${BLOG_BASE}/category/${slug}`;
 const tagHref = (slug: string) => `${BLOG_BASE}/tag/${slug}`;
+const authorHref = (slug: string) => `${BLOG_BASE}/author/${slug}`;
 
 // --- Flat normalizers (kept tiny so the public functions stay under the complexity bar) ---
 
@@ -43,14 +46,40 @@ function flatImageDetailed(node: ImgNode): SeoImage | null {
   return node?.sourceUrl ? { sourceUrl: node.sourceUrl, altText: node.altText, width: node.mediaDetails?.width, height: node.mediaDetails?.height } : null;
 }
 
-type AuthorEdge = { node?: { name?: string | null; slug?: string | null; description?: string | null; avatar?: { url?: string | null } | null } | null } | null | undefined;
+type RawSocial = { label?: string | null; url?: string | null };
+function mapSocial(arr: readonly RawSocial[] | null | undefined): BlogAuthorSocial[] {
+  return (arr ?? []).filter((s) => s.url).map((s) => ({ label: s.label ?? "", href: s.url! }));
+}
+
+type RawAuthor = {
+  name?: string | null;
+  slug?: string | null;
+  description?: string | null;
+  avatar?: { url?: string | null } | null;
+  roleTitle?: string | null;
+  teamProfileUrl?: string | null;
+  social?: readonly RawSocial[] | null;
+};
+type AuthorEdge = { node?: RawAuthor | null } | null | undefined;
+
 function flatAuthorSummary(edge: AuthorEdge) {
   const a = edge?.node;
-  return a?.name ? { name: a.name, slug: a.slug ?? "" } : null;
+  return a?.name ? { name: a.name, slug: a.slug ?? "", href: authorHref(a.slug ?? "") } : null;
 }
 function flatAuthorFull(edge: AuthorEdge): BlogAuthor | null {
   const a = edge?.node;
-  return a?.name ? { name: a.name, slug: a.slug ?? "", bio: a.description, avatarUrl: a.avatar?.url } : null;
+  if (!a?.name) return null;
+  const slug = a.slug ?? "";
+  return {
+    name: a.name,
+    slug,
+    href: authorHref(slug),
+    bio: a.description,
+    avatarUrl: a.avatar?.url,
+    roleTitle: a.roleTitle,
+    teamUrl: a.teamProfileUrl,
+    social: mapSocial(a.social),
+  };
 }
 
 type TermNode = { name?: string | null; slug?: string | null };
@@ -86,6 +115,7 @@ export interface BlogPostsOpts {
   perPage?: number;
   categorySlug?: string | null;
   tagSlug?: string | null;
+  authorSlug?: string | null;
   search?: string | null;
   /** Post databaseIds to exclude (the featured post on every page, or the current post). */
   excludeIds?: number[];
@@ -102,6 +132,7 @@ function blogVars(opts: BlogPostsOpts) {
       offset: (page - 1) * perPage,
       category: opts.categorySlug ?? null,
       tag: opts.tagSlug ?? null,
+      author: opts.authorSlug ?? null,
       search: opts.search ?? null,
       notIn: opts.excludeIds?.map(String) ?? null,
     },
@@ -193,4 +224,33 @@ export async function getTagBySlug(slug: string): Promise<BlogTerm | null> {
   const t = data.tag;
   if (!t?.slug) return null;
   return { name: t.name ?? t.slug, slug: t.slug, href: tagHref(t.slug), count: t.count ?? 0, description: t.description };
+}
+
+type RawAuthorNode = NonNullable<AuthorBySlugQuery["user"]>;
+function toAuthorProfile(u: RawAuthorNode): BlogAuthor {
+  const slug = u.slug ?? "";
+  return {
+    name: u.name ?? slug,
+    slug,
+    href: authorHref(slug),
+    bio: u.description,
+    avatarUrl: u.avatar?.url,
+    image: flatImage(u.profileImage),
+    roleTitle: u.roleTitle,
+    teamUrl: u.teamProfileUrl,
+    social: mapSocial(u.social),
+  };
+}
+
+/** One author (WP User) by slug — the author archive header + E-E-A-T Person schema.
+ *  Null when the slug doesn't exist (route 404s). */
+export async function getAuthorBySlug(slug: string): Promise<BlogAuthor | null> {
+  const data = await cmsRequest(AuthorBySlugDocument, { slug }, [POSTS_TAG]);
+  return data.user ? toAuthorProfile(data.user) : null;
+}
+
+/** Slugs of authors with published posts — generateStaticParams for /blog/author/[slug]. */
+export async function getAuthorSlugs(): Promise<string[]> {
+  const data = await cmsRequest(AuthorSlugsDocument, {}, [POSTS_TAG]);
+  return (data.users?.nodes ?? []).map((n) => n.slug).filter((s): s is string => Boolean(s));
 }

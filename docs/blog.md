@@ -16,6 +16,7 @@ Best-practice basis: `web-ai-automation/research/2026-06-13-headless-blog-best-p
 | `/blog/[slug]` | Single post: content, author box, tags, related posts, breadcrumb |
 | `/blog/category/[slug]` (+ `/page/[n]`) | Category archive (uses the category's ACF banner image) |
 | `/blog/tag/[slug]` (+ `/page/[n]`) | Tag archive |
+| `/blog/author/[slug]` (+ `/page/[n]`) | Author archive — photo, role, bio, posts; E-E-A-T `ProfilePage`/`Person` schema |
 
 All are SSG (`dynamic = "error"`, `dynamicParams = false`) — new posts appear on the next
 build/ISR. The frontend **owns the permalink** (`/blog/<slug>`), not WP's `uri`.
@@ -41,6 +42,20 @@ To remount off `/blog`: change `BLOG_BASE` in `src/lib/cms/blog.ts` **and** rena
    src/lib/cms/schema.graphql`) and `pnpm codegen`. Categories with no image fall back to
    `blog.bannerImage`, then to a clean muted band.
 3. **Yoast** (already the agency default) drives per-post meta + the `seo.schema` graph.
+4. **Author meta (optional, E-E-A-T):** the author archive + `Person` schema read optional
+   ACF **user** fields — `roleTitle`, `teamProfileUrl` (→ Meet-the-Team link), `profileImage`,
+   and a `social` repeater (`label`+`url`, the `sameAs` signal). Register an ACF "User" field
+   group (Show in GraphQL) then regenerate the SDL + `pnpm codegen`. All null otherwise — the
+   page falls back to the WP display name, the user `description` bio, and the Gravatar.
+
+## Authors & E-E-A-T
+
+Author archives (`/blog/author/<slug>`) are sourced from the **WP User** (not the ACF Team
+block — deliberately loose-coupled; see research `2026-06-13-eeat-website-build.md`). Each is
+indexable with a self-canonical and emits `ProfilePage` + `Person` JSON-LD (`name` = name only,
+`jobTitle` = role, `sameAs` = social links, `url` = the archive). Post bylines + the author box
+link here; when `teamProfileUrl` is set the author shows a "Meet the team" link. Not every author
+need be a team member (guest authors) and vice-versa — populate the ACF user fields to enrich.
 
 ## SEO behaviour (and why)
 

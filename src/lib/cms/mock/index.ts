@@ -12,9 +12,11 @@ import {
   CategoryBySlugDocument,
   AllTagsDocument,
   TagBySlugDocument,
+  AuthorBySlugDocument,
+  AuthorSlugsDocument,
 } from "../generated/graphql";
 import { mockHome, mockPosts, mockChrome } from "./fixtures";
-import { mockBlogPosts, mockCategories, mockTags } from "./blog";
+import { mockBlogPosts, mockCategories, mockTags, mockAuthors } from "./blog";
 
 // DEV-ONLY GraphQL mock (ADR 0013 amendment). Serves the committed-schema queries
 // from curated fixtures so the template builds + renders with no WordPress. It is
@@ -27,11 +29,12 @@ type Vars = Record<string, unknown>;
 // Blog index/archives: filter + offset-paginate the fixtures so /blog, /blog/page/[n]
 // and the category/tag archives all render real pages offline (workflow/34).
 function blogPostsHandler(variables: Vars) {
-  const { offset = 0, size = 12, category, tag, search, notIn } = variables as {
+  const { offset = 0, size = 12, category, tag, author, search, notIn } = variables as {
     offset?: number;
     size?: number;
     category?: string | null;
     tag?: string | null;
+    author?: string | null;
     search?: string | null;
     notIn?: string[] | null;
   };
@@ -40,6 +43,7 @@ function blogPostsHandler(variables: Vars) {
     if (excluded.has(String(p.databaseId))) return false;
     if (category && !p.categories.nodes.some((c) => c.slug === category)) return false;
     if (tag && !p.tags.nodes.some((t) => t.slug === tag)) return false;
+    if (author && p.author.node.slug !== author) return false;
     if (search && !p.title.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
@@ -61,6 +65,8 @@ const HANDLERS: [unknown, (v: Vars) => unknown][] = [
   [CategoryBySlugDocument, (v) => ({ category: mockCategories.find((c) => c.slug === v.slug) ?? null })],
   [AllTagsDocument, () => ({ tags: { nodes: mockTags } })],
   [TagBySlugDocument, (v) => ({ tag: mockTags.find((t) => t.slug === v.slug) ?? null })],
+  [AuthorBySlugDocument, (v) => ({ user: mockAuthors.find((a) => a.slug === v.slug) ?? null })],
+  [AuthorSlugsDocument, () => ({ users: { nodes: mockAuthors.map((a) => ({ slug: a.slug })) } })],
   [SiteChromeDocument, () => mockChrome],
 ];
 

@@ -30,6 +30,12 @@ query PostBySlug($slug: ID!) {
         avatar {
           url
         }
+        roleTitle
+        teamProfileUrl
+        social {
+          label
+          url
+        }
       }
     }
     categories {

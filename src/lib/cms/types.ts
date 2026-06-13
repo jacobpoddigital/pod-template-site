@@ -73,12 +73,29 @@ export interface BlogTerm {
   image?: { sourceUrl: string; altText?: string | null } | null;
 }
 
-/** A post author for the byline + author box. */
+/** A social/profile link for an author (E-E-A-T `sameAs`). */
+export interface BlogAuthorSocial {
+  label: string;
+  href: string;
+}
+
+/** A post author — the byline, author box, and the author archive (E-E-A-T). All the
+ *  meta beyond name/slug is optional ACF user-meta, null until registered. */
 export interface BlogAuthor {
   name: string;
   slug: string;
+  /** Author archive permalink — /blog/author/<slug>. */
+  href: string;
   bio?: string | null;
+  /** Gravatar fallback URL. */
   avatarUrl?: string | null;
+  /** Richer ACF profile image (preferred over avatarUrl when present). */
+  image?: { sourceUrl: string; altText?: string | null } | null;
+  /** Role/title, e.g. "Head of SEO". */
+  roleTitle?: string | null;
+  /** Link to this person on the Meet-the-Team page/section (loose team coupling). */
+  teamUrl?: string | null;
+  social: BlogAuthorSocial[];
 }
 
 /** A post as it appears in a listing/card (index, archives, related). */
@@ -92,7 +109,7 @@ export interface PostListItem {
   /** Sanitized excerpt HTML (WP returns a <p>-wrapped string). */
   excerpt?: string | null;
   image?: { sourceUrl: string; altText?: string | null } | null;
-  author?: { name: string; slug: string } | null;
+  author?: { name: string; slug: string; href: string } | null;
   categories: { name: string; slug: string; href: string }[];
   /** Whole minutes, ceil(words/200); null when content wasn't fetched. */
   readingTime: number | null;

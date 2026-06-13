@@ -1,6 +1,6 @@
 import { siteConfig } from "../../../../site.config";
 import { SeoSchema } from "../../seo-schema";
-import type { BlogPost } from "@/lib/cms";
+import type { BlogPost, BlogAuthor } from "@/lib/cms";
 
 // Blog JSON-LD (workflow/04 §4 — server-rendered so AI crawlers parse without JS).
 // Posts: if Yoast supplied a schema graph (seo.schemaRaw, which already includes
@@ -63,6 +63,30 @@ export function PostJsonLd({ post, breadcrumb }: { post: BlogPost; breadcrumb: C
   return (
     <>
       <Ld data={articleData(post)} />
+      <BreadcrumbJsonLd items={breadcrumb} />
+    </>
+  );
+}
+
+function personData(author: BlogAuthor) {
+  const sameAs = author.social.map((s) => s.href);
+  return {
+    "@type": "Person",
+    name: author.name, // name only — role goes in jobTitle (research/eeat §A2)
+    url: abs(author.href),
+    jobTitle: author.roleTitle ?? undefined,
+    description: author.bio ?? undefined,
+    image: author.image?.sourceUrl ?? author.avatarUrl ?? undefined,
+    sameAs: sameAs.length ? sameAs : undefined,
+  };
+}
+
+/** Author archive — ProfilePage with the author as mainEntity (E-E-A-T; research §A3),
+ *  plus a BreadcrumbList. Real name in `name`; profiles in `sameAs`. */
+export function AuthorJsonLd({ author, breadcrumb }: { author: BlogAuthor; breadcrumb: Crumb[] }) {
+  return (
+    <>
+      <Ld data={{ "@context": "https://schema.org", "@type": "ProfilePage", mainEntity: personData(author) }} />
       <BreadcrumbJsonLd items={breadcrumb} />
     </>
   );

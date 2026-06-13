@@ -10,6 +10,7 @@ query BlogPosts(
   $category: String
   $tag: String
   $search: String
+  $author: String
   $notIn: [ID]
 ) {
   posts(
@@ -18,6 +19,7 @@ query BlogPosts(
       categoryName: $category
       tag: $tag
       search: $search
+      authorName: $author
       notIn: $notIn
       offsetPagination: { offset: $offset, size: $size }
     }

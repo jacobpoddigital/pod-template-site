@@ -49,6 +49,8 @@ export {
   getCategoryBySlug,
   getTags,
   getTagBySlug,
+  getAuthorBySlug,
+  getAuthorSlugs,
 } from "./blog";
 export type { BlogPostsOpts } from "./blog";
 

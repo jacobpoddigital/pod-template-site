@@ -53,20 +53,35 @@ export const mockTags: MockTerm[] = [
   { databaseId: 25, name: "WordPress", slug: "wordpress", uri: "/tag/wordpress", count: 0 },
 ];
 
-const authors = [
+// Author meta mirrors the optional ACF user fields (roleTitle/teamProfileUrl/social/
+// profileImage) the author archive + Person schema read — exercises the E-E-A-T path.
+export const mockAuthors = [
   {
+    databaseId: 1,
     name: "Sam Rivera",
     slug: "sam-rivera",
     description: "Founder at Pod Digital. Fifteen years turning marketing strategy into websites that measurably perform.",
     uri: "/author/sam-rivera",
     avatar: { url: "https://i.pravatar.cc/160?img=15" },
+    roleTitle: "Founder & Strategy Director",
+    teamProfileUrl: "/about#sam-rivera",
+    profileImage: null,
+    social: [
+      { label: "LinkedIn", url: "https://www.linkedin.com" },
+      { label: "X", url: "https://x.com" },
+    ],
   },
   {
+    databaseId: 2,
     name: "Maya Osei",
     slug: "maya-osei",
     description: "Designer at Pod Digital, owner of the design language and the craft bar every build is held to.",
     uri: "/author/maya-osei",
     avatar: { url: "https://i.pravatar.cc/160?img=45" },
+    roleTitle: "Lead Designer",
+    teamProfileUrl: "/about#maya-osei",
+    profileImage: null,
+    social: [{ label: "LinkedIn", url: "https://www.linkedin.com" }],
   },
 ];
 
@@ -126,7 +141,7 @@ export const mockBlogPosts = seeds.map((s, i) => {
     excerpt: `<p>${s.title} — how Pod Digital approaches it on every build, and what we'd recommend you do next.</p>`,
     content: body(s.title),
     featuredImage: { node: { sourceUrl: `https://picsum.photos/seed/post-${i}/1200/675`, altText: "", mediaDetails: { width: 1200, height: 675 } } },
-    author: { node: authors[s.author]! },
+    author: { node: mockAuthors[s.author]! },
     categories: { nodes: [{ name: cat.name, slug: cat.slug, uri: cat.uri }] },
     tags: { nodes: s.tags.map((t) => ({ name: mockTags[t]!.name, slug: mockTags[t]!.slug, uri: mockTags[t]!.uri })) },
     seo: {
