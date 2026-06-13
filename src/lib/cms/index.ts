@@ -7,55 +7,53 @@ import {
   RecentPostsDocument,
   SiteChromeDocument,
 } from "./generated/graphql";
-import type { PageBySlugQuery, SiteChromeQuery } from "./generated/graphql";
-import type { Page, PageSeo, PostRef, PostSummary, SiteChrome, NavItem } from "./types";
+import type { SiteChromeQuery } from "./generated/graphql";
+import { toSeo } from "./seo";
+import { PAGES_TAG, POSTS_TAG, CHROME_TAG } from "./cache-tags";
+import type { Page, PostRef, PostSummary, SiteChrome, NavItem } from "./types";
 
 // The CMS public API — the ONLY entry point the rest of the app may import
 // (lint-enforced, workflow/02). WPGraphQL is the sole content layer (ADR 0013):
 // no REST, no fallback content. Missing page → null (caller 404s); malformed
 // content fails loud at build/ISR (zod parse in BlockRenderer).
 
-export type { CmsBlock, Page, PageSeo, SeoImage, PostRef, PostSummary, SiteChrome, NavItem } from "./types";
+export type {
+  CmsBlock,
+  Page,
+  PageSeo,
+  SeoImage,
+  PostRef,
+  PostSummary,
+  SiteChrome,
+  NavItem,
+  BlogTerm,
+  BlogAuthor,
+  PostListItem,
+  BlogPost,
+  PaginatedPosts,
+} from "./types";
 export { pageMetadata } from "./metadata";
 
-/** Cache tag convention: revalidateTag("pages") / ("page:<slug>") via /api/revalidate. */
-export const PAGES_TAG = "pages";
+// On-demand ISR cache tags — the public API the /api/revalidate route imports.
+export { PAGES_TAG, POSTS_TAG, CHROME_TAG } from "./cache-tags";
 
-/** Cache tag for post listings (post_grid). */
-export const POSTS_TAG = "posts";
-
-/** Cache tag for the header/footer chrome (menus + options). */
-export const CHROME_TAG = "chrome";
-
-// Yoast SEO → normalized PageSeo (null when nothing usable, so callers fall back).
-type RawSeo = NonNullable<PageBySlugQuery["page"]>["seo"];
-function toSeoImage(img: { sourceUrl?: string | null; altText?: string | null; mediaDetails?: { width?: number | null; height?: number | null } | null } | null | undefined) {
-  return img?.sourceUrl
-    ? { sourceUrl: img.sourceUrl, altText: img.altText, width: img.mediaDetails?.width, height: img.mediaDetails?.height }
-    : null;
-}
-function toSeo(seo: RawSeo): PageSeo | null {
-  if (!seo) return null;
-  const ogImage = toSeoImage(seo.opengraphImage);
-  // Yoast empties come back as "" — coalesce to null so the frontend fallback chain fires.
-  const v = (s?: string | null) => (s ? s : null);
-  const result: PageSeo = {
-    title: v(seo.title),
-    description: v(seo.metaDesc),
-    ogTitle: v(seo.opengraphTitle),
-    ogDescription: v(seo.opengraphDescription),
-    ogImage,
-    twitterTitle: v(seo.twitterTitle),
-    twitterDescription: v(seo.twitterDescription),
-    twitterImage: toSeoImage(seo.twitterImage),
-    // Yoast returns "noindex"/"index" (and "nofollow"/"follow") as strings.
-    noindex: seo.metaRobotsNoindex === "noindex",
-    nofollow: seo.metaRobotsNofollow === "nofollow",
-    schemaRaw: v(seo.schema?.raw),
-  };
-  const hasAny = Object.values(result).some((x) => x !== null && x !== false);
-  return hasAny ? result : null;
-}
+// The standard blog (workflow/34) — implemented in ./blog (cms-internal), surfaced here.
+export {
+  BLOG_BASE,
+  BLOG_PER_PAGE,
+  getBlogPosts,
+  getRelatedBlogPosts,
+  getMoreFromAuthor,
+  getPostSlugs,
+  getPost,
+  getCategories,
+  getCategoryBySlug,
+  getTags,
+  getTagBySlug,
+  getAuthorBySlug,
+  getAuthorSlugs,
+} from "./blog";
+export type { BlogPostsOpts } from "./blog";
 
 /** Fetch a page by slug. Returns null when the page does not exist (caller calls notFound()).
  *  `preview` bypasses the ISR cache for draft preview (boilerplate §4). */
@@ -71,13 +69,13 @@ export async function getPage(slug: string, opts: { preview?: boolean } = {}): P
   };
 }
 
-/** Every published post for the sitemap (boilerplate §6). Frontend URL = the WP `uri`;
- *  needs a matching post route to resolve (template ships pages-only — see docs/seo.md). */
+/** Every published post for the sitemap (boilerplate §6). Posts resolve at the
+ *  frontend route /blog/<slug> (workflow/34), so callers build from `slug`. */
 export async function getAllPosts(): Promise<PostRef[]> {
   const data = await cmsRequest(AllPostsDocument, {}, [POSTS_TAG]);
   return (data.posts?.nodes ?? [])
-    .filter((n) => n.uri)
-    .map((n) => ({ uri: n.uri as string, date: n.date, modified: n.modified }));
+    .filter((n) => n.slug)
+    .map((n) => ({ slug: n.slug as string, uri: n.uri, date: n.date, modified: n.modified }));
 }
 
 /** List published pages (slugs + titles) — drives generateStaticParams + the sitemap. */

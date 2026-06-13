@@ -1,0 +1,30 @@
+# One author (WP User) by slug — the author archive header + E-E-A-T Person schema
+# (workflow/34). Optional ACF user-meta (roleTitle/teamProfileUrl/profileImage/social)
+# is null until registered per project. Post count comes from the listing query's total.
+query AuthorBySlug($slug: ID!) {
+  user(id: $slug, idType: SLUG) {
+    databaseId
+    name
+    slug
+    description
+    uri
+    avatar {
+      url
+    }
+    roleTitle
+    teamProfileUrl
+    profileImage {
+      sourceUrl
+      altText
+      mediaDetails {
+        width
+        height
+      }
+    }
+    social {
+      label
+      url
+    }
+    knowsAbout
+  }
+}

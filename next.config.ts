@@ -37,7 +37,9 @@ const nextConfig: NextConfig = {
   // managing 301s in WordPress. Losing these on a migration loses ranking. Applied at
   // build/deploy — see redirects.config.ts + docs/seo.md §Redirects.
   async redirects() {
-    return loadRedirects();
+    // /blog/page/1 is a duplicate of /blog — collapse it (research 2026-06-13 §1.4).
+    const blogPageOne = [{ source: "/blog/page/1", destination: "/blog", permanent: true }];
+    return [...blogPageOne, ...(await loadRedirects())];
   },
 };
 

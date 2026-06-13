@@ -17,8 +17,37 @@ type RootQuery {
   page(id: ID!, idType: PageIdType): Page
   pages(first: Int, where: RootQueryToPageConnectionWhereArgs): RootQueryToPageConnection
   posts(first: Int, where: RootQueryToPostConnectionWhereArgs): RootQueryToPostConnection
+  post(id: ID!, idType: PostIdType): Post
+  categories(first: Int, where: RootQueryToCategoryConnectionWhereArgs): RootQueryToCategoryConnection
+  category(id: ID!, idType: TermNodeIdTypeEnum): Category
+  tags(first: Int, where: RootQueryToTagConnectionWhereArgs): RootQueryToTagConnection
+  tag(id: ID!, idType: TermNodeIdTypeEnum): Tag
+  user(id: ID!, idType: UserNodeIdTypeEnum): User
+  users(first: Int, where: RootQueryToUserConnectionWhereArgs): RootQueryToUserConnection
   menuItems(where: RootQueryToMenuItemConnectionWhereArgs): RootQueryToMenuItemConnection
   siteOptions: SiteOptions
+}
+
+enum UserNodeIdTypeEnum {
+  SLUG
+  DATABASE_ID
+  ID
+  EMAIL
+  URI
+}
+
+# WPGraphQL ContentTypeEnum (subset) — for users(where: { hasPublishedPosts: [POST] }).
+enum ContentTypeEnum {
+  POST
+  PAGE
+}
+
+input RootQueryToUserConnectionWhereArgs {
+  hasPublishedPosts: [ContentTypeEnum]
+}
+
+type RootQueryToUserConnection {
+  nodes: [User!]!
 }
 
 # Editor-managed chrome (header/footer). Menus → nav (WPGraphQL); site options →
@@ -77,6 +106,21 @@ enum PageIdType {
   DATABASE_ID
 }
 
+enum PostIdType {
+  SLUG
+  URI
+  DATABASE_ID
+}
+
+# Shared id-type for taxonomy terms (categories + tags) — WPGraphQL's TermNodeIdTypeEnum.
+enum TermNodeIdTypeEnum {
+  SLUG
+  ID
+  DATABASE_ID
+  NAME
+  URI
+}
+
 enum PostStatusEnum {
   PUBLISH
   DRAFT
@@ -90,28 +134,150 @@ type RootQueryToPageConnection {
   nodes: [Page!]!
 }
 
-# Posts — drives the post_grid block's listing (a fetching block, not page content).
+# Posts — drives the post_grid block's listing AND the standard blog (workflow/34).
+# `offsetPagination` REQUIRES the free "WPGraphQL Offset Pagination" addon on WP — it
+# powers the blog's path-based /blog/page/[n] (SEO-clean offsets, not cursors). Without
+# the addon this where-field is not in the real schema and the query fails validation —
+# provision.sh installs it (workflow/34). `tag` = tag slug; `search` = full-text;
+# `notIn` excludes the featured post from page 1's grid.
 input RootQueryToPostConnectionWhereArgs {
   status: PostStatusEnum
   categoryName: String
+  tag: String
+  search: String
+  notIn: [ID]
+  authorName: String
+  offsetPagination: OffsetPagination
+}
+
+# WPGraphQL Offset Pagination addon input.
+input OffsetPagination {
+  offset: Int
+  size: Int
 }
 
 type RootQueryToPostConnection {
   nodes: [Post!]!
+  pageInfo: RootQueryToPostConnectionPageInfo
+}
+
+# pageInfo.offsetPagination is contributed by the addon — `total` drives page counts.
+type RootQueryToPostConnectionPageInfo {
+  offsetPagination: OffsetPaginationPageInfo
+}
+type OffsetPaginationPageInfo {
+  total: Int
+  hasMore: Boolean
+  hasPrevious: Boolean
 }
 
 type Post {
   databaseId: Int!
   title: String
+  slug: String
   uri: String
   date: String
   modified: String
   excerpt: String
+  # Full rendered post HTML (Gutenberg/classic editor output) — the blog renders this
+  # sanitized in a prose container (workflow/34; rendered-WP-content model, ADR 0013).
+  content: String
   featuredImage: NodeWithFeaturedImageToMediaItemConnectionEdge
+  author: NodeWithAuthorToUserConnectionEdge
+  categories: PostToCategoryConnection
+  tags: PostToTagConnection
+  seo: PostTypeSEO
+  # ACF "Post Fields" group (E-E-A-T citations, workflow/34). Register a `sources`
+  # repeater on the Post type (Show in GraphQL) → regenerate the SDL. Null otherwise.
+  postFields: Post_Postfields
+}
+
+type Post_Postfields {
+  sources: [Post_Postfields_Sources!]
+}
+# A cited source — outbound reference rendered in the article's "Sources" section.
+type Post_Postfields_Sources {
+  label: String
+  url: String
+  publisher: String
 }
 
 type NodeWithFeaturedImageToMediaItemConnectionEdge {
   node: MediaItem
+}
+
+type NodeWithAuthorToUserConnectionEdge {
+  node: User
+}
+
+# Post author — WPGraphQL User. `avatar` is Gravatar; `seo.social` / ACF user-meta can
+# supply a richer profile image once registered (regenerate the SDL then).
+type User {
+  databaseId: Int!
+  name: String
+  slug: String
+  description: String
+  uri: String
+  avatar: Avatar
+  # Optional ACF user-meta (E-E-A-T, workflow/34) — role/title, a richer profile image,
+  # `sameAs` social links, and a link to the Meet-the-Team profile. Register per project
+  # (ACF "User" field group, Show in GraphQL) then regenerate the SDL; all null otherwise.
+  roleTitle: String
+  teamProfileUrl: String
+  profileImage: MediaItem
+  social: [UserSocial!]
+  # Topic areas of expertise (E-E-A-T → Person.knowsAbout + a "Writes about" line).
+  knowsAbout: [String!]
+}
+type UserSocial {
+  label: String
+  url: String
+}
+type Avatar {
+  url: String
+}
+
+type PostToCategoryConnection {
+  nodes: [Category!]!
+}
+type PostToTagConnection {
+  nodes: [Tag!]!
+}
+
+# --- Taxonomies (workflow/34) ---
+input RootQueryToCategoryConnectionWhereArgs {
+  hideEmpty: Boolean
+}
+type RootQueryToCategoryConnection {
+  nodes: [Category!]!
+}
+input RootQueryToTagConnectionWhereArgs {
+  hideEmpty: Boolean
+}
+type RootQueryToTagConnection {
+  nodes: [Tag!]!
+}
+
+# Category. `categoryImage` is an ACF image field registered on the category taxonomy
+# and exposed to WPGraphQL (the archive banner background — Great White's category
+# featured image, ported). Register it per project, then regenerate the SDL.
+type Category {
+  databaseId: Int!
+  name: String
+  slug: String
+  description: String
+  uri: String
+  count: Int
+  categoryImage: MediaItem
+}
+
+type Tag {
+  databaseId: Int!
+  name: String
+  slug: String
+  description: String
+  uri: String
+  count: Int
 }
 
 type Page {

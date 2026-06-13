@@ -44,10 +44,9 @@ JSON-LD**. Multiple JSON-LD blocks are valid and additive.
 `src/app/sitemap.ts` is the **only** sitemap (Yoast's is disabled). It lists every published
 **page and post**, frontend URLs only, with `lastModified` on posts.
 
-> ⚠️ **Posts need a frontend route.** The template ships **pages-only** routes
-> (`app/[...slug]`). Posts are included in the sitemap using their WordPress `uri`, but they
-> won't resolve until you add a matching route (e.g. `app/blog/[slug]/page.tsx`). If a site has
-> no blog, `getAllPosts()` returns `[]` and nothing is added — safe by default.
+> **Posts** resolve at the standard blog route `/blog/<slug>` (the template ships the blog
+> by default — see `docs/blog.md`, workflow/34); the sitemap lists them there. If a site
+> has no published posts, `getAllPosts()` returns `[]` and nothing is added — safe by default.
 
 Submit `/sitemap.xml` to Google Search Console + Bing Webmaster Tools at go-live (see
 `docs/go-live-checklist.md`).
@@ -153,3 +152,43 @@ real discovery channel. What this template already does, and what to lean on:
 
 These are levers, not a checklist — pick per page. The structural wins (schema + answer-first
 blocks + fast SSR HTML + llms.txt) are already in the box.
+
+## Structured-data policy — no self-serving review markup
+
+**Never** emit `Review` or `AggregateRating` JSON-LD for the business on its own site
+(attached to `Organization` / `LocalBusiness`). Google rules self-serving review markup
+**ineligible** for star results, and an embedded third-party review widget counts as
+self-serving too (research `2026-06-13-eeat-website-build.md` §D2). Testimonials render as
+plain HTML (the `reviews` block — display only, no rating markup).
+
+Review/AggregateRating are valid **only** on `Product`, `Recipe`, `Book`, `Course`,
+`Event`, `Movie`, `SoftwareApplication` (+ a few media types) with **genuine first-party**
+reviews — e.g. a WooCommerce product page. When the enhanced `Organization` schema lands
+(plan Phase 1 #3), the JSON-LD builder enforces this in code; until then it's guarded by
+the comments at `src/app/structured-data.tsx` and `src/blocks/reviews/reviews.tsx`.
+
+## Organization schema (single `@id`, E-E-A-T §B1)
+
+A site-wide `Organization` node (+ `WebSite`) is emitted as a `@graph` from
+`src/app/structured-data.tsx` (via `layout.tsx`, which passes the `SiteChrome` it
+already fetched — no extra request). It merges:
+- **WP Site Options** (editor-managed): `logo`, `social[]`→`sameAs`, `phoneNumbers[0]`→
+  `contactPoint.telephone`, `address`.
+- **`site.config.ts` → `organization`** (stable legal identity, dev-set): `legalName`,
+  `foundingDate`, `vatId`/`taxId`, `email`, `contactType`, `founders[]`, plus optional
+  `logoUrl`/`sameAs`/`addressText` overrides. All optional — omitted when empty.
+
+**Single `@id` (Yoast reconciliation).** Our node uses `@id = ${SITE}/#organization`,
+matching Yoast's company-node convention. Because provision points WP `home` at the
+frontend origin, Yoast's per-page graph emits its Organization/publisher at the **same**
+`@id` → Google merges them into one entity and ours augments it. The blog `Article`
+fallback's `publisher` references `{ "@id": …/#organization }` too.
+
+**Go-live requirement:** in Yoast → Site representation, set the site as an
+**Organization** (not Person) with the **same name + logo** as `site.config`, so the
+two descriptions of `/#organization` agree. Fill the `site.config.organization` block
+per client.
+
+> Review/AggregateRating are **type-impossible** on this node (the `OrganizationSchema`
+> shape has no such keys) — see §Structured-data policy. `LocalBusiness` subtypes are a
+> Phase-3 follow-on (build-profile gated).

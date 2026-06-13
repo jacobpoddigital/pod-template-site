@@ -93,7 +93,7 @@ export default async function RootLayout({
         </main>
         <Footer chrome={chrome} />
         {stickyMobileCta ? <StickyCta phone={stickyPhone} cta={chrome.headerCta} /> : null}
-        <StructuredData />
+        <StructuredData chrome={chrome} />
       </body>
     </html>
   );

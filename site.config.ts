@@ -27,6 +27,43 @@ export const siteConfig = {
   /** Sticky bottom CTA bar on mobile (< lg) — phone + primary CTA from WP chrome.
    *  Best-evidenced mobile conversion pattern (+8–31%). Set false to disable. */
   stickyMobileCta: true,
+  /** Organisation identity for the site-wide `Organization` JSON-LD (E-E-A-T §B1,
+   *  workflow/34). Editor-managed fields (logo, social→sameAs, phone, address) come
+   *  from WP Site Options (SiteChrome) — set ONLY the stable legal identity here.
+   *  TEMPLATE: fill per client at workflow/01 Phase 4. All optional; null = omitted. */
+  organization: {
+    /** schema.org @type. "Organization" default; LocalBusiness subtypes are Phase 3. */
+    type: "Organization",
+    /** Registered legal name, if different from the trading name (footer.company). */
+    legalName: null as string | null,
+    /** ISO date, e.g. "2014-03-01". */
+    foundingDate: null as string | null,
+    vatId: null as string | null,
+    taxId: null as string | null,
+    /** Public contact email for the schema contactPoint. */
+    email: null as string | null,
+    contactType: "customer service",
+    /** Founders → schema `Person` (name + optional profile URL + sameAs profiles). */
+    founders: [] as { name: string; url?: string; sameAs?: string[] }[],
+    /** Overrides — leave empty to use WP Site Options (logo / social / address). */
+    logoUrl: null as string | null,
+    sameAs: [] as string[],
+    addressText: null as string | null,
+  },
+  /** The standard blog (workflow/34). Mounted at /blog (see BLOG_BASE in lib/cms).
+   *  TEMPLATE: set title/intro per client; drop a bannerImage URL for the index hero. */
+  blog: {
+    /** Posts per page for the path-based /blog/page/[n] pagination. */
+    perPage: 12,
+    /** Index hero heading + standfirst. */
+    title: "Insights",
+    intro: "Practical guides on SEO, paid media, and building websites that convert.",
+    /** Optional site-wide blog banner image (index + tag archives; a category's own
+     *  ACF banner image overrides it on its archive). null = clean muted band. */
+    bannerImage: null as string | null,
+    /** Show the newest post as a featured article on the index (Great White port). */
+    featured: true,
+  },
 } as const;
 
 export type SiteConfig = typeof siteConfig;

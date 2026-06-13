@@ -1,0 +1,10 @@
+# Every published post's slug + date — drives generateStaticParams for /blog/[slug]
+# and the page-count for /blog/page/[n] (workflow/34). Light (no content/images).
+query PostSlugs {
+  posts(first: 1000, where: { status: PUBLISH }) {
+    nodes {
+      slug
+      date
+    }
+  }
+}

@@ -82,6 +82,29 @@ for gqlplugin in wp-graphql wpgraphql-acf; do
   fi
 done
 
+echo "==> Installing WPGraphQL Offset Pagination (path-based /blog/page/N — the standard blog, workflow/34)"
+# Adds `where.offsetPagination { offset size }` + `pageInfo.offsetPagination.total`, which
+# the blog cms layer (getBlogPosts) needs for SEO-clean numbered pagination. Not always on
+# wp.org under this slug; if the install fails, add valu-digital's release manually (non-fatal).
+if ! wpcli "plugin is-installed wp-graphql-offset-pagination" 2>/dev/null; then
+  wpcli "plugin install wp-graphql-offset-pagination --activate" \
+    || echo "    !! Install manually: https://github.com/valu-digital/wp-graphql-offset-pagination (composer or release zip), then 'wp plugin activate wp-graphql-offset-pagination'."
+else
+  wpcli "plugin activate wp-graphql-offset-pagination"
+fi
+# Author E-E-A-T (workflow/34): optionally register an ACF "User" field group (Show in GraphQL)
+# with `roleTitle`, `teamProfileUrl`, `profileImage`, a `social` repeater (label+url → sameAs),
+# and `knowsAbout` (text repeater → Person.knowsAbout + "Writes about"). Regenerate the SDL +
+# `pnpm codegen`. Author archives work without it (name/bio/Gravatar).
+# Article citations (E-E-A-T): register an ACF "Post Fields" group on the Post type with a
+# `sources` repeater (label/url/publisher, Show in GraphQL) → renders the article "Sources"
+# section + Article.citation. Regenerate the SDL after.
+# Blog category banner image (Great White port): register an ACF image field `categoryImage`
+# on the Category taxonomy with "Show in GraphQL" ON + GraphQL Field Name `categoryImage`, then
+# `pnpm dlx get-graphql-schema "$WPGRAPHQL_URL" > src/lib/cms/schema.graphql` + `pnpm codegen`.
+# Fields-as-code is per-project (ACF UI or a field group export) — see docs/blog.md.
+echo "==> NOTE: register the ACF 'categoryImage' field on the Category taxonomy (Show in GraphQL) — see docs/blog.md"
+
 echo "==> Installing Yoast SEO (free) + Add WPGraphQL SEO (per-page meta/OG/JSON-LD, boilerplate §6)"
 # wp.org slugs. Yoast = the SEO source of truth (agency default, 2026-06-13); add-wpgraphql-seo
 # exposes Yoast's `seo` field on Page/Post to WPGraphQL (free; the page-by-slug query reads it).

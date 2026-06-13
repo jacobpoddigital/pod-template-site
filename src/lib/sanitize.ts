@@ -2,12 +2,33 @@ import sanitizeHtml from "sanitize-html";
 
 // Server-side sanitiser for WordPress WYSIWYG/HTML (semi-trusted editor content):
 // strips <script>, on* handlers, javascript: URLs, etc., keeping a prose allowlist
-// + content images. Pure-JS (no jsdom) so it bundles cleanly for SSG/ISR.
+// + content images + safe embeds. Pure-JS (no jsdom) so it bundles cleanly for SSG/ISR
+// (research 2026-06-13 §1.5 — allow-list, never build your own; DOMPurify needs a DOM).
+// Used by RichText, the rich_text/columns blocks, post excerpts AND the blog post body.
+const EMBED_HOSTS = ["www.youtube.com", "youtube.com", "www.youtube-nocookie.com", "player.vimeo.com"];
+
 const OPTIONS: sanitizeHtml.IOptions = {
-  allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "h1", "h2"]),
+  // defaults already allow figure/figcaption, table*, blockquote, code/pre, lists, etc.
+  allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "h1", "h2", "iframe"]),
   allowedAttributes: {
     ...sanitizeHtml.defaults.allowedAttributes,
-    img: ["src", "alt", "width", "height", "loading"],
+    img: ["src", "srcset", "sizes", "alt", "width", "height", "loading"],
+    iframe: ["src", "width", "height", "allow", "allowfullscreen", "title", "loading"],
+    a: ["href", "name", "target", "rel"],
+  },
+  // Drop javascript:/data: URLs (XSS). tel/mailto kept for content CTAs.
+  allowedSchemes: ["http", "https", "mailto", "tel"],
+  // Only embed from known providers — blocks arbitrary iframe injection (research §1.5).
+  allowedIframeHostnames: EMBED_HOSTS,
+  transformTags: {
+    // target=_blank links get rel=noopener noreferrer (reverse-tabnabbing — MDN, research §3.4).
+    a: (tagName, attribs) => {
+      if (attribs.target === "_blank") {
+        const rel = new Set(`${attribs.rel ?? ""} noopener noreferrer`.trim().split(/\s+/));
+        attribs.rel = [...rel].join(" ");
+      }
+      return { tagName, attribs };
+    },
   },
 };
 

@@ -1,0 +1,60 @@
+# One page of blog posts for the index + archives (workflow/34). Path-based
+# pagination uses the WPGraphQL Offset Pagination addon (offset/size) and reads the
+# total from pageInfo.offsetPagination. `category`/`tag` (slugs) scope the archive
+# routes; `search` powers the filter search; `notIn` excludes the featured post from
+# page 1's grid. `content` is requested so cards can show a reading time (drop it to
+# lighten the listing — see docs/blog.md).
+query BlogPosts(
+  $size: Int!
+  $offset: Int!
+  $category: String
+  $tag: String
+  $search: String
+  $author: String
+  $notIn: [ID]
+) {
+  posts(
+    where: {
+      status: PUBLISH
+      categoryName: $category
+      tag: $tag
+      search: $search
+      authorName: $author
+      notIn: $notIn
+      offsetPagination: { offset: $offset, size: $size }
+    }
+  ) {
+    pageInfo {
+      offsetPagination {
+        total
+      }
+    }
+    nodes {
+      databaseId
+      title
+      slug
+      uri
+      date
+      excerpt
+      content
+      featuredImage {
+        node {
+          sourceUrl
+          altText
+        }
+      }
+      author {
+        node {
+          name
+          slug
+        }
+      }
+      categories {
+        nodes {
+          name
+          slug
+        }
+      }
+    }
+  }
+}

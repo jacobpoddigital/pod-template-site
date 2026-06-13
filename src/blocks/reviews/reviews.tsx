@@ -8,6 +8,10 @@ import { sectionProps, columnsClass } from "@/lib/section-settings";
 import { initials } from "@/lib/utils";
 import type { ReviewsProps } from "./schema";
 
+// Testimonials are DISPLAY ONLY — deliberately no Review/AggregateRating JSON-LD.
+// Self-serving review markup on your own site is ineligible for star results (Google),
+// and embedding it is a policy risk (research/eeat §D2). The star <Rating> below is a
+// visual element with an aria-label, NOT structured data. Keep it that way.
 type ReviewItem = NonNullable<ReviewsProps["reviews"]>[number];
 
 function Rating({ value }: { value: number }) {

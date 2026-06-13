@@ -1,0 +1,9 @@
+# Authors who have published posts — generateStaticParams for /blog/author/[slug]
+# (workflow/34). hasPublishedPosts keeps empty/non-author users out of the archive set.
+query AuthorSlugs {
+  users(first: 100, where: { hasPublishedPosts: [POST] }) {
+    nodes {
+      slug
+    }
+  }
+}
