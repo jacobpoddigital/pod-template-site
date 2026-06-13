@@ -30,6 +30,18 @@ export const metadata: Metadata = {
     locale: siteConfig.locale,
     type: "website",
   },
+  // TEMPLATE: favicons & touch icons (see docs/favicons.md). Generate the set at
+  // realfavicongenerator.net with path "/favicons/", unzip into public/favicons/, then UNCOMMENT
+  // and match the filenames to the zip. (Until then, src/app/favicon.ico is the default.)
+  // icons: {
+  //   icon: [
+  //     { url: "/favicons/favicon.ico", sizes: "any" },
+  //     { url: "/favicons/favicon.svg", type: "image/svg+xml" },
+  //     { url: "/favicons/favicon-96x96.png", type: "image/png", sizes: "96x96" },
+  //   ],
+  //   apple: [{ url: "/favicons/apple-touch-icon.png", sizes: "180x180" }],
+  // },
+  // manifest: "/favicons/site.webmanifest",
 };
 
 // Mobile browser chrome matches the theme (surface colour per mode).
