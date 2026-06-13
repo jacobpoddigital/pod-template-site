@@ -112,17 +112,18 @@
 
 ## Phase 7 — Deploy
 
-- [ ] Production WordPress provisioned on Krystal — cPanel account, LiteSpeed `/wp-json/*` excluded
+- [ ] Production headless WordPress provisioned (WP Engine Atlas, ADR 0006) — WPGraphQL endpoint
 - [ ] ACF fields deployed to production WP (JSON → mu-plugin)
 - [ ] Content seeded / migrated to production WP
 - [ ] Vercel project created and connected to GitHub repo
-- [ ] Production env vars set in Vercel (`WORDPRESS_API_URL`, `WP_APP_USER`, `WP_APP_PASSWORD`, `NEXT_PUBLIC_HUB_URL`, `EMBED_ADMIN_PASSWORD`)
+- [ ] Production env vars set in Vercel (`WPGRAPHQL_URL`, `WP_APP_USER`, `WP_APP_PASSWORD`, `REVALIDATE_SECRET`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_HUB_URL`, `EMBED_ADMIN_PASSWORD`; measurement/monitoring vars as they activate)
 - [ ] Deploy successful — production URL confirmed
 - [ ] `clients/{{SLUG}}.md` updated with live URL
 - [ ] Hub `wordpress_url` + `vercel_project` updated
 - [ ] Better Stack uptime monitor on production URL
 - [ ] Vercel → Slack deploy notifications enabled
 - [ ] Edit mode verified — 🔒 button appears, login works
+- [ ] **GATE: go-live checklist (`docs/go-live-checklist.md`) all-green + `/security-review` run** — every box ticked or waived in writing; CSP flipped to `CSP_MODE=enforce` with a clean report console (`docs/security.md`)
 - [ ] **[H] GATE: human sign-off that site is live and correct**
 - [ ] Hub phase → `deployed`
 
