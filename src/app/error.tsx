@@ -1,9 +1,15 @@
 "use client";
 
-// Route-level error boundary (workflow/01 §Phase 4). Sentry wiring is deferred
-// from the MVP (STATUS.md) — when added, report `error` here.
+import { useEffect } from "react";
+import { reportError } from "@/lib/observability/report-error";
 
-export default function ErrorPage({ reset }: { error: Error; reset: () => void }) {
+// Route-level error boundary (workflow/01 §Phase 4). Reports to the observability
+// seam (no-op until a monitor is wired — see docs/observability.md).
+
+export default function ErrorPage({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  useEffect(() => {
+    reportError(error, { boundary: "route", digest: error.digest });
+  }, [error]);
   return (
     <div className="mx-auto max-w-xl px-6 py-24 text-center">
       <h1 className="display-md">Something went wrong</h1>
