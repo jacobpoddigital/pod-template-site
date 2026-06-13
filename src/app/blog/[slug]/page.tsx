@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Section } from "@/ui/section";
-import { getPost, getPostSlugs, getRelatedBlogPosts, BLOG_BASE } from "@/lib/cms";
+import { getPost, getPostSlugs, getRelatedBlogPosts, getMoreFromAuthor, BLOG_BASE } from "@/lib/cms";
 import { siteConfig } from "../../../../site.config";
 import { type Crumb } from "../_components/breadcrumbs";
 import { PostArticle } from "../_components/post-article";
@@ -35,7 +35,15 @@ export default async function BlogPostPage({ params }: Props) {
   if (!post) notFound();
 
   const category = post.categories[0];
-  const related = await getRelatedBlogPosts({ categorySlug: category?.slug ?? null, excludeId: post.databaseId });
+  // The author's other posts, then category-related (deduped against both the current
+  // post and the author strip so a post never appears twice). workflow/34 #1/#2.
+  const moreFromAuthor = post.author
+    ? await getMoreFromAuthor({ authorSlug: post.author.slug, excludeId: post.databaseId })
+    : [];
+  const related = await getRelatedBlogPosts({
+    categorySlug: category?.slug ?? null,
+    excludeIds: [post.databaseId, ...moreFromAuthor.map((p) => p.databaseId)],
+  });
 
   const crumbs: Crumb[] = [
     { label: "Home", href: "/" },
@@ -46,7 +54,7 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <Section dataBlock="blog_post" padding="default">
-      <PostArticle post={post} related={related} crumbs={crumbs} />
+      <PostArticle post={post} related={related} moreFromAuthor={moreFromAuthor} crumbs={crumbs} />
       <PostJsonLd post={post} breadcrumb={crumbs.map((c) => ({ label: c.label, path: c.href ?? post.href }))} />
     </Section>
   );

@@ -149,11 +149,19 @@ export async function getBlogPosts(opts: BlogPostsOpts = {}): Promise<PaginatedP
   return { items, total, page, perPage, totalPages: Math.max(1, Math.ceil(total / perPage)) };
 }
 
-/** Related posts for the article footer — newest in the same category, current one
- *  excluded (boilerplate §18). */
-export async function getRelatedBlogPosts(opts: { categorySlug?: string | null; excludeId: number; first?: number }): Promise<PostListItem[]> {
+/** Related posts for the article footer — newest in the same category, with the current
+ *  post (and any other excluded ids, e.g. the "More from author" strip) dropped (§18). */
+export async function getRelatedBlogPosts(opts: { categorySlug?: string | null; excludeIds: number[]; first?: number }): Promise<PostListItem[]> {
   const want = opts.first ?? 3;
-  const { items } = await getBlogPosts({ page: 1, perPage: want, categorySlug: opts.categorySlug, excludeIds: [opts.excludeId] });
+  // Over-fetch so excluded ids still leave `want`.
+  const { items } = await getBlogPosts({ page: 1, perPage: want + opts.excludeIds.length, categorySlug: opts.categorySlug, excludeIds: opts.excludeIds });
+  return items.slice(0, want);
+}
+
+/** "More from this author" — the author's other recent posts, current one excluded. */
+export async function getMoreFromAuthor(opts: { authorSlug: string; excludeId: number; first?: number }): Promise<PostListItem[]> {
+  const want = opts.first ?? 3;
+  const { items } = await getBlogPosts({ page: 1, perPage: want, authorSlug: opts.authorSlug, excludeIds: [opts.excludeId] });
   return items.slice(0, want);
 }
 

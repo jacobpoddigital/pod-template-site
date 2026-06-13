@@ -13,23 +13,33 @@ import { RelatedPosts } from "./related-posts";
 // container (max-w-65ch); header/hero/footer are token-driven. The route owns SEO +
 // JSON-LD; this owns presentation.
 
+const focusRing = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
+
 function PostHeader({ post, crumbs }: { post: BlogPost; crumbs: Crumb[] }) {
   const category = post.categories[0];
-  const meta = [
-    formatDate(post.date),
-    readingTimeLabel(post.readingTime),
-    post.author ? `By ${post.author.name}` : "",
-  ].filter(Boolean);
+  const facts = [formatDate(post.date), readingTimeLabel(post.readingTime)].filter(Boolean);
   return (
     <div className="mx-auto max-w-[70ch]">
       <Breadcrumbs items={crumbs} />
       {category ? (
-        <Link href={category.href} className="mb-3 inline-block rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+        <Link href={category.href} className={`mb-3 inline-block rounded-full ${focusRing}`}>
           <Badge variant="muted">{category.name}</Badge>
         </Link>
       ) : null}
       <h1 className="display-lg text-ink">{post.title}</h1>
-      {meta.length ? <p className="mt-4 body-sm text-ink-muted">{meta.join(" · ")}</p> : null}
+      {facts.length || post.author ? (
+        <p className="mt-4 body-sm text-ink-muted">
+          {facts.join(" · ")}
+          {post.author ? (
+            <>
+              {facts.length ? " · " : ""}By{" "}
+              <Link href={post.author.href} className={`rounded text-ink underline underline-offset-2 ${focusRing}`}>
+                {post.author.name}
+              </Link>
+            </>
+          ) : null}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -60,7 +70,18 @@ function PostTags({ tags }: { tags: BlogPost["tags"] }) {
   );
 }
 
-export function PostArticle({ post, related, crumbs }: { post: BlogPost; related: PostListItem[]; crumbs: Crumb[] }) {
+export function PostArticle({
+  post,
+  related,
+  moreFromAuthor = [],
+  crumbs,
+}: {
+  post: BlogPost;
+  related: PostListItem[];
+  moreFromAuthor?: PostListItem[];
+  crumbs: Crumb[];
+}) {
+  const authorFirstName = post.author?.name.split(" ")[0];
   return (
     <article>
       <PostHeader post={post} crumbs={crumbs} />
@@ -74,6 +95,7 @@ export function PostArticle({ post, related, crumbs }: { post: BlogPost; related
           </div>
         ) : null}
       </div>
+      <RelatedPosts posts={moreFromAuthor} heading={`More from ${authorFirstName ?? "the author"}`} id="more-from-author" />
       <RelatedPosts posts={related} />
     </article>
   );

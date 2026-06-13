@@ -43,6 +43,7 @@ export {
   BLOG_PER_PAGE,
   getBlogPosts,
   getRelatedBlogPosts,
+  getMoreFromAuthor,
   getPostSlugs,
   getPost,
   getCategories,
