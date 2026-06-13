@@ -1,7 +1,8 @@
 # Observability — error reporting
 
-Boilerplate checklist §17. Every site needs production error visibility. The wiring is
-**already in place** via a single seam; turning on a monitor is a one-file change.
+Boilerplate checklist §17. Every site needs production error visibility. **Sentry is wired
+(`@sentry/nextjs`) but INERT** — it does nothing until a DSN is set, so turning it on is just
+creating a free Sentry project and setting two env vars.
 
 ## The seam
 
@@ -13,23 +14,25 @@ called from every error path:
 - `src/lib/cms/client.ts` — the CMS/GraphQL fetch catch (`{ scope: "cms", tags }`), which
   reports then **rethrows** so the page/build still fails loud.
 
-Until a monitor is configured it is **inert**: it `console.error`s in dev and is a no-op
-in production. So the call sites are correct today and need no change when a monitor lands.
+`reportError` now forwards to `Sentry.captureException` **when a DSN is set**, and still
+`console.error`s in dev. No DSN ⇒ Sentry never inits and this is a no-op.
 
-## Turning on Sentry (when the DSN exists — NEEDS-SETUP)
+## What's wired (Sentry, free Developer plan)
 
-1. Create a Sentry project → get the **DSN** + org/project.
-2. `pnpm add @sentry/nextjs` and add the Sentry config files (or `npx @sentry/wizard`).
-3. Set `SENTRY_DSN` (server) / `NEXT_PUBLIC_SENTRY_DSN` (client) in the environment.
-4. In `report-error.ts`, forward to Sentry in the production branch:
-   ```ts
-   import * as Sentry from "@sentry/nextjs";
-   Sentry.captureException(error, { extra: context });
-   ```
-   That's the only edit — the call sites already feed it.
+- `@sentry/nextjs` installed; runtime init via:
+  - `instrumentation.ts` — server/edge `Sentry.init` + `onRequestError` (server-component / route-handler errors), **only if `SENTRY_DSN` is set**.
+  - `instrumentation-client.ts` — browser `Sentry.init` + `onRouterTransitionStart`, **only if `NEXT_PUBLIC_SENTRY_DSN` is set**.
+  - `src/lib/observability/report-error.ts` — forwards explicit reports from the seam.
+- All three are **inert without a DSN** — local/dev/prod-without-DSN emit nothing.
 
-PostHog (product analytics + error tracking) can complement or substitute; forward from the
-same seam. See `web-ai-automation/research/2026-06-05-error-handling-and-observability.md`.
+## Turning it on (NEEDS-SETUP — accounts)
+
+1. Create a **free** Sentry project (Developer plan, ~5k errors/mo) → copy the **DSN**.
+2. Set `SENTRY_DSN` (server) **and** `NEXT_PUBLIC_SENTRY_DSN` (client) — same DSN — in the env (Vercel). Deploy. Done — capture is live.
+3. **Optional later — source maps** for readable stack traces: approve the `@sentry/cli` build script, wrap `next.config.ts` with `withSentryConfig` (org/project + `SENTRY_AUTH_TOKEN`). Runtime capture works without this; it just makes traces prettier.
+
+PostHog (product analytics + error tracking) can complement from the same seam (ADR 0003). See
+`web-ai-automation/research/2026-06-05-error-handling-and-observability.md`.
 
 ## Alerting
 
