@@ -46,5 +46,8 @@ flagged as launch-phase. Tick every box; anything that can't be ticked is a laun
 - [ ] **Structured-data valid** — `pnpm jsonld` passes (every JSON-LD block parses, has @context/@type, one Article per post). Confirm with Google's Rich Results Test on a real page too.
 - [ ] **GPC honoured** — `consent.ts` denies ads/targeting when the browser sends Global Privacy Control (CCPA/CPRA; verify with a GPC-enabled browser that `ad_storage` stays denied).
 - [ ] **Form spam guard live** — the contact form's honeypot + time-trap drop bots; consider Cloudflare Turnstile for a high-spam client (per-project key).
+- [ ] **Accessibility gate (axe) green** — `pnpm a11y` (pa11y-ci, axe/WCAG2AA) reports **zero errors** on the client's real brand + content. The placeholder brand has a known `bg-primary`/`text-primary-foreground` contrast item the brand pass must clear (`docs/accessibility.md`).
+- [ ] **Accessibility statement published** at `/accessibility` and linked in the footer (EAA/Equality Act; template in `docs/accessibility.md`).
+- [ ] **AI disclosure** — if the site ships a live chatbot/voice agent, `<AiDisclosure>` is visible; if it uses AI-generated imagery, captions label it (EU AI Act Art. 50; `docs/ai-disclosure.md`).
 - [ ] Draft preview decision made — scaffold ships (`/api/preview`, `/api/exit-preview`, `getPage({preview})`). To enable: add a dynamic preview route + WP app-password auth per `docs/preview.md`.
 - [ ] A non-builder did a fresh `provision.sh` + `pnpm dev` and reached a rendered page without help (the real maturity test).

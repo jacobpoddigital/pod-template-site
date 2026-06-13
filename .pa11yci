@@ -1,0 +1,15 @@
+{
+  "defaults": {
+    "standard": "WCAG2AA",
+    "runners": ["axe"],
+    "timeout": 45000,
+    "chromeLaunchConfig": { "args": ["--no-sandbox", "--disable-dev-shm-usage"] },
+    "hideElements": "#Cookiebot, #CybotCookiebotDialog"
+  },
+  "urls": [
+    "http://localhost:3000/",
+    "http://localhost:3000/blog",
+    "http://localhost:3000/blog/how-headless-wordpress-speeds-up-your-site",
+    "http://localhost:3000/blog/category/seo"
+  ]
+}
