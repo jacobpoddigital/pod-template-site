@@ -10,7 +10,10 @@ import Script from "next/script";
 // See docs/measurement-and-consent.md.
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
-const ENABLED = !!GTM_ID && process.env.NODE_ENV === "production";
+const COOKIEBOT_ID = process.env.NEXT_PUBLIC_COOKIEBOT_ID;
+const PROD = process.env.NODE_ENV === "production";
+const ENABLED = !!GTM_ID && PROD;
+const CMP_ENABLED = !!COOKIEBOT_ID && PROD;
 
 // Consent Mode v2 — deny ad + analytics storage by default; functionality/security need no consent.
 // wait_for_update gives a CMP 500ms to call gtag('consent','update',…) before tags decide. Also
@@ -29,16 +32,31 @@ function gtmLoader(id: string): string {
   );
 }
 
-/** Consent-default (before GTM) + the GTM loader. Render once in the root layout. */
+/** Consent-default (always first) + the Cookiebot CMP loader + the GTM loader. Render once in
+ *  the root layout. Each part is independently gated, so a site can run the CMP before GTM is set. */
 export function Analytics() {
-  if (!ENABLED) return null;
+  if (!ENABLED && !CMP_ENABLED) return null;
   return (
     <>
+      {/* Consent Mode v2 default-denied MUST run before any tag (defines window.gtag). */}
       <Script id="consent-default" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: CONSENT_DEFAULT }} />
-      <Script id="gtm" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: gtmLoader(GTM_ID as string) }} />
+      {/* Cookiebot CMP — renders the banner, stores the choice; the bridge maps it to Consent Mode. */}
+      {CMP_ENABLED ? (
+        <Script
+          id="Cookiebot"
+          strategy="beforeInteractive"
+          src="https://consent.cookiebot.com/uc.js"
+          data-cbid={COOKIEBOT_ID}
+          data-blockingmode="auto"
+        />
+      ) : null}
+      {ENABLED ? <Script id="gtm" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: gtmLoader(GTM_ID as string) }} /> : null}
     </>
   );
 }
+
+/** Whether the Cookiebot bridge should mount (the layout renders <CookiebotBridge/> when true). */
+export const cmpEnabled = CMP_ENABLED;
 
 /** GTM <noscript> fallback iframe. Render first thing inside <body>. */
 export function AnalyticsNoScript() {

@@ -4,7 +4,8 @@ import { Footer } from "@/layout/footer";
 import { AnnouncementBar } from "@/ui/announcement-bar";
 import { StickyCta } from "@/ui/sticky-cta";
 import { StructuredData } from "./structured-data";
-import { Analytics, AnalyticsNoScript } from "./analytics";
+import { Analytics, AnalyticsNoScript, cmpEnabled } from "./analytics";
+import { CookiebotBridge } from "./cookiebot-bridge";
 import { getSiteChrome } from "@/lib/cms";
 import { siteConfig } from "../../site.config";
 import "./globals.css";
@@ -59,6 +60,7 @@ export default async function RootLayout({
       <body className="flex min-h-full flex-col bg-surface text-ink font-sans">
         <AnalyticsNoScript />
         <Analytics />
+        {cmpEnabled ? <CookiebotBridge /> : null}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
         <a
           href="#main-content"
