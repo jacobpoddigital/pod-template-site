@@ -9,11 +9,11 @@ import { NextRequest, NextResponse } from "next/server";
 // Point Yoast/WP's preview link at:
 //   <frontend>/api/preview?secret=<PREVIEW_SECRET>&slug=<path>
 //
-// NOTE: content pages are SSG by default (dynamic="error") — they will NOT pick up the
-// draft. To actually view drafts, render a DYNAMIC preview route (see docs/preview.md);
-// fetching the DRAFT body also needs an AUTHENTICATED WP request (a WP application
-// password) — that credential is the remaining setup. This route + the getPage/cmsRequest
-// preview plumbing are the scaffold.
+// Enables draftMode, then redirects to the DYNAMIC /preview/<path> route (NOT the SSG
+// content route, which can't read the draft cookie — that keeps real visitors static).
+// The preview route fetches uncached + authenticated. Remaining per-project setup to view
+// true drafts: the WP application password (WP_APP_USER/WP_APP_PASSWORD) + the query
+// resolving draft status WP-side. See docs/preview.md.
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const secret = searchParams.get("secret");
@@ -23,8 +23,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ preview: false, error: "Invalid token" }, { status: 401 });
   }
 
-  // Only allow internal redirects — never an open redirect from an attacker-supplied slug.
-  const path = slug.startsWith("/") ? slug : `/${slug}`;
+  // Normalise to a /preview/<path> segment. Root → the WP "home" page slug (served at
+  // "/" normally, but the [...slug] preview route needs a segment). Only internal paths.
+  const clean = slug.replace(/^\/+/, "").replace(/\/+$/, "");
+  const previewPath = `/preview/${clean === "" ? "home" : clean}`;
   (await draftMode()).enable();
-  return NextResponse.redirect(new URL(path, request.nextUrl.origin));
+  return NextResponse.redirect(new URL(previewPath, request.nextUrl.origin));
 }
