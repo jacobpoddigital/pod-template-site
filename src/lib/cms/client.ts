@@ -1,5 +1,6 @@
 import { GraphQLClient } from "graphql-request";
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
+import { reportError } from "@/lib/observability/report-error";
 
 // graphql-request server-side client (ADR 0007 §1). Marketing sites render via
 // SSG/ISR — fetch at build/server time, no client cache. Client-side reads
@@ -41,5 +42,12 @@ export async function cmsRequest<TResult>(
     document: TypedDocumentNode<TResult, any>,
     variables: Record<string, unknown>,
   ) => Promise<TResult>;
-  return send(document, variables);
+  try {
+    return await send(document, variables);
+  } catch (err) {
+    // Report CMS/GraphQL failures to the observability seam, then rethrow so the
+    // page's error boundary / build still fails loud (boilerplate §17).
+    reportError(err, { scope: "cms", tags });
+    throw err;
+  }
 }
