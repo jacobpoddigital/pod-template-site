@@ -55,6 +55,7 @@ function articleData(post: BlogPost) {
     author: post.author ? { "@type": "Person", name: post.author.name } : undefined,
     // Reference the single site-wide Organization node (one @id, no duplicate org).
     publisher: { "@id": ORG_ID },
+    citation: post.sources.length ? post.sources.map((s) => s.url) : undefined,
     mainEntityOfPage: { "@type": "WebPage", "@id": abs(post.href) },
   };
 }

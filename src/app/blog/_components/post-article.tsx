@@ -58,6 +58,27 @@ function PostHero({ image }: { image: BlogPost["image"] }) {
   );
 }
 
+// Cited sources (E-E-A-T §C2) — outbound references with rel=noopener. Renders nothing
+// when the post cites none. An <ol> because the order is editorial/meaningful.
+function PostSources({ sources }: { sources: BlogPost["sources"] }) {
+  if (!sources.length) return null;
+  return (
+    <section aria-labelledby="sources-heading" className="mt-10 border-t border-border pt-6">
+      <h2 id="sources-heading" className="display-xs mb-3 text-ink">Sources</h2>
+      <ol className="space-y-1 body-sm text-ink-muted">
+        {sources.map((s) => (
+          <li key={s.url}>
+            <a href={s.url} target="_blank" rel="noopener noreferrer nofollow" className={`text-ink underline underline-offset-2 ${focusRing}`}>
+              {s.label}
+            </a>
+            {s.publisher ? <span> — {s.publisher}</span> : null}
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
 function PostTags({ tags }: { tags: BlogPost["tags"] }) {
   if (!tags.length) return null;
   return (
@@ -91,6 +112,7 @@ export function PostArticle({
       <PostHero image={post.image} />
       <div className="mx-auto mt-10 max-w-[70ch]">
         <RichText html={post.contentHtml} className="text-ink-muted" />
+        <PostSources sources={post.sources} />
         <PostTags tags={post.tags} />
         {post.author ? (
           <div className="mt-10">

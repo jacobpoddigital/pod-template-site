@@ -158,6 +158,16 @@ export const mockBlogPosts = seeds.map((s, i) => {
       twitterImage: null,
       schema: { raw: `{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"${s.title}"}]}` },
     },
+    // A couple of posts cite sources so the "Sources" section (E-E-A-T) renders offline.
+    postFields:
+      i === 0 || i === 12
+        ? {
+            sources: [
+              { label: "Core Web Vitals — web.dev", url: "https://web.dev/articles/vitals", publisher: "Google" },
+              { label: "Helpful, reliable, people-first content", url: "https://developers.google.com/search/docs/fundamentals/creating-helpful-content", publisher: "Google Search Central" },
+            ],
+          }
+        : { sources: [] },
   };
 });
 

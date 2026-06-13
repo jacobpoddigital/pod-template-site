@@ -129,6 +129,8 @@ export interface BlogPost {
   author: BlogAuthor | null;
   categories: { name: string; slug: string; href: string }[];
   tags: { name: string; slug: string; href: string }[];
+  /** Cited sources (E-E-A-T) — rendered in the article's "Sources" section. */
+  sources: { label: string; url: string; publisher?: string | null }[];
   readingTime: number | null;
   seo?: PageSeo | null;
 }

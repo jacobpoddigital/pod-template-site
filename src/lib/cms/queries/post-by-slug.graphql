@@ -78,5 +78,12 @@ query PostBySlug($slug: ID!) {
         raw
       }
     }
+    postFields {
+      sources {
+        label
+        url
+        publisher
+      }
+    }
   }
 }

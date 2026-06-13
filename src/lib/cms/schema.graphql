@@ -187,6 +187,19 @@ type Post {
   categories: PostToCategoryConnection
   tags: PostToTagConnection
   seo: PostTypeSEO
+  # ACF "Post Fields" group (E-E-A-T citations, workflow/34). Register a `sources`
+  # repeater on the Post type (Show in GraphQL) → regenerate the SDL. Null otherwise.
+  postFields: Post_Postfields
+}
+
+type Post_Postfields {
+  sources: [Post_Postfields_Sources!]
+}
+# A cited source — outbound reference rendered in the article's "Sources" section.
+type Post_Postfields_Sources {
+  label: String
+  url: String
+  publisher: String
 }
 
 type NodeWithFeaturedImageToMediaItemConnectionEdge {

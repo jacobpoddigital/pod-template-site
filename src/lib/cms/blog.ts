@@ -186,6 +186,9 @@ function toBlogPost(post: RawSinglePost, slug: string): BlogPost {
     author: flatAuthorFull(post.author),
     categories: toCategoryLinks(post.categories?.nodes),
     tags: toTagLinks(post.tags?.nodes),
+    sources: (post.postFields?.sources ?? [])
+      .filter((s) => s?.url)
+      .map((s) => ({ label: s!.label ?? s!.url!, url: s!.url!, publisher: s!.publisher })),
     readingTime: readingTime(post.content),
     seo: toSeo(post.seo),
   };
