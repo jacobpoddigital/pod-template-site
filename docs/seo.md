@@ -146,3 +146,29 @@ Review/AggregateRating are valid **only** on `Product`, `Recipe`, `Book`, `Cours
 reviews — e.g. a WooCommerce product page. When the enhanced `Organization` schema lands
 (plan Phase 1 #3), the JSON-LD builder enforces this in code; until then it's guarded by
 the comments at `src/app/structured-data.tsx` and `src/blocks/reviews/reviews.tsx`.
+
+## Organization schema (single `@id`, E-E-A-T §B1)
+
+A site-wide `Organization` node (+ `WebSite`) is emitted as a `@graph` from
+`src/app/structured-data.tsx` (via `layout.tsx`, which passes the `SiteChrome` it
+already fetched — no extra request). It merges:
+- **WP Site Options** (editor-managed): `logo`, `social[]`→`sameAs`, `phoneNumbers[0]`→
+  `contactPoint.telephone`, `address`.
+- **`site.config.ts` → `organization`** (stable legal identity, dev-set): `legalName`,
+  `foundingDate`, `vatId`/`taxId`, `email`, `contactType`, `founders[]`, plus optional
+  `logoUrl`/`sameAs`/`addressText` overrides. All optional — omitted when empty.
+
+**Single `@id` (Yoast reconciliation).** Our node uses `@id = ${SITE}/#organization`,
+matching Yoast's company-node convention. Because provision points WP `home` at the
+frontend origin, Yoast's per-page graph emits its Organization/publisher at the **same**
+`@id` → Google merges them into one entity and ours augments it. The blog `Article`
+fallback's `publisher` references `{ "@id": …/#organization }` too.
+
+**Go-live requirement:** in Yoast → Site representation, set the site as an
+**Organization** (not Person) with the **same name + logo** as `site.config`, so the
+two descriptions of `/#organization` agree. Fill the `site.config.organization` block
+per client.
+
+> Review/AggregateRating are **type-impossible** on this node (the `OrganizationSchema`
+> shape has no such keys) — see §Structured-data policy. `LocalBusiness` subtypes are a
+> Phase-3 follow-on (build-profile gated).

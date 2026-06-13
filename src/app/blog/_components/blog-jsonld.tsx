@@ -1,5 +1,6 @@
 import { siteConfig } from "../../../../site.config";
 import { SeoSchema } from "../../seo-schema";
+import { ORG_ID } from "../../structured-data";
 import type { BlogPost, BlogAuthor } from "@/lib/cms";
 
 // Blog JSON-LD (workflow/04 §4 — server-rendered so AI crawlers parse without JS).
@@ -52,7 +53,8 @@ function articleData(post: BlogPost) {
     dateModified: post.modified ?? post.date ?? undefined,
     image: post.image?.sourceUrl ? [post.image.sourceUrl] : undefined,
     author: post.author ? { "@type": "Person", name: post.author.name } : undefined,
-    publisher: { "@type": "Organization", name: siteConfig.footer.company },
+    // Reference the single site-wide Organization node (one @id, no duplicate org).
+    publisher: { "@id": ORG_ID },
     mainEntityOfPage: { "@type": "WebPage", "@id": abs(post.href) },
   };
 }
