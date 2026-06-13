@@ -28,7 +28,7 @@ flagged as launch-phase. Tick every box; anything that can't be ticked is a laun
 - [ ] Staging/preview frontend blocked from indexing (preview robots / password); WP `blog_public = 0`.
 
 ## Performance
-- [ ] Lighthouse / CrUX baseline captured; LCP ≤ 1.5s mobile · INP ≤ 200ms · CLS ≤ 0.05 (KB targets) — or a documented waiver.
+- [ ] Lighthouse / CrUX baseline captured; LCP ≤ 1.5s mobile · INP ≤ 200ms · CLS ≤ 0.05 (KB targets, **field** metrics via CrUX/real devices) — or a documented waiver. The CI Lighthouse budget (`docs/performance.md`) is the lab gate for layout-shift / blocking-time / JS weight; this line is the field check.
 - [ ] Exactly one `priority` image per page (the LCP candidate); `sizes` on every `<Image>`.
 - [ ] Third-party scripts (GTM/GA4/chat) loaded via `next/script` with the right `strategy` — gated on consent (see `docs/measurement-and-consent.md`).
 - [ ] ISR tags in place; `/api/revalidate` wired to a WP save hook.
@@ -40,7 +40,7 @@ flagged as launch-phase. Tick every box; anything that can't be ticked is a laun
 - [ ] Uptime/deploy-failure alerting active (Vercel→Slack deploy notifications + an uptime monitor).
 
 ## Reliability & content
-- [ ] Deleted-page behaviour confirmed (ISR last-good + `notFound()`; redirect-on-delete if the URL had value).
-- [ ] Broken-link check run pre- and post-launch.
+- [ ] Deleted-page behaviour confirmed — a removed/unpublished page serves ISR last-good, then the branded 404 (`app/not-found.tsx`) on rebuild; **if the old URL had SEO value, add a 301 instead** (`docs/seo.md §Redirect-on-delete`) and `curl -I` confirms the redirect.
+- [ ] Broken-link check run pre- and post-launch — `pnpm links` reports **zero broken internal links** (`docs/links.md`). Run when content is complete (it flags placeholder/unbuilt routes by design).
 - [ ] Draft preview decision made — scaffold ships (`/api/preview`, `/api/exit-preview`, `getPage({preview})`). To enable: add a dynamic preview route + WP app-password auth per `docs/preview.md`.
 - [ ] A non-builder did a fresh `provision.sh` + `pnpm dev` and reached a rendered page without help (the real maturity test).

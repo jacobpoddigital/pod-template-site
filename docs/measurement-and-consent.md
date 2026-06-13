@@ -40,11 +40,13 @@ Wired CMP-agnostically on top of the consent API:
 5. **Conversion tracking** — Google Ads + Meta conversions for the site's primary action (for Website Navigator: the demo form → CRM).
 6. **PostHog** — complementary product analytics + error tracking (not a replacement for the above).
 
-## How to wire it (the pattern, not yet coded in the template)
+## How it's wired (shipped in the template — inert until IDs land)
+> Implemented in `src/app/analytics.tsx` (GTM + Consent Mode v2), `src/app/cookiebot-bridge.tsx` (Cookiebot CMP → consent), and `src/lib/analytics/consent.ts`. Inert until `NEXT_PUBLIC_GTM_ID` + `NEXT_PUBLIC_COOKIEBOT_ID` are set. The pattern below is what that code does:
+
 - **Consent default first.** Inline `gtag('consent','default',…all denied…)` in `app/layout.tsx` `<head>` (or a tiny `beforeInteractive` script) so it runs before any measurement tag.
 - **GTM via `next/script`** with `strategy="afterInteractive"`. Never a synchronous `<script>` in `<head>`.
 - **CMP loads early**, gates everything: on "accept", call `gtag('consent','update',{…granted…})`; on "reject", leave denied. Analytics tags must respect the denied state (Consent Mode handles this for Google tags; non-Google tags must be blocked until consent).
-- **Env-driven IDs** — `NEXT_PUBLIC_GTM_ID`, `NEXT_PUBLIC_GA4_ID` etc. in `.env.example`. These are public by design (they ship to the browser); keep real secrets server-only.
+- **Env-driven IDs** — `NEXT_PUBLIC_GTM_ID` + `NEXT_PUBLIC_COOKIEBOT_ID` in `.env.example`. GA4 / Google Ads / Meta tags live INSIDE the single GTM container (not separate env vars). These IDs are public by design (they ship to the browser); keep real secrets server-only.
 - **No measurement in mock/dev** unless explicitly testing it — gate on `process.env.NODE_ENV === "production"` or a flag so local builds stay clean.
 
 ## Opt-out profile (brochure / no paid media)

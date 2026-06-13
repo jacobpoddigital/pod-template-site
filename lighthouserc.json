@@ -1,0 +1,21 @@
+{
+  "//": "Performance budget gate (checklist §7). Runs Lighthouse (mobile) against the built app in mock mode (no WP needed — pages are prerendered from src/lib/cms/mock). 3 runs, median. Thresholds are calibrated to the template baseline (CLS 0 · TBT ~64ms · script ~384KB · perf ~0.88 · lab-LCP ~3.9s) and are TUNABLE per site. IMPORTANT lab-vs-field: Lighthouse runs in a throttled LAB, so lab LCP (~3.9s) is NOT the field LCP target (≤1.5s, KB) — field CWV is verified via CrUX/real devices on the go-live checklist. So the HARD (error) gates here are the controllable, lab-stable metrics — layout shift, main-thread blocking, and JS transfer weight; perf score + LCP are WARN (visible, lab-noisy).",
+  "ci": {
+    "collect": {
+      "startServerCommand": "pnpm start",
+      "url": ["http://localhost:3000/"],
+      "numberOfRuns": 3
+    },
+    "assert": {
+      "assertions": {
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
+        "total-blocking-time": ["error", { "maxNumericValue": 300 }],
+        "resource-summary:script:size": ["error", { "maxNumericValue": 512000 }],
+        "categories:performance": ["warn", { "minScore": 0.85 }],
+        "largest-contentful-paint": ["warn", { "maxNumericValue": 4000 }],
+        "unused-javascript": ["warn", { "maxNumericValue": 204800 }]
+      }
+    },
+    "upload": { "target": "filesystem", "outputDir": ".lighthouseci" }
+  }
+}

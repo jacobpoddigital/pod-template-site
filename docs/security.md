@@ -7,6 +7,7 @@ and the lockdown runbook in `web-ai-automation/workflow/01`.
 ## Enforced automatically (ships in the template)
 
 - **Security headers** — `next.config.ts → headers()` sends `X-Frame-Options`, `X-Content-Type-Options: nosniff`, `Strict-Transport-Security`, `Referrer-Policy`, `Permissions-Policy` on every response.
+- **Content-Security-Policy (report-only default)** — `csp.config.ts` ships a default CSP covering the standard stack (GTM/GA4/Ads + the Cookiebot CMP). It's emitted as **`Content-Security-Policy-Report-Only`** so it logs violations without ever blocking — it cannot break a site. **Per project:** set `NEXT_PUBLIC_WP_MEDIA_HOST` (the WP/Atlas media origin) and any `CSP_EXTRA_HOSTS` (embeds), watch the browser report console until clean, then **flip to enforcing** with `CSP_MODE=enforce`. Optional `CSP_REPORT_URI` to collect violations. (Note: GTM's inline bootstrap requires `'unsafe-inline'` in `script-src` without nonce infra — acceptable under report-only; add a nonce per site if strict enforcement is needed.)
 - **GraphQL endpoint hardening** — `wp/mu-plugins/pod-graphql-hardening.php` filters the WPGraphQL settings so that, **in production only** (`wp_get_environment_type() === 'production'`):
   - public schema **introspection is disabled** (`public_introspection_enabled` → `off`), and
   - a **max query depth** is enforced (`query_depth_enabled` → `on`, `query_depth_max` ≤ 15).
@@ -16,10 +17,10 @@ and the lockdown runbook in `web-ai-automation/workflow/01`.
 
 ## Per-site at launch (go-live checklist gates these)
 
-- **Content-Security-Policy** — add a per-site `Content-Security-Policy` allowing only this site's WP media host, GTM/GA4, the CMP, and any embeds. No `default-src *`. (Per-site because the allowed hosts differ.)
+- **Flip CSP to enforcing** — the default CSP ships report-only (see above). Before launch: set the media host + any embed origins, confirm the report console is clean, then set `CSP_MODE=enforce`. No `default-src *`, ever.
 - **WordPress lockdown** (`workflow/01`): `/wp-admin` behind an IP allowlist; login protected (2FA where the host supports it); only ACF Pro + WPGraphQL + wpgraphql-acf installed; unused plugins/themes removed; `blog_public = 0`.
 - **Staging frontend `noindex`** — `robots.ts` blocks non-production deploys (Vercel preview / `NEXT_PUBLIC_NOINDEX=1`).
-- **Broken-link check** — run pre- and post-launch, e.g. `npx linkinator https://<url> --recurse --skip "mailto:|tel:"` (or `lychee`). Fix or redirect 404s before launch.
+- **Broken-link check** — `pnpm links` (linkinator, pre-configured) crawls the built site and fails on broken internal links; run pre-launch once content is complete. See `docs/links.md`.
 
 ## Process
 

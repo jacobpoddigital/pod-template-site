@@ -65,9 +65,9 @@
 - [ ] `src/app/layout.tsx` — client typeface loaded
 - [ ] `wp/acf-fields/` — field group JSON created for this site (site-prefixed keys: `group_{{SLUG}}_*`)
 - [ ] `docker compose up -d && bash wp/provision.sh` runs cleanly
-- [ ] `WORDPRESS_API_URL=http://localhost:{{WP_PORT}}/wp-json` in `.env.local`
+- [ ] `WPGRAPHQL_URL=http://localhost:{{WP_PORT}}/graphql` in `.env.local` (the sole content layer — no REST `/wp-json`, ADR 0013)
 - [ ] WP application password generated: `docker compose run --rm --user root --entrypoint bash cli -c "wp --allow-root --path=/var/www/html user application-password create admin claude-desktop --porcelain"`
-- [ ] `pnpm build` passes (fallback content renders, no TS errors)
+- [ ] `pnpm build` passes (renders in mock against the committed `src/lib/cms/schema.graphql` with no WP; fail-loud on malformed content — there is no silent fallback, ADR 0013)
 - [ ] Port allocation recorded in `clients/{{SLUG}}.md`
 - [ ] **[H] GATE: human confirms local dev runs and pushes initial scaffold commit to `main`**
 - [ ] Hub phase → `build`
@@ -112,17 +112,18 @@
 
 ## Phase 7 — Deploy
 
-- [ ] Production WordPress provisioned on Krystal — cPanel account, LiteSpeed `/wp-json/*` excluded
+- [ ] Production headless WordPress provisioned (WP Engine Atlas, ADR 0006) — WPGraphQL endpoint
 - [ ] ACF fields deployed to production WP (JSON → mu-plugin)
 - [ ] Content seeded / migrated to production WP
 - [ ] Vercel project created and connected to GitHub repo
-- [ ] Production env vars set in Vercel (`WORDPRESS_API_URL`, `WP_APP_USER`, `WP_APP_PASSWORD`, `NEXT_PUBLIC_HUB_URL`, `EMBED_ADMIN_PASSWORD`)
+- [ ] Production env vars set in Vercel (`WPGRAPHQL_URL`, `WP_APP_USER`, `WP_APP_PASSWORD`, `REVALIDATE_SECRET`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_HUB_URL`, `EMBED_ADMIN_PASSWORD`; measurement/monitoring vars as they activate)
 - [ ] Deploy successful — production URL confirmed
 - [ ] `clients/{{SLUG}}.md` updated with live URL
 - [ ] Hub `wordpress_url` + `vercel_project` updated
 - [ ] Better Stack uptime monitor on production URL
 - [ ] Vercel → Slack deploy notifications enabled
 - [ ] Edit mode verified — 🔒 button appears, login works
+- [ ] **GATE: go-live checklist (`docs/go-live-checklist.md`) all-green + `/security-review` run** — every box ticked or waived in writing; CSP flipped to `CSP_MODE=enforce` with a clean report console (`docs/security.md`)
 - [ ] **[H] GATE: human sign-off that site is live and correct**
 - [ ] Hub phase → `deployed`
 

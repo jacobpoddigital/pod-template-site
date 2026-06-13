@@ -32,7 +32,20 @@ export async function cmsRequest<TResult>(
   }
 
   const next: { tags?: string[]; revalidate?: number } = opts.preview ? { revalidate: 0 } : { tags };
+
+  // Draft bodies are NOT public — a preview read must be AUTHENTICATED. When previewing,
+  // send the WP application password as Basic auth (server-only; never on a public read).
+  // Without the credential the preview path still fetches uncached published content
+  // (good for "see my just-saved published edit now"); true drafts need this header +
+  // the query requesting draft status WP-side. See docs/preview.md.
+  const headers: Record<string, string> = {};
+  if (opts.preview && process.env.WP_APP_USER && process.env.WP_APP_PASSWORD) {
+    const token = Buffer.from(`${process.env.WP_APP_USER}:${process.env.WP_APP_PASSWORD}`).toString("base64");
+    headers.Authorization = `Basic ${token}`;
+  }
+
   const client = new GraphQLClient(endpoint as string, {
+    headers,
     // Tag every fetch for on-demand ISR: WP publish webhook → /api/revalidate →
     // revalidateTag (use { expire: 0 } there if a publish must show instantly).
     // Preview reads use { revalidate: 0 } (uncached) so drafts are always fresh.

@@ -3,13 +3,18 @@
 Lets an editor see **unpublished / just-saved** WordPress content on the live frontend before
 it's published. Boilerplate checklist §4.
 
-## What ships (the scaffold)
+## What ships (now a working flow, not just a scaffold)
 
-- **`/api/preview`** — validates `?secret=<PREVIEW_SECRET>`, enables Next `draftMode()` (sets a
-  signed cookie), and redirects to the requested `?slug=`. Only internal redirects are allowed.
+- **`/api/preview`** — validates `?secret=<PREVIEW_SECRET>`, enables Next `draftMode()` (signed
+  cookie), and redirects to the **dynamic** `/preview/<path>` route (internal-only).
 - **`/api/exit-preview`** — clears draft mode and redirects back.
+- **`app/preview/[...slug]/page.tsx`** — a `force-dynamic`, `noindex` route that reads
+  `draftMode().isEnabled` and renders via `getPage(path, { preview: isEnabled })` + the block
+  registry, with an "Exit preview" banner. **Deliberately separate** from the SSG content route
+  (`app/[...slug]`) so real visitors keep the static/ISR guarantee — only this route is dynamic.
 - **`getPage(slug, { preview })` / `cmsRequest(..., { preview })`** — preview reads bypass the ISR
-  cache (`cache: "no-store"`, `next.revalidate: 0`) so the editor always sees fresh content.
+  cache (`cache: "no-store"`, `revalidate: 0`) **and send WP Basic auth** when previewing (the
+  `WP_APP_USER`/`WP_APP_PASSWORD` application password), so draft bodies are fetchable.
 
 Point WordPress's "Preview" link at:
 
@@ -19,39 +24,16 @@ https://<frontend>/api/preview?secret=<PREVIEW_SECRET>&slug=/the/page/path
 
 Set `PREVIEW_SECRET` in the frontend environment (Vercel). Never commit it.
 
-## What's still required to view drafts (the remaining setup)
+## Remaining per-project setup to flip §4 fully green
 
-This is a **scaffold** — two pieces need wiring per project, both currently held as NEEDS-SETUP:
+The whole code path ships. Two project-level pieces remain (both verifiable only against a live
+authenticated WP):
 
-1. **A dynamic render path.** Content pages are **SSG** by default (`export const dynamic =
-   "error"` in `app/[...slug]/page.tsx` + `app/page.tsx`) — the resilience rule (ISR serves
-   last-good; content is never SSR'd). A statically-generated page will **not** read the draft
-   cookie. To actually render drafts, add a **dynamic** preview route that reads
-   `draftMode().isEnabled` and calls `getPage(slug, { preview: isEnabled })`, e.g.:
-
-   ```tsx
-   // app/preview/[...slug]/page.tsx
-   export const dynamic = "force-dynamic";
-   import { draftMode } from "next/headers";
-   import { getPage } from "@/lib/cms";
-   import { BlockRenderer } from "@/blocks/block-renderer";
-
-   export default async function PreviewPage({ params }) {
-     const { slug } = await params;
-     const { isEnabled } = await draftMode();
-     const page = await getPage(slug.join("/"), { preview: isEnabled });
-     if (!page) return null;
-     return <BlockRenderer blocks={page.blocks} />;
-   }
-   ```
-
-   Then `/api/preview` should redirect to `/preview/<path>` instead of `/<path>`. Keeping preview
-   on a separate route preserves the static guarantee for real visitors.
-
-2. **Authenticated WP draft reads.** Draft posts are **not public** — fetching a draft body needs
-   an **authenticated** WPGraphQL request (a WP application password, sent as a Basic-auth header
-   on the preview fetch). Add that header in `cmsRequest` when `opts.preview` is set, behind a
-   `WP_PREVIEW_AUTH` env. Until that credential exists, the preview path fetches published content
-   uncached (useful for "see my just-saved published edit immediately", not true drafts).
-
-When both are wired, flip checklist §4 to ✅.
+1. **The WP application password** — set `WP_APP_USER` + `WP_APP_PASSWORD` (the same app-password
+   used for write ops; generate via WP-CLI, see CLAUDE.md). Without it, the preview route still
+   works but fetches uncached **published** content ("see my just-saved published edit now"), not
+   true drafts.
+2. **Draft resolution WP-side** — confirm the page query resolves a draft by URI for an
+   authenticated request (WPGraphQL exposes draft/preview nodes to authorised users; depending on
+   setup a draft may need `asPreview`/the preview revision id). Verify on a real draft, then flip
+   checklist §4 to ✅.

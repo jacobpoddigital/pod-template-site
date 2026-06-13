@@ -1,17 +1,19 @@
 import type { NextConfig } from "next";
 import { loadRedirects } from "./redirects.config";
+import { cspHeader } from "./csp.config";
 
 // Security headers applied to every route (checklist §21 — Frontend & API Layer).
-// CSP is intentionally omitted here as a default: a correct CSP is per-site (it must
-// allow the client's WP media host, GTM/GA4, the CMP, any embeds). Add a Content-Security-Policy
-// entry below per project once the third-party origins are known — do NOT ship a permissive
-// `default-src *` CSP. See docs/go-live-checklist.md.
+// CSP ships as a sensible default that covers the standard stack (GTM/GA4/Ads + the
+// Cookiebot CMP) but is **report-only** until `CSP_MODE=enforce` — so it can't break a
+// site. Per project: set NEXT_PUBLIC_WP_MEDIA_HOST + CSP_EXTRA_HOSTS, check the report
+// console is clean, then flip to enforce. See csp.config.ts + docs/security.md.
 const securityHeaders = [
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+  cspHeader(),
 ];
 
 const nextConfig: NextConfig = {
