@@ -132,3 +132,17 @@ real discovery channel. What this template already does, and what to lean on:
 
 These are levers, not a checklist — pick per page. The structural wins (schema + answer-first
 blocks + fast SSR HTML + llms.txt) are already in the box.
+
+## Structured-data policy — no self-serving review markup
+
+**Never** emit `Review` or `AggregateRating` JSON-LD for the business on its own site
+(attached to `Organization` / `LocalBusiness`). Google rules self-serving review markup
+**ineligible** for star results, and an embedded third-party review widget counts as
+self-serving too (research `2026-06-13-eeat-website-build.md` §D2). Testimonials render as
+plain HTML (the `reviews` block — display only, no rating markup).
+
+Review/AggregateRating are valid **only** on `Product`, `Recipe`, `Book`, `Course`,
+`Event`, `Movie`, `SoftwareApplication` (+ a few media types) with **genuine first-party**
+reviews — e.g. a WooCommerce product page. When the enhanced `Organization` schema lands
+(plan Phase 1 #3), the JSON-LD builder enforces this in code; until then it's guarded by
+the comments at `src/app/structured-data.tsx` and `src/blocks/reviews/reviews.tsx`.

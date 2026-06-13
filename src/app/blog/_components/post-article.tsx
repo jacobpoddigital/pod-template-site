@@ -17,7 +17,10 @@ const focusRing = "focus-visible:outline-none focus-visible:ring-2 focus-visible
 
 function PostHeader({ post, crumbs }: { post: BlogPost; crumbs: Crumb[] }) {
   const category = post.categories[0];
-  const facts = [formatDate(post.date), readingTimeLabel(post.readingTime)].filter(Boolean);
+  // "Updated" only when the modified date differs from published (day granularity) —
+  // transparency signal, never a fake refresh (research/eeat §C1).
+  const updated = post.modified && formatDate(post.modified) !== formatDate(post.date) ? `Updated ${formatDate(post.modified)}` : "";
+  const facts = [formatDate(post.date), updated, readingTimeLabel(post.readingTime)].filter(Boolean);
   return (
     <div className="mx-auto max-w-[70ch]">
       <Breadcrumbs items={crumbs} />

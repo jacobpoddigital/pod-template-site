@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronDown, Tag as TagIcon } from "lucide-react";
+import { ChevronDown, Tag as TagIcon, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BLOG_BASE, type BlogTerm } from "@/lib/cms";
 
@@ -68,12 +68,17 @@ export function BlogFilter({
           </button>
         ) : null}
 
+        <Link href={`${BLOG_BASE}/search`} className={cn(pill, idle, "ml-auto gap-2")}>
+          <Search aria-hidden className="size-4" />
+          Search
+        </Link>
+
         {tags.length ? (
           <button
             type="button"
             onClick={() => setShowTags((v) => !v)}
             aria-expanded={showTags}
-            className={cn(pill, idle, "ml-auto gap-2")}
+            className={cn(pill, idle, "gap-2")}
           >
             <TagIcon aria-hidden className="size-4" />
             Topics
