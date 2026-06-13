@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "codegen": "graphql-codegen --config codegen.ts"
+    "codegen": "graphql-codegen --config codegen.ts",
+    "lhci": "lhci autorun"
   },
   "dependencies": {
     "@graphql-typed-document-node/core": "^3.2.0",
@@ -41,6 +42,7 @@
   "devDependencies": {
     "@graphql-codegen/cli": "^7.1.2",
     "@graphql-codegen/client-preset": "^6.0.1",
+    "@lhci/cli": "^0.15.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22",
     "@types/react": "^19",

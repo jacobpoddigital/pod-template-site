@@ -28,7 +28,7 @@ flagged as launch-phase. Tick every box; anything that can't be ticked is a laun
 - [ ] Staging/preview frontend blocked from indexing (preview robots / password); WP `blog_public = 0`.
 
 ## Performance
-- [ ] Lighthouse / CrUX baseline captured; LCP ≤ 1.5s mobile · INP ≤ 200ms · CLS ≤ 0.05 (KB targets) — or a documented waiver.
+- [ ] Lighthouse / CrUX baseline captured; LCP ≤ 1.5s mobile · INP ≤ 200ms · CLS ≤ 0.05 (KB targets, **field** metrics via CrUX/real devices) — or a documented waiver. The CI Lighthouse budget (`docs/performance.md`) is the lab gate for layout-shift / blocking-time / JS weight; this line is the field check.
 - [ ] Exactly one `priority` image per page (the LCP candidate); `sizes` on every `<Image>`.
 - [ ] Third-party scripts (GTM/GA4/chat) loaded via `next/script` with the right `strategy` — gated on consent (see `docs/measurement-and-consent.md`).
 - [ ] ISR tags in place; `/api/revalidate` wired to a WP save hook.
