@@ -60,7 +60,11 @@ function articleData(post: BlogPost) {
   };
 }
 
-/** A single post's structured data — Yoast graph when present, else Article + crumbs. */
+/** A single post's structured data — Yoast graph when present, else our Article + crumbs.
+ *  BY DESIGN: when Yoast supplies its graph we emit THAT (single source, no duplicate
+ *  Article). So our `citation`/publisher-@id only appear on the fallback path — the
+ *  VISIBLE "Sources" section (PostArticle) is the primary, always-on signal; citation
+ *  markup is a bonus. To carry sources into Yoast's graph, add them WP-side. */
 export function PostJsonLd({ post, breadcrumb }: { post: BlogPost; breadcrumb: Crumb[] }) {
   if (post.seo?.schemaRaw) return <SeoSchema raw={post.seo.schemaRaw} />;
   return (

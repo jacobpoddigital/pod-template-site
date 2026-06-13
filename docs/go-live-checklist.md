@@ -15,6 +15,7 @@ flagged as launch-phase. Tick every box; anything that can't be ticked is a laun
 - [ ] `/llms.txt` reachable and lists the right pages; AI-crawler policy in `robots.ts` reviewed per client (allow retrieval vs training).
 - [ ] OG + Twitter card tags tested in a real link-preview tool (not just present in markup).
 - [ ] JSON-LD present for relevant types: site-wide (Organization/WebSite), Yoast per-page graph, FAQ ✅ from the block; add LocalBusiness / Breadcrumb / Article as needed.
+- [ ] **Single Organization `@id`** — in Yoast → *Site representation* set the site as an **Organization** (NOT Person) with the **same name + logo** as `site.config.ts`. Our site-wide node uses `@id ${SITE}/#organization` = Yoast's convention (home→frontend), so the two merge into ONE entity. If Yoast is set to Person, you get a mismatched second node. Fill the `site.config.organization` block (legalName/foundingDate/vatId/founders…). **Verify:** Rich Results Test shows a single Organization at `…/#organization` with your `sameAs`/logo. (workflow/34, docs/seo.md §Organization schema.)
 - [ ] 301 redirects mapped for every changed URL from the old site — `redirects.json` (committed inventory) and/or a WP redirects plugin via `WP_REDIRECTS_URL` (`docs/seo.md §Redirects`). Migration SEO depends on this.
 - [ ] Pagination handled correctly on any archive/listing pages.
 

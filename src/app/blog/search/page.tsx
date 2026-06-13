@@ -43,7 +43,7 @@ export default async function BlogSearchPage({ searchParams }: { searchParams: P
         <h1 className="display-md text-ink">Search the blog</h1>
         <p className="mt-3 body-lg text-ink-muted">Find articles by title or content.</p>
         <div className="mt-6 flex justify-center">
-          <BlogSearchForm defaultValue={q} autoFocus />
+          <BlogSearchForm defaultValue={q} />
         </div>
       </div>
       {result ? (

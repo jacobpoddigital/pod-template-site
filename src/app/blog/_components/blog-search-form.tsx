@@ -8,11 +8,9 @@ import { BLOG_BASE } from "@/lib/cms";
 // "inline" (compact, icon-only submit — sits inside the archive toolbar/filter).
 export function BlogSearchForm({
   defaultValue = "",
-  autoFocus = false,
   variant = "page",
 }: {
   defaultValue?: string;
-  autoFocus?: boolean;
   variant?: "page" | "inline";
 }) {
   const inline = variant === "inline";
@@ -29,7 +27,6 @@ export function BlogSearchForm({
         defaultValue={defaultValue}
         placeholder="Search articles…"
         aria-label="Search articles"
-        autoFocus={autoFocus}
         className={inline ? "h-11 pr-11" : "flex-1"}
       />
       {inline ? (
