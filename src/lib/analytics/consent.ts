@@ -19,15 +19,26 @@ function getGtag(): Gtag | null {
   return (window as unknown as { gtag?: Gtag }).gtag ?? null;
 }
 
-/** Push a Consent Mode v2 update. Call from the CMP's accept/reject handler. No-op until GTM is wired. */
+/** Global Privacy Control — the browser/extension "do not sell or share" opt-out signal
+ *  (CCPA/CPRA; actively enforced — research/2026-06-13-build-gap-analysis §1.1). When the
+ *  visitor sends GPC we MUST NOT grant ads/targeting consent, regardless of any CMP choice.
+ *  (analytics_storage stays per-choice — GPC targets sale/sharing, i.e. advertising.) */
+export function gpcEnabled(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return (navigator as unknown as { globalPrivacyControl?: boolean }).globalPrivacyControl === true;
+}
+
+/** Push a Consent Mode v2 update. Call from the CMP's accept/reject handler. No-op until GTM is
+ *  wired. GPC overrides any ad grant (do-not-sell/share). */
 export function updateConsent({ analytics, ads }: ConsentChoice): void {
   const gtag = getGtag();
   if (!gtag) return;
+  const adsAllowed = ads && !gpcEnabled();
   gtag("consent", "update", {
     analytics_storage: analytics ? "granted" : "denied",
-    ad_storage: ads ? "granted" : "denied",
-    ad_user_data: ads ? "granted" : "denied",
-    ad_personalization: ads ? "granted" : "denied",
+    ad_storage: adsAllowed ? "granted" : "denied",
+    ad_user_data: adsAllowed ? "granted" : "denied",
+    ad_personalization: adsAllowed ? "granted" : "denied",
   });
 }
 

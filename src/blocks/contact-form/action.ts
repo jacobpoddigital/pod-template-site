@@ -12,7 +12,21 @@ const enquirySchema = z.object({
 
 export type ContactState = { ok: boolean; errors?: Record<string, string> };
 
+// Account-free spam guards (research/2026-06-13-build-gap-analysis §5.1): a honeypot field
+// (hidden from humans; bots fill it) + a min-time-to-submit trap. Both "drop silently" —
+// return success so a bot gets no signal to adapt — rather than surfacing an error. A
+// stronger layer (Cloudflare Turnstile / a rate-limit store) is the per-client upgrade.
+function isSpam(formData: FormData): boolean {
+  const honeypot = formData.get("company_url"); // the hidden trap field
+  if (typeof honeypot === "string" && honeypot.trim() !== "") return true;
+  const started = Number(formData.get("form_started"));
+  // Submitted < 1.5s after the form mounted = automated. Absent/older (no-JS, clock skew) → allow.
+  if (started > 0 && Date.now() - started < 1500) return true;
+  return false;
+}
+
 export async function submitContact(_prev: ContactState, formData: FormData): Promise<ContactState> {
+  if (isSpam(formData)) return { ok: true }; // drop silently — don't tip off the bot
   const parsed = enquirySchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
