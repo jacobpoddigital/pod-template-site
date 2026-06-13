@@ -65,9 +65,9 @@
 - [ ] `src/app/layout.tsx` — client typeface loaded
 - [ ] `wp/acf-fields/` — field group JSON created for this site (site-prefixed keys: `group_{{SLUG}}_*`)
 - [ ] `docker compose up -d && bash wp/provision.sh` runs cleanly
-- [ ] `WORDPRESS_API_URL=http://localhost:{{WP_PORT}}/wp-json` in `.env.local`
+- [ ] `WPGRAPHQL_URL=http://localhost:{{WP_PORT}}/graphql` in `.env.local` (the sole content layer — no REST `/wp-json`, ADR 0013)
 - [ ] WP application password generated: `docker compose run --rm --user root --entrypoint bash cli -c "wp --allow-root --path=/var/www/html user application-password create admin claude-desktop --porcelain"`
-- [ ] `pnpm build` passes (fallback content renders, no TS errors)
+- [ ] `pnpm build` passes (renders in mock against the committed `src/lib/cms/schema.graphql` with no WP; fail-loud on malformed content — there is no silent fallback, ADR 0013)
 - [ ] Port allocation recorded in `clients/{{SLUG}}.md`
 - [ ] **[H] GATE: human confirms local dev runs and pushes initial scaffold commit to `main`**
 - [ ] Hub phase → `build`
