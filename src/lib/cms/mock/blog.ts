@@ -70,6 +70,7 @@ export const mockAuthors = [
       { label: "LinkedIn", url: "https://www.linkedin.com" },
       { label: "X", url: "https://x.com" },
     ],
+    knowsAbout: ["SEO", "Paid media", "Web strategy", "Conversion"],
   },
   {
     databaseId: 2,
@@ -82,6 +83,7 @@ export const mockAuthors = [
     teamProfileUrl: "/about#maya-osei",
     profileImage: null,
     social: [{ label: "LinkedIn", url: "https://www.linkedin.com" }],
+    knowsAbout: ["Design systems", "Brand", "Accessibility"],
   },
 ];
 

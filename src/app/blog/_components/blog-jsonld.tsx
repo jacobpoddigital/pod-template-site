@@ -80,6 +80,7 @@ function personData(author: BlogAuthor) {
     jobTitle: author.roleTitle ?? undefined,
     description: author.bio ?? undefined,
     image: author.image?.sourceUrl ?? author.avatarUrl ?? undefined,
+    knowsAbout: author.knowsAbout.length ? author.knowsAbout : undefined,
     sameAs: sameAs.length ? sameAs : undefined,
   };
 }

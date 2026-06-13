@@ -50,6 +50,11 @@ export function AuthorHero({ author, postCount }: { author: BlogAuthor; postCoun
           <p className="label text-ink-muted">{eyebrow}</p>
           <h1 className="mt-1 display-lg text-ink">{author.name}</h1>
           {author.bio ? <p className="mt-3 body-lg max-w-[60ch] text-ink-muted">{author.bio}</p> : null}
+          {author.knowsAbout.length ? (
+            <p className="mt-3 body-sm text-ink-muted">
+              <span className="font-semibold text-ink">Writes about:</span> {author.knowsAbout.join(" · ")}
+            </p>
+          ) : null}
           <AuthorLinks author={author} />
         </div>
       </div>

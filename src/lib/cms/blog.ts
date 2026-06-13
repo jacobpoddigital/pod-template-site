@@ -59,8 +59,13 @@ type RawAuthor = {
   roleTitle?: string | null;
   teamProfileUrl?: string | null;
   social?: readonly RawSocial[] | null;
+  knowsAbout?: readonly (string | null)[] | null;
 };
 type AuthorEdge = { node?: RawAuthor | null } | null | undefined;
+
+function cleanList(arr: readonly (string | null)[] | null | undefined): string[] {
+  return (arr ?? []).filter((s): s is string => Boolean(s));
+}
 
 function flatAuthorSummary(edge: AuthorEdge) {
   const a = edge?.node;
@@ -79,6 +84,7 @@ function flatAuthorFull(edge: AuthorEdge): BlogAuthor | null {
     roleTitle: a.roleTitle,
     teamUrl: a.teamProfileUrl,
     social: mapSocial(a.social),
+    knowsAbout: cleanList(a.knowsAbout),
   };
 }
 
@@ -250,6 +256,7 @@ function toAuthorProfile(u: RawAuthorNode): BlogAuthor {
     roleTitle: u.roleTitle,
     teamUrl: u.teamProfileUrl,
     social: mapSocial(u.social),
+    knowsAbout: cleanList(u.knowsAbout),
   };
 }
 

@@ -226,6 +226,8 @@ type User {
   teamProfileUrl: String
   profileImage: MediaItem
   social: [UserSocial!]
+  # Topic areas of expertise (E-E-A-T → Person.knowsAbout + a "Writes about" line).
+  knowsAbout: [String!]
 }
 type UserSocial {
   label: String

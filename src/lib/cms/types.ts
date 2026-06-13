@@ -96,6 +96,8 @@ export interface BlogAuthor {
   /** Link to this person on the Meet-the-Team page/section (loose team coupling). */
   teamUrl?: string | null;
   social: BlogAuthorSocial[];
+  /** Topic areas of expertise → Person.knowsAbout + a "Writes about" line (E-E-A-T). */
+  knowsAbout: string[];
 }
 
 /** A post as it appears in a listing/card (index, archives, related). */

@@ -36,6 +36,7 @@ query PostBySlug($slug: ID!) {
           label
           url
         }
+        knowsAbout
       }
     }
     categories {
