@@ -44,9 +44,13 @@ To remount off `/blog`: change `BLOG_BASE` in `src/lib/cms/blog.ts` **and** rena
 3. **Yoast** (already the agency default) drives per-post meta + the `seo.schema` graph.
 4. **Author meta (optional, E-E-A-T):** the author archive + `Person` schema read optional
    ACF **user** fields — `roleTitle`, `teamProfileUrl` (→ Meet-the-Team link), `profileImage`,
-   and a `social` repeater (`label`+`url`, the `sameAs` signal). Register an ACF "User" field
-   group (Show in GraphQL) then regenerate the SDL + `pnpm codegen`. All null otherwise — the
-   page falls back to the WP display name, the user `description` bio, and the Gravatar.
+   a `social` repeater (`label`+`url`, the `sameAs` signal), and `knowsAbout` (text repeater →
+   `Person.knowsAbout` + a "Writes about" line). Register an ACF "User" field group (Show in
+   GraphQL) then regenerate the SDL + `pnpm codegen`. All null otherwise — the page falls back
+   to the WP display name, the user `description` bio, and the Gravatar.
+5. **Article citations (optional, E-E-A-T §C2):** an ACF "Post Fields" group on the Post type
+   with a `sources` repeater (`label`/`url`/`publisher`, Show in GraphQL) → renders a "Sources"
+   section after the article + `Article.citation`. Register + regenerate the SDL; empty → omitted.
 
 ## Authors & E-E-A-T
 

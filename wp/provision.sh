@@ -93,8 +93,12 @@ else
   wpcli "plugin activate wp-graphql-offset-pagination"
 fi
 # Author E-E-A-T (workflow/34): optionally register an ACF "User" field group (Show in GraphQL)
-# with `roleTitle`, `teamProfileUrl`, `profileImage`, and a `social` repeater (label+url → sameAs),
-# then regenerate the SDL + `pnpm codegen`. Author archives work without it (name/bio/Gravatar).
+# with `roleTitle`, `teamProfileUrl`, `profileImage`, a `social` repeater (label+url → sameAs),
+# and `knowsAbout` (text repeater → Person.knowsAbout + "Writes about"). Regenerate the SDL +
+# `pnpm codegen`. Author archives work without it (name/bio/Gravatar).
+# Article citations (E-E-A-T): register an ACF "Post Fields" group on the Post type with a
+# `sources` repeater (label/url/publisher, Show in GraphQL) → renders the article "Sources"
+# section + Article.citation. Regenerate the SDL after.
 # Blog category banner image (Great White port): register an ACF image field `categoryImage`
 # on the Category taxonomy with "Show in GraphQL" ON + GraphQL Field Name `categoryImage`, then
 # `pnpm dlx get-graphql-schema "$WPGRAPHQL_URL" > src/lib/cms/schema.graphql` + `pnpm codegen`.
