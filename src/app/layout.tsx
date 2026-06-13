@@ -4,6 +4,7 @@ import { Footer } from "@/layout/footer";
 import { AnnouncementBar } from "@/ui/announcement-bar";
 import { StickyCta } from "@/ui/sticky-cta";
 import { StructuredData } from "./structured-data";
+import { Analytics, AnalyticsNoScript } from "./analytics";
 import { getSiteChrome } from "@/lib/cms";
 import { siteConfig } from "../../site.config";
 import "./globals.css";
@@ -56,6 +57,8 @@ export default async function RootLayout({
   return (
     <html lang="en" className="h-full scroll-pt-20 antialiased">
       <body className="flex min-h-full flex-col bg-surface text-ink font-sans">
+        <AnalyticsNoScript />
+        <Analytics />
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
         <a
           href="#main-content"

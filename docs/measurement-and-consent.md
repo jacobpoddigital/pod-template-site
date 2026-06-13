@@ -1,8 +1,24 @@
 # Measurement & consent — the standard build
 
-**Status: the agency standard (ADR 0003, amended), DECIDED but not yet wired into this template.**
-This doc is the contract for what "measurement-first" means and how to add it to a site, so it's done the
-same way every time rather than ad hoc. Wire it as part of every build; verify it on the go-live checklist.
+**Status: the agency standard (ADR 0003, amended). CORE NOW WIRED (Batch 3) — INERT until a GTM ID
+lands; the CMP vendor is the remaining decision.** GTM + Consent Mode v2 (default-denied) ship in
+`src/app/analytics.tsx`; the consent-update API is `src/lib/analytics/consent.ts`. GA4 / Ads / Meta
+are configured **inside the GTM container** (UI), not in code. Verify it on the go-live checklist.
+
+## What's coded now (CMP-agnostic, inert)
+- `src/app/analytics.tsx` — renders, **only when `NEXT_PUBLIC_GTM_ID` is set AND `NODE_ENV=production`**:
+  (1) a Consent Mode v2 `default` (all ad/analytics storage **denied**, `wait_for_update:500`, exposes
+  `window.gtag`) as a `beforeInteractive` script; (2) the GTM loader (`afterInteractive`); (3) the GTM
+  `<noscript>` iframe. Local/dev/mock emit **nothing**.
+- `src/lib/analytics/consent.ts` — `updateConsent({analytics,ads})` / `grantAll()` / `denyAll()` push
+  Consent Mode v2 updates. **This is the CMP adapter point.**
+
+## Remaining (needs your input)
+1. **Pick the CMP** (the one open decision). Whatever it is, wire its accept/reject handler to call
+   `grantAll()` / `denyAll()` (or `updateConsent`). For a script-tag CMP (Cookiebot/iubenda), add its
+   loader as a `beforeInteractive` `<Script>` next to the consent-default and subscribe to its event.
+2. **Provide `NEXT_PUBLIC_GTM_ID`** (+ build GA4/Ads/Meta tags inside the GTM container).
+3. **Conversion tracking** for the primary action — configured in GTM, triggered on the form success.
 
 > Why it's the standard, not an option: PodDigital is a digital marketing agency. Measurement **is** the
 > product. GA4 + GTM + Consent Mode v2 + a CMP + conversion tracking are the default build. The opt-out
