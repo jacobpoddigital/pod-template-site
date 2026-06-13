@@ -27,7 +27,7 @@ export const siteConfig = {
   /** Sticky bottom CTA bar on mobile (< lg) — phone + primary CTA from WP chrome.
    *  Best-evidenced mobile conversion pattern (+8–31%). Set false to disable. */
   stickyMobileCta: true,
-  /** The standard blog (workflow/33). Mounted at /blog (see BLOG_BASE in lib/cms).
+  /** The standard blog (workflow/34). Mounted at /blog (see BLOG_BASE in lib/cms).
    *  TEMPLATE: set title/intro per client; drop a bannerImage URL for the index hero. */
   blog: {
     /** Posts per page for the path-based /blog/page/[n] pagination. */

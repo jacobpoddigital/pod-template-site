@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Path-based pagination (workflow/33) — SEO-clean /…/page/[n], NOT ?page= (the GW port
+// Path-based pagination (workflow/34) — SEO-clean /…/page/[n], NOT ?page= (the GW port
 // + boilerplate §E E6). Page 1 lives at basePath; n>1 at `${basePath}/page/${n}`. The
 // route also sets rel=prev/next-equivalent canonicals in metadata. Renders nothing for
 // a single page. 44px tap targets, focus rings, labelled nav (KB a11y).

@@ -6,7 +6,7 @@ import { TaxonomyArchive } from "../../../../_components/taxonomy-archive";
 import { loadTagArchive } from "../../../../_lib/taxonomy";
 import { archiveMetadata } from "../../../../_lib/metadata";
 
-// /blog/tag/[slug]/page/[n] — paginated tag archive. workflow/33.
+// /blog/tag/[slug]/page/[n] — paginated tag archive. workflow/34.
 export const dynamic = "error";
 export const dynamicParams = false;
 

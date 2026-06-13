@@ -57,7 +57,7 @@ export interface PostSummary {
   image?: { sourceUrl: string; altText?: string | null } | null;
 }
 
-// --- Blog (workflow/33). The standard blog every site ships: rendered WP post
+// --- Blog (workflow/34). The standard blog every site ships: rendered WP post
 // content + category/tag archives, path-based pagination. All WordPress shapes are
 // normalized here so the routes/components never see a WPGraphQL edge. ---
 

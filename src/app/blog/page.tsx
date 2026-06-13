@@ -6,7 +6,7 @@ import { loadIndexPage } from "./_lib/index-data";
 import { archiveMetadata } from "./_lib/metadata";
 
 // /blog — the index (page 1). SSG; new posts appear on the next build/ISR (the
-// resilience rule, like the page route). workflow/33.
+// resilience rule, like the page route). workflow/34.
 export const dynamic = "error";
 
 export function generateMetadata(): Metadata {

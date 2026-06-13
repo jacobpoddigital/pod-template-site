@@ -1,5 +1,5 @@
 # All non-empty tags — the filter UI's expandable tag list + tag archive static
-# params (workflow/33).
+# params (workflow/34).
 query AllTags {
   tags(first: 200, where: { hideEmpty: true }) {
     nodes {

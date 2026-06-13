@@ -1,6 +1,6 @@
 # The standard blog
 
-Every site we build ships a blog (decided 2026-06-13; workflow/33). It renders normal
+Every site we build ships a blog (decided 2026-06-13; workflow/34). It renders normal
 WordPress post content (Gutenberg/classic editor output) as sanitized HTML in a prose
 container — **not** ACF blocks. Ported from Pod's proven Great White blog, mapped to
 this template's design system (tokens + type-scale classes, not Great White's CSS).

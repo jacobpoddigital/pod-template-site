@@ -1,5 +1,5 @@
 # Every published post — drives the sitemap (boilerplate §6). The frontend owns the
-# permalink: posts resolve at /blog/<slug> (the standard blog route, workflow/33), so
+# permalink: posts resolve at /blog/<slug> (the standard blog route, workflow/34), so
 # the sitemap uses `slug`, not WP's `uri`. `modified` becomes <lastmod>.
 query AllPosts {
   posts(first: 1000, where: { status: PUBLISH }) {

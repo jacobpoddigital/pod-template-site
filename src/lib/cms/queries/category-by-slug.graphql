@@ -1,5 +1,5 @@
 # One category by slug — the archive banner (name + description + categoryImage) and
-# its post count (for page-count math). workflow/33.
+# its post count (for page-count math). workflow/34.
 query CategoryBySlug($slug: ID!) {
   category(id: $slug, idType: SLUG) {
     databaseId

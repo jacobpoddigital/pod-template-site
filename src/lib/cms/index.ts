@@ -37,7 +37,7 @@ export { pageMetadata } from "./metadata";
 // On-demand ISR cache tags — the public API the /api/revalidate route imports.
 export { PAGES_TAG, POSTS_TAG, CHROME_TAG } from "./cache-tags";
 
-// The standard blog (workflow/33) — implemented in ./blog (cms-internal), surfaced here.
+// The standard blog (workflow/34) — implemented in ./blog (cms-internal), surfaced here.
 export {
   BLOG_BASE,
   BLOG_PER_PAGE,
@@ -67,7 +67,7 @@ export async function getPage(slug: string, opts: { preview?: boolean } = {}): P
 }
 
 /** Every published post for the sitemap (boilerplate §6). Posts resolve at the
- *  frontend route /blog/<slug> (workflow/33), so callers build from `slug`. */
+ *  frontend route /blog/<slug> (workflow/34), so callers build from `slug`. */
 export async function getAllPosts(): Promise<PostRef[]> {
   const data = await cmsRequest(AllPostsDocument, {}, [POSTS_TAG]);
   return (data.posts?.nodes ?? [])

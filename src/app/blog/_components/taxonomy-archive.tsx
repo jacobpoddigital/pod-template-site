@@ -2,7 +2,7 @@ import { siteConfig } from "../../../../site.config";
 import { ArchiveView } from "./archive-view";
 import type { TaxonomyData } from "../_lib/taxonomy";
 
-// Renders a category or tag archive (workflow/33). Category archives use the term's
+// Renders a category or tag archive (workflow/34). Category archives use the term's
 // own ACF banner image; tags fall back to the site-wide blog banner. basePath = the
 // term's frontend archive path, so pagination resolves to /…/page/[n].
 export function TaxonomyArchive({ data }: { data: TaxonomyData }) {

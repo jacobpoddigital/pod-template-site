@@ -6,7 +6,7 @@ import { sanitize } from "@/lib/sanitize";
 import { formatDate, readingTimeLabel } from "@/lib/format";
 import type { PostListItem } from "@/lib/cms";
 
-// Blog post card (workflow/33) — ported from Great White's content-article, mapped
+// Blog post card (workflow/34) — ported from Great White's content-article, mapped
 // to the template's design system: tokens + type-scale classes, the Card primitive
 // (whole-card link via the stretched-anchor pattern), no raw hex / no raw text sizes.
 

@@ -1,4 +1,4 @@
-# A single blog post by slug (workflow/33). Returns the full rendered `content`
+# A single blog post by slug (workflow/34). Returns the full rendered `content`
 # (sanitized + rendered in a prose container), author box data, categories/tags, and
 # Yoast `seo` (the per-post meta + Article JSON-LD, same source as pages). Featured
 # image is a connection edge → flatten in the cms layer (FRICTION 2.x edge pattern).

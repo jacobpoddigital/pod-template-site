@@ -13,7 +13,7 @@ import {
 import type { BlogPostsQuery, PostBySlugQuery } from "./generated/graphql";
 import type { BlogTerm, BlogAuthor, PostListItem, BlogPost, PaginatedPosts, SeoImage } from "./types";
 
-// --- The standard blog (workflow/33). Rendered-WP-content model: getBlogPosts
+// --- The standard blog (workflow/34). Rendered-WP-content model: getBlogPosts
 // paginates via the WPGraphQL Offset Pagination addon; getPost returns one article;
 // the taxonomy helpers feed the filter + archive routes. All hrefs are FRONTEND paths
 // (we own /blog/*, not WP's uri). cms-internal — re-exported from the public index. ---

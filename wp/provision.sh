@@ -82,7 +82,7 @@ for gqlplugin in wp-graphql wpgraphql-acf; do
   fi
 done
 
-echo "==> Installing WPGraphQL Offset Pagination (path-based /blog/page/N — the standard blog, workflow/33)"
+echo "==> Installing WPGraphQL Offset Pagination (path-based /blog/page/N — the standard blog, workflow/34)"
 # Adds `where.offsetPagination { offset size }` + `pageInfo.offsetPagination.total`, which
 # the blog cms layer (getBlogPosts) needs for SEO-clean numbered pagination. Not always on
 # wp.org under this slug; if the install fails, add valu-digital's release manually (non-fatal).

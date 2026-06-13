@@ -2,7 +2,7 @@ import type { PostListItem } from "@/lib/cms";
 import { PostCardList } from "./post-card";
 
 // "Related articles" — same-category posts (excluding the current one), via
-// getRelatedBlogPosts. Renders nothing when there are none. workflow/33.
+// getRelatedBlogPosts. Renders nothing when there are none. workflow/34.
 export function RelatedPosts({ posts }: { posts: PostListItem[] }) {
   if (!posts.length) return null;
   return (

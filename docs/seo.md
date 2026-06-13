@@ -45,7 +45,7 @@ JSON-LD**. Multiple JSON-LD blocks are valid and additive.
 **page and post**, frontend URLs only, with `lastModified` on posts.
 
 > **Posts** resolve at the standard blog route `/blog/<slug>` (the template ships the blog
-> by default — see `docs/blog.md`, workflow/33); the sitemap lists them there. If a site
+> by default — see `docs/blog.md`, workflow/34); the sitemap lists them there. If a site
 > has no published posts, `getAllPosts()` returns `[]` and nothing is added — safe by default.
 
 Submit `/sitemap.xml` to Google Search Console + Bing Webmaster Tools at go-live (see

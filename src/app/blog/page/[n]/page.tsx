@@ -7,7 +7,7 @@ import { loadIndexPage, indexTotalPages } from "../../_lib/index-data";
 import { archiveMetadata } from "../../_lib/metadata";
 
 // /blog/page/[n] — path-based pagination (SEO-clean; boilerplate §E E6). Page 1 lives
-// at /blog, so static params start at 2. workflow/33.
+// at /blog, so static params start at 2. workflow/34.
 export const dynamic = "error";
 export const dynamicParams = false;
 

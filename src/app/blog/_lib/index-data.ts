@@ -1,7 +1,7 @@
 import { getBlogPosts, getCategories, getTags, type PaginatedPosts, type PostListItem, type BlogTerm } from "@/lib/cms";
 import { siteConfig } from "../../../../site.config";
 
-// Index-page data loader (workflow/33). The featured post (newest) is excluded from
+// Index-page data loader (workflow/34). The featured post (newest) is excluded from
 // the grid on EVERY page so it's shown once as the banner and never duplicated; the
 // grid is therefore "all posts except the featured one", paginated. Shared by
 // /blog and /blog/page/[n] so the two routes stay thin + identical.

@@ -1,6 +1,6 @@
 // DEV-ONLY blog mock (ADR 0013 amendment — dev mock, NOT shipped fallback content).
 // Enough posts (14) to exercise /blog/page/[n] at 12/page, across 3 categories + 5
-// tags + 2 authors, so the standard blog renders with no WordPress (workflow/33).
+// tags + 2 authors, so the standard blog renders with no WordPress (workflow/34).
 // Per project: delete this + point WPGRAPHQL_URL at real WP. Plain objects (cast in
 // mock/index.ts), mirroring the existing mockPosts pattern.
 

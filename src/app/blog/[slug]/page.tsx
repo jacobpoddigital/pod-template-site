@@ -9,7 +9,7 @@ import { PostJsonLd } from "../_components/blog-jsonld";
 import { postMetadata } from "../_lib/metadata";
 
 // /blog/[slug] — a single post: rendered + sanitized WP content in a prose container,
-// author box, tags, related posts, Yoast SEO + Article/Breadcrumb JSON-LD. workflow/33.
+// author box, tags, related posts, Yoast SEO + Article/Breadcrumb JSON-LD. workflow/34.
 export const dynamic = "error";
 export const dynamicParams = false;
 

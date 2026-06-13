@@ -8,7 +8,7 @@ import { Breadcrumbs, type Crumb } from "./breadcrumbs";
 import { AuthorBox } from "./author-box";
 import { RelatedPosts } from "./related-posts";
 
-// The single-post article body (workflow/33), split into small pieces so each stays
+// The single-post article body (workflow/34), split into small pieces so each stays
 // under the complexity bar. Rendered + sanitized WP content sits in RichText's prose
 // container (max-w-65ch); header/hero/footer are token-driven. The route owns SEO +
 // JSON-LD; this owns presentation.

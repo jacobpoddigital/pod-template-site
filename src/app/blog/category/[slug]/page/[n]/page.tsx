@@ -6,7 +6,7 @@ import { TaxonomyArchive } from "../../../../_components/taxonomy-archive";
 import { loadCategoryArchive } from "../../../../_lib/taxonomy";
 import { archiveMetadata } from "../../../../_lib/metadata";
 
-// /blog/category/[slug]/page/[n] — paginated category archive. workflow/33.
+// /blog/category/[slug]/page/[n] — paginated category archive. workflow/34.
 export const dynamic = "error";
 export const dynamicParams = false;
 

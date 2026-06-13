@@ -5,7 +5,7 @@ import { siteConfig } from "../../site.config";
 // The ONLY sitemap — Yoast's own XML sitemap stays DISABLED on the WP origin (it points
 // at WP URLs; we own the frontend sitemap). CMS-driven: every published page + post,
 // frontend URLs only (boilerplate §6). Posts resolve at /blog/<slug> (the standard blog,
-// workflow/33). See docs/seo.md + docs/blog.md.
+// workflow/34). See docs/seo.md + docs/blog.md.
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [pages, posts] = await Promise.all([getPages(), getAllPosts()]);
 

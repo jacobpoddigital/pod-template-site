@@ -7,7 +7,7 @@ import { PostCardList } from "./post-card";
 import { BlogPagination } from "./blog-pagination";
 
 // The shared listing view behind /blog, /blog/page/[n], and the category/tag archives
-// (workflow/33). Routes stay thin — they fetch + compute SEO, then hand the data here.
+// (workflow/34). Routes stay thin — they fetch + compute SEO, then hand the data here.
 // Featured article shows only on page 1 of the main index.
 export function ArchiveView({
   hero,

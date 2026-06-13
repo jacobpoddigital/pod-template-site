@@ -25,7 +25,7 @@ import { mockBlogPosts, mockCategories, mockTags } from "./blog";
 type Vars = Record<string, unknown>;
 
 // Blog index/archives: filter + offset-paginate the fixtures so /blog, /blog/page/[n]
-// and the category/tag archives all render real pages offline (workflow/33).
+// and the category/tag archives all render real pages offline (workflow/34).
 function blogPostsHandler(variables: Vars) {
   const { offset = 0, size = 12, category, tag, search, notIn } = variables as {
     offset?: number;

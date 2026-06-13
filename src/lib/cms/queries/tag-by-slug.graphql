@@ -1,4 +1,4 @@
-# One tag by slug — the archive header (name + description) + post count. workflow/33.
+# One tag by slug — the archive header (name + description) + post count. workflow/34.
 query TagBySlug($slug: ID!) {
   tag(id: $slug, idType: SLUG) {
     databaseId

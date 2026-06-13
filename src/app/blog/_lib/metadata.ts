@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { pageMetadata, type BlogPost } from "@/lib/cms";
 import { siteConfig } from "../../../../site.config";
 
-// Blog metadata (workflow/33). SEO note: each paginated page gets a SELF-referencing
+// Blog metadata (workflow/34). SEO note: each paginated page gets a SELF-referencing
 // canonical (NOT canonical-to-page-1 — that de-indexes deeper pages and hides their
 // posts) and a "Page N" title so they aren't duplicate titles. rel=prev/next is no
 // longer an indexing signal (Google retired it), so we rely on self-canonicals +
