@@ -1,7 +1,7 @@
 # /project-input/ — the handoff package
 
 The **synthesised handoff the build reads** — assembled from the upstream brief → wireframe → design
-stages (run **in-repo today** per HQ `workflow/01`, drafted in `brief/`/`wireframe/`/`content/`; or
+stages (run **in-repo today** per HQ `workflow/01`, drafted in `drafts/brief/`/`drafts/wireframe/`/`drafts/content/`; or
 delivered by the **Hub pipeline** — the target, HQ `workflow/27`). **Claude Code reads everything in
 this folder before touching code** (see `/AGENTS.md`).
 

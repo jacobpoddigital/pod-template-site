@@ -11,7 +11,7 @@ Graduated 2026-06-06 after 2 manual runs (copy-01 home, copy-02 what-we-do). Evi
 
 Brief §11 must be ✅ RESOLVED — copy on guessed positioning is rework, not progress. Classify audience awareness (problem/solution/product-aware) from the brief; it sets the hero angle.
 
-## Write `content/copy-NN.md`
+## Write `drafts/content/copy-NN.md`
 
 1. **Voice**: anchor with 2–3 passages from the client's own properties (multishot) — never adjectives. Direct-response posture: write to one person, plain words, enter the conversation already in their head.
 2. **Budgets** (also the fluff filter): headline ≤8 words · subhead ≤20 · card body ≤160 chars · CTA 2–4 words verb-first.
@@ -23,5 +23,5 @@ Brief §11 must be ✅ RESOLVED — copy on guessed positioning is rework, not p
 ## Human pick + land it
 
 - **Seed provisionally with the recommended headline**, then AskUserQuestion for the pick (run-2 lesson: zero round-trip cost when they confirm the recommendation; one small edit when they don't). Record the pick in the doc header.
-- Land the copy in ALL homes, same order as the approved wireframe: WP seed (`wp/provision-content.php`), the offline dev mock (`src/lib/cms/mock/fixtures.ts`), `site.config.ts` description if page-1. `content/copy-NN.md` is the source of truth the others mirror. (No `fallback.ts` — ADR 0013 removed fallback content; the mock is the dev-only substitute.)
+- Land the copy in ALL homes, same order as the approved wireframe: WP seed (`wp/provision-content.php`), the offline dev mock (`src/lib/cms/mock/fixtures.ts`), `site.config.ts` description if page-1. `drafts/content/copy-NN.md` is the source of truth the others mirror. (No `fallback.ts` — ADR 0013 removed fallback content; the mock is the dev-only substitute.)
 - Verify: re-provision → `pnpm build` green → screenshot.
