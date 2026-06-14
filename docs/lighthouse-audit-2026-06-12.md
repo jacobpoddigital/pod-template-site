@@ -1,5 +1,7 @@
 # Lighthouse audit — `/blocks` — 2026-06-12
 
+> 📋 **Template-development record — dated snapshot, not a per-client build step.** A point-in-time Lighthouse run on the template's `/blocks` gallery. Findings were fixed; the durable rules live in `docs/standards.md §11` + `docs/performance.md`. Safe to ignore (or delete) in a client clone. *(Its source PDF was retired from HQ.)*
+
 Source: `input/lighthouse report - nextjs blocks.pdf` (HQ repo). Lighthouse 13.2.0,
 Emulated Desktop, captured 2026-06-12 06:17 against `http://localhost:3000/blocks`.
 

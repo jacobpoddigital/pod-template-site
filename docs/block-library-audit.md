@@ -1,5 +1,7 @@
 # Block Library Audit — 2026-06-11
 
+> 📋 **The block-QA ledger** (the `/qa-blocks` skill appends each round here — findings, fixes, *and* false alarms so they aren't re-litigated). The rounds below are the **template's** audits, kept as reference (the false-alarm record is the point). In a client clone, your `qa-blocks` rounds append below them.
+
 A point-in-time audit of the 20 blocks in `src/blocks/*` + the shared `src/ui` primitives, against `docs/standards.md`, `AGENTS.md`, `src/blocks/CLAUDE.md`, and the section_settings contract. Read-only; run by three parallel agents (design/a11y · architecture/contract · correctness/security).
 
 **Use this as a tracking checklist** — tick items as they're fixed.

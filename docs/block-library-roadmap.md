@@ -1,5 +1,7 @@
 # Block Library Roadmap — gap analysis & tiered plan
 
+> 📋 **Template-development reference** — why the block set is tiered (gap analysis vs shadcn/Radix/MUI + CRO evidence). HQ `workflow/29` cites this as the tiering rationale. Reference for *understanding* the library, not a per-client build step.
+
 **Status:** proposal · 2026-06-11
 **Scope:** pod-template-site (the canonical client-site template). Everything below is measured against the *current* repo, not aspiration.
 
