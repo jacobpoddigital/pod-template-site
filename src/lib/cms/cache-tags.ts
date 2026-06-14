@@ -10,3 +10,6 @@ export const POSTS_TAG = "posts";
 
 /** Cache tag for the header/footer chrome (menus + options). */
 export const CHROME_TAG = "chrome";
+
+/** Cache tag for the Case Study CPT listing + single entries (the CPT example). */
+export const CASE_STUDIES_TAG = "case-studies";

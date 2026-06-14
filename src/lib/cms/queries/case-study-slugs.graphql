@@ -1,0 +1,10 @@
+# Every published case study's slug + date — drives generateStaticParams for
+# /case-studies/[slug]. Light (no content/images), like PostSlugs for the blog.
+query CaseStudySlugs {
+  caseStudies(first: 1000, where: { status: PUBLISH }) {
+    nodes {
+      slug
+      date
+    }
+  }
+}
