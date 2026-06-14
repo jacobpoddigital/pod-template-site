@@ -33,7 +33,7 @@ Client site built on the Pod Digital framework. Headless WordPress + Next.js App
 | QA / accessibility audit | KB 05 |
 | Responsive layout, mobile, grid | KB 09 |
 
-KB docs live in the HQ repo: `web-ai-automation/knowledge-base/`.
+KB docs live in the HQ repo: `web-ai-automation/docs/knowledge-base/` (the source of truth is the Hub via `get_knowledge`; these files are the offline mirror).
 
 ## Gotchas
 
