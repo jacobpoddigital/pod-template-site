@@ -1,7 +1,9 @@
 # /project-input/ — the handoff package
 
-The HQ pipeline (web-ai-automation `workflow/27`) drops this client's spec here at the start of a
-build. **Claude Code reads everything in this folder before touching code** (see `/AGENTS.md`).
+The **synthesised handoff the build reads** — assembled from the upstream brief → wireframe → design
+stages (run **in-repo today** per HQ `workflow/01`, drafted in `brief/`/`wireframe/`/`content/`; or
+delivered by the **Hub pipeline** — the target, HQ `workflow/27`). **Claude Code reads everything in
+this folder before touching code** (see `/AGENTS.md`).
 
 | File | Source | What it is |
 |---|---|---|
