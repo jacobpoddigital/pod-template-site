@@ -2,6 +2,8 @@
 
 Pod Digital's client-site template — the **"Great White Pro"** build tier (HQ ADR 0017). Next.js (App Router, SSG/ISR) + headless WordPress via WPGraphQL (ACF Pro Flexible Content) + Tailwind v4 + shadcn/ui, on Vercel.
 
+**Which file is which:** `README.md` (this — orientation) · **`AGENTS.md`** (the Claude Code build recipe — read this to build) · `CLAUDE.md` (stack, commands, gotchas — auto-loaded) · `docs/standards.md` (the enforceable rules). Nested `src/blocks/CLAUDE.md` + `src/ui/CLAUDE.md` cover those layers.
+
 ## 📘 Building sites — start here
 
 - **Developers (the end-to-end workflow):** read **HQ `workflow/31` — Developer Guide: Building a Great White Pro Site**. It covers the whole flow (compose from the block library, the editor section-settings handoff with no rebuild, building bespoke blocks via `/new-block`, review + ship) and how your role works.
