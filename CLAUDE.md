@@ -52,4 +52,4 @@ KB docs live in the HQ repo: `web-ai-automation/docs/knowledge-base/` (the sourc
 
 ## Process
 
-The canonical workflow lives in the HQ repo: `web-ai-automation/workflow/`. Pipeline: `brief/` → `wireframe/` → Figma → blocks → copy (`content/`) → standards pass → PR. Session state lives in `PROJECT_PLAN.md` — read it first, every session.
+The canonical workflow lives in the HQ repo: `web-ai-automation/workflow/`. Pipeline: `drafts/brief/` → `drafts/wireframe/` → Figma → **handoff (`project-input/`)** → blocks → copy (`drafts/content/`) → standards pass → PR — the upstream stages (`drafts/brief/`/`drafts/wireframe/`/`drafts/content/`) run in-repo today (HQ `workflow/01`) and feed the `project-input/` handoff the build reads (`AGENTS.md`); the Hub pipeline is the target (HQ `workflow/27`). Session state lives in `PROJECT_PLAN.md` — read it first, every session.

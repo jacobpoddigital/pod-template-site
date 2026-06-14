@@ -28,7 +28,7 @@ schema — no hand-written Zod for CMS shapes). A committed **`schema.graphql`**
 -first (SSG/ISR): runtime resilience is ISR last-good cache; there is **no fallback content**.
 
 ## The handoff: `/project-input/`
-The HQ pipeline drops a thin package here (HQ `workflow/27`). Read every file before building:
+The **synthesised handoff the build reads** — produced from the upstream brief → wireframe → copy stages (drafted in-repo today per HQ `workflow/01`, or delivered by the Hub pipeline — the target, HQ `workflow/27`). Read every file before building:
 | File | What it is | You use it for |
 |---|---|---|
 | **`BUILD-SPEC.md`** | the client build contract — goal, exact brand (fonts/hex), pages + the §6 block inventory per page, conversion, WP connection | the source of truth for *what* to build |
@@ -44,7 +44,7 @@ The brand values in `BUILD-SPEC.md` are **locked** — use the fonts/hex EXACTLY
 4. **Verify** — `pnpm codegen && pnpm lint && pnpm typecheck && pnpm build` must pass **without WordPress** (committed schema + dev mock prove it builds offline). Then `./wp/provision.sh` + `pnpm dev` and screenshot with real CMS data.
 5. **PR per page** (≤ **400 lines**) — branch `feature/<page>`, commit, open a PR. **CI (lint+typecheck+build) is a required gate — you cannot merge red.** A human reviews + merges.
 
-*(Brief, wireframe, design direction, and tokens are produced by the **Hub pipeline** and arrive in `/project-input/` — this repo **builds from them, it does not regenerate them**. There are deliberately no `/brief` or `/wireframe` skills here; only `/copy` + `/new-block` + the code-reference skills, which are the build itself.)*
+*(The **build stage** — what `AGENTS.md` governs — reads the synthesised handoff in `/project-input/` and **does not regenerate** the upstream artifacts. The upstream stages that produce them (brief → wireframe → copy → tokens) run **either in-repo today** — drafted in `drafts/brief/`/`drafts/wireframe/`/`drafts/content/` per HQ `workflow/01` — **or via the Hub pipeline** (the target — HQ `workflow/27`), then are synthesised into this handoff. Either way there are no `/brief` or `/wireframe` **build skills** here; the build skills are `/copy` + `/new-block` + the code-reference skills.)*
 
 ## How to build a block (the contract — `src/blocks/CLAUDE.md`)
 Exactly: `src/blocks/<kebab>/` → `schema.ts` (Zod; ACF field names 1:1; **empty ACF repeater = `false` not `[]` → `z.union([z.array(…), z.literal(false)])`**, empty optional = `null` → `.nullish()`; section blocks add `tone: toneSchema` from `@/lib/tone`) · `<kebab>.tsx` (**Server Component**, props = `z.infer<typeof schema>`, imports `@/ui` only, token utilities only, returns `null` for empty content) · `index.ts` (re-export) · a `defineBlock(schema, dynamic(...))` entry in `registry.tsx` keyed by the ACF layout name. Blocks **never fetch** — they receive validated props.

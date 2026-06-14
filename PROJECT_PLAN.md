@@ -23,8 +23,8 @@
 
 ## Phase 1 — Brief
 
-- [ ] Brief notes / meeting recording placed in `brief/`
-- [ ] `brief/brief.md` drafted by agent — inferences marked ⚠ ASSUMPTION
+- [ ] Brief notes / meeting recording placed in `drafts/brief/`
+- [ ] `drafts/brief/brief.md` drafted by agent — inferences marked ⚠ ASSUMPTION
 - [ ] §11 open questions sent to client for answers
 - [ ] **[H] GATE: human confirms §11 answers received — wireframe may NOT start until this is done**
 - [ ] Hub phase → `wireframe` — `POST /api/projects/{{SLUG}}/session-end`
@@ -34,8 +34,8 @@
 ## Phase 2 — Wireframe
 
 - [ ] KB 06, KB 01, KB 09 read before starting
-- [ ] `wireframe/wireframe.html` generated — real copy, real palette, no lorem ipsum
-- [ ] `wireframe/rationale.md` written alongside (design decisions, block choices, copy direction)
+- [ ] `drafts/wireframe/wireframe.html` generated — real copy, real palette, no lorem ipsum
+- [ ] `drafts/wireframe/rationale.md` written alongside (design decisions, block choices, copy direction)
 - [ ] **[H] GATE: human reviews wireframe + rationale — records APPROVE / CHANGE / KILL per section**
 - [ ] All CHANGE / KILL verdicts addressed
 - [ ] Hub phase → `design`
