@@ -57,7 +57,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "eslint-import-resolver-typescript": "^4.4.5",
-    "eslint-plugin-boundaries": "^5.4.0",
+    "eslint-plugin-boundaries": "^6.0.2",
     "linkinator": "^7.6.1",
     "pa11y-ci": "^4.1.1",
     "start-server-and-test": "^3.0.11",
