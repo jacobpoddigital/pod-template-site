@@ -1,0 +1,7 @@
+# Mint a fresh short-lived access token from the long-lived refresh token.
+# Server-side only; the refresh token lives in an httpOnly cookie.
+mutation RefreshAuthToken($jwtRefreshToken: String!) {
+  refreshJwtAuthToken(input: { jwtRefreshToken: $jwtRefreshToken }) {
+    authToken
+  }
+}
