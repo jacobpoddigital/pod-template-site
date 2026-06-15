@@ -1,0 +1,18 @@
+# Dependabot — automated dependency-update PRs (research 2026-06-14, GitHub primary).
+# Ships to every client clone of this template. Single Next.js app → one npm root;
+# github-actions covers the CI workflow. Minor/patch grouped to cut PR noise.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
