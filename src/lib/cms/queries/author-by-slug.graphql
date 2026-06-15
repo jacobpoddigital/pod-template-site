@@ -13,14 +13,7 @@ query AuthorBySlug($slug: ID!) {
     }
     roleTitle
     teamProfileUrl
-    profileImage {
-      sourceUrl
-      altText
-      mediaDetails {
-        width
-        height
-      }
-    }
+    profileImage { ...MediaItemFields }
     social {
       label
       url

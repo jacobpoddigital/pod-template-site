@@ -1,0 +1,21 @@
+# Named-fragment library (docs/acf-queries.md §Named fragments).
+# Codegen picks fragment files up via the `src/lib/cms/queries/**/*.graphql` glob,
+# so any operation in this folder can spread them — they're generated into typed
+# fragment documents and inlined into each operation's result type.
+#
+# MediaItemFields — the ACF image shape, reused ~24× across the page-block union
+# and on every post `featuredImage { node }`. Edit the image selection ONCE here.
+#
+# Committed schema types ACF image fields as a flat `MediaItem` (offline mock).
+# On live wpgraphql-acf 2.x an ACF image is a connection edge — query
+# `image { node { ...MediaItemFields } }` and flatten `.node` (docs/images.md,
+# standards.md §12). The fragment body is unchanged either way; only the wrapper
+# (`{ node { … } }` vs flat) differs.
+fragment MediaItemFields on MediaItem {
+  sourceUrl
+  altText
+  mediaDetails {
+    width
+    height
+  }
+}

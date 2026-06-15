@@ -19,14 +19,7 @@ query PageBySlug($slug: ID!) {
       metaRobotsNofollow
       opengraphTitle
       opengraphDescription
-      opengraphImage {
-        sourceUrl
-        altText
-        mediaDetails {
-          width
-          height
-        }
-      }
+      opengraphImage { ...MediaItemFields }
       twitterTitle
       twitterDescription
       twitterImage {
@@ -53,14 +46,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
-          image {
-            sourceUrl
-            altText
-            mediaDetails {
-              width
-              height
-            }
-          }
+          image { ...MediaItemFields }
         }
         ... on Page_Pagefields_Blocks_FeatureGrid {
           heading
@@ -129,14 +115,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
-          image {
-            sourceUrl
-            altText
-            mediaDetails {
-              width
-              height
-            }
-          }
+          image { ...MediaItemFields }
         }
         ... on Page_Pagefields_Blocks_CardGrid {
           heading
@@ -152,14 +131,7 @@ query PageBySlug($slug: ID!) {
             body
             link_label: linkLabel
             link_url: linkUrl
-            image {
-              sourceUrl
-              altText
-              mediaDetails {
-                width
-                height
-              }
-            }
+            image { ...MediaItemFields }
           }
         }
         ... on Page_Pagefields_Blocks_ServicesGrid {
@@ -176,14 +148,7 @@ query PageBySlug($slug: ID!) {
             body
             link_label: linkLabel
             link_url: linkUrl
-            image {
-              sourceUrl
-              altText
-              mediaDetails {
-                width
-                height
-              }
-            }
+            image { ...MediaItemFields }
           }
         }
         ... on Page_Pagefields_Blocks_UspBar {
@@ -195,14 +160,7 @@ query PageBySlug($slug: ID!) {
           items {
             text
             link_url: linkUrl
-            image {
-              sourceUrl
-              altText
-              mediaDetails {
-                width
-                height
-              }
-            }
+            image { ...MediaItemFields }
           }
         }
         ... on Page_Pagefields_Blocks_Reviews {
@@ -219,22 +177,8 @@ query PageBySlug($slug: ID!) {
             author
             role
             rating
-            avatar {
-              sourceUrl
-              altText
-              mediaDetails {
-                width
-                height
-              }
-            }
-            company_logo: companyLogo {
-              sourceUrl
-              altText
-              mediaDetails {
-                width
-                height
-              }
-            }
+            avatar { ...MediaItemFields }
+            company_logo: companyLogo { ...MediaItemFields }
           }
         }
         ... on Page_Pagefields_Blocks_RichText {
@@ -264,14 +208,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
-          facade_image: facadeImage {
-            sourceUrl
-            altText
-            mediaDetails {
-              width
-              height
-            }
-          }
+          facade_image: facadeImage { ...MediaItemFields }
         }
         ... on Page_Pagefields_Blocks_PostGrid {
           heading
@@ -333,14 +270,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
-          avatar {
-            sourceUrl
-            altText
-            mediaDetails {
-              width
-              height
-            }
-          }
+          avatar { ...MediaItemFields }
         }
         ... on Page_Pagefields_Blocks_Pricing {
           heading
@@ -379,14 +309,7 @@ query PageBySlug($slug: ID!) {
             linkedin_url: linkedinUrl
             twitter_url: twitterUrl
             website_url: websiteUrl
-            image {
-              sourceUrl
-              altText
-              mediaDetails {
-                width
-                height
-              }
-            }
+            image { ...MediaItemFields }
           }
         }
         ... on Page_Pagefields_Blocks_StatsBand {
@@ -439,14 +362,7 @@ query PageBySlug($slug: ID!) {
             body
             span
             link_url: linkUrl
-            image {
-              sourceUrl
-              altText
-              mediaDetails {
-                width
-                height
-              }
-            }
+            image { ...MediaItemFields }
           }
         }
         ... on Page_Pagefields_Blocks_CaseStudies {
@@ -463,14 +379,7 @@ query PageBySlug($slug: ID!) {
             client
             link_label: linkLabel
             link_url: linkUrl
-            logo {
-              sourceUrl
-              altText
-              mediaDetails {
-                width
-                height
-              }
-            }
+            logo { ...MediaItemFields }
           }
         }
         ... on Page_Pagefields_Blocks_Timeline {
@@ -507,14 +416,7 @@ query PageBySlug($slug: ID!) {
           anchor
           images {
             caption
-            image {
-              sourceUrl
-              altText
-              mediaDetails {
-                width
-                height
-              }
-            }
+            image { ...MediaItemFields }
           }
         }
         ... on Page_Pagefields_Blocks_BeforeAfter {
@@ -526,22 +428,8 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
-          before_image: beforeImage {
-            sourceUrl
-            altText
-            mediaDetails {
-              width
-              height
-            }
-          }
-          after_image: afterImage {
-            sourceUrl
-            altText
-            mediaDetails {
-              width
-              height
-            }
-          }
+          before_image: beforeImage { ...MediaItemFields }
+          after_image: afterImage { ...MediaItemFields }
         }
         ... on Page_Pagefields_Blocks_Toc {
           heading
@@ -565,14 +453,7 @@ query PageBySlug($slug: ID!) {
           items {
             name
             url
-            logo {
-              sourceUrl
-              altText
-              mediaDetails {
-                width
-                height
-              }
-            }
+            logo { ...MediaItemFields }
           }
         }
         ... on Page_Pagefields_Blocks_PricingMatrix {
@@ -620,14 +501,7 @@ query PageBySlug($slug: ID!) {
             quote
             author
             role
-            facade_image: facadeImage {
-              sourceUrl
-              altText
-              mediaDetails {
-                width
-                height
-              }
-            }
+            facade_image: facadeImage { ...MediaItemFields }
           }
         }
         ... on Page_Pagefields_Blocks_FeatureRows {
@@ -643,14 +517,7 @@ query PageBySlug($slug: ID!) {
             body
             cta_label: ctaLabel
             cta_url: ctaUrl
-            image {
-              sourceUrl
-              altText
-              mediaDetails {
-                width
-                height
-              }
-            }
+            image { ...MediaItemFields }
           }
         }
       }

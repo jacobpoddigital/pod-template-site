@@ -12,14 +12,7 @@ query CaseStudyBySlug($slug: ID!) {
     modified
     content
     featuredImage {
-      node {
-        sourceUrl
-        altText
-        mediaDetails {
-          width
-          height
-        }
-      }
+      node { ...MediaItemFields }
     }
     caseStudyFields {
       client
@@ -39,14 +32,7 @@ query CaseStudyBySlug($slug: ID!) {
       metaRobotsNofollow
       opengraphTitle
       opengraphDescription
-      opengraphImage {
-        sourceUrl
-        altText
-        mediaDetails {
-          width
-          height
-        }
-      }
+      opengraphImage { ...MediaItemFields }
       twitterTitle
       twitterDescription
       twitterImage {
