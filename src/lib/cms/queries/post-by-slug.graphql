@@ -12,14 +12,7 @@ query PostBySlug($slug: ID!) {
     modified
     content
     featuredImage {
-      node {
-        sourceUrl
-        altText
-        mediaDetails {
-          width
-          height
-        }
-      }
+      node { ...MediaItemFields }
     }
     author {
       node {
@@ -61,14 +54,7 @@ query PostBySlug($slug: ID!) {
       metaRobotsNofollow
       opengraphTitle
       opengraphDescription
-      opengraphImage {
-        sourceUrl
-        altText
-        mediaDetails {
-          width
-          height
-        }
-      }
+      opengraphImage { ...MediaItemFields }
       twitterTitle
       twitterDescription
       twitterImage {

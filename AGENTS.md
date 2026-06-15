@@ -76,6 +76,7 @@ Exactly: `src/blocks/<kebab>/` → `schema.ts` (Zod; ACF field names 1:1; **empt
 `ui → ui, lib` · `blocks → blocks, ui, lib, cms-public` · `layout → layout, ui, lib, cms-public` · `app → +blocks +layout` · only `lib/cms/` (cms-internal) sees WordPress shapes. Don't cross these.
 
 ## Data fetching & opt-in modules
+- **ACF query cookbook** → `docs/acf-queries.md` is the per-field-type reference (text/image/repeater/flexible content), the index of the real `src/lib/cms/queries/*.graphql` files, and the **named-fragment library** (`MediaItemFields`; codegen runs `fragmentMasking: false`). **Conditional rendering** by ACF field value → `docs/conditional-rendering.md` (the four layers). **Menus + Site Options chrome** → `docs/navigation.md`.
 - **Server reads** (page/menu/options content) → `graphql-request` at build/server time (`src/lib/cms/`). The default; covers all brochure content.
 - **Client reads** (search, faceted filters, live stock/price, member-interactive) → **TanStack Query**, hydrated from a server-fetched payload, fetching through **Server Actions / route handlers — never browser→WP**. Not wired in the base; add `@tanstack/react-query` + a provider only when a site needs it (ADR 0007 §1).
 - **Writes** (forms, cart, checkout) → **Server Actions** (the contact block is the example).

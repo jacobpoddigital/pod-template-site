@@ -15,6 +15,12 @@ const config: CodegenConfig = {
   generates: {
     "src/lib/cms/generated/": {
       preset: "client",
+      // fragmentMasking OFF: we read fields directly off the result (the adapter
+      // does `node.image.sourceUrl`, the mock fixtures are plain literals) and
+      // send the document via graphql-request — not the urql/apollo masking
+      // workflow. Off = named fragments (docs/acf-queries.md) inline into each
+      // operation's result type, so spreading `...MediaItemFields` stays type-safe.
+      presetConfig: { fragmentMasking: false },
       config: { useTypeImports: true },
     },
   },
