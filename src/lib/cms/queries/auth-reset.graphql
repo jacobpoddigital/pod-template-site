@@ -1,0 +1,8 @@
+# Complete a password reset with the emailed key + login (core WPGraphQL).
+mutation ResetUserPassword($key: String!, $login: String!, $password: String!) {
+  resetUserPassword(input: { key: $key, login: $login, password: $password }) {
+    user {
+      databaseId
+    }
+  }
+}

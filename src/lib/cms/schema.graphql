@@ -11,9 +11,13 @@
 
 schema {
   query: RootQuery
+  mutation: RootMutation
 }
 
 type RootQuery {
+  # The logged-in WP user (core WPGraphQL) — null when the request carries no valid JWT.
+  # Auth scaffolding (opt-in module, docs/auth.md). VERIFIED present on WPGraphQL 2.x.
+  viewer: User
   page(id: ID!, idType: PageIdType): Page
   pages(first: Int, where: RootQueryToPageConnectionWhereArgs): RootQueryToPageConnection
   posts(first: Int, where: RootQueryToPostConnectionWhereArgs): RootQueryToPostConnection
@@ -226,6 +230,12 @@ type User {
   slug: String
   description: String
   uri: String
+  # Auth scaffolding (docs/auth.md). `email` + `capabilities` are core WPGraphQL fields,
+  # restricted to the authenticated user / admins — used by the session + capability guards.
+  # `id` is the global Relay id the JWT login payload returns.
+  id: ID
+  email: String
+  capabilities: [String!]
   avatar: Avatar
   # Optional ACF user-meta (E-E-A-T, workflow/34) — role/title, a richer profile image,
   # `sameAs` social links, and a link to the Meet-the-Team profile. Register per project
@@ -959,6 +969,66 @@ type Page_Pagefields_Blocks_FeatureRows_Rows {
   ctaLabel: String
   ctaUrl: String
   image: MediaItem
+}
+
+# ============================================================================
+# Authentication — opt-in scaffolding (docs/auth.md). HAND-AUTHORED SDL subset.
+#
+# `login` / `refreshJwtAuthToken` come from the wp-graphql-jwt-authentication
+# plugin (the GO-LIVE GATE: install + verify against WPGraphQL 2.x — see
+# docs/auth.md §Go-live). `sendPasswordResetEmail` / `resetUserPassword` /
+# `viewer` are CORE WPGraphQL and were VERIFIED present on a live 2.x endpoint
+# (2026-06-15). Regenerate the full SDL from live WP once the JWT plugin is on.
+# ============================================================================
+
+type RootMutation {
+  # --- wp-graphql-jwt-authentication (verify on go-live) ---
+  login(input: LoginInput!): LoginPayload
+  refreshJwtAuthToken(input: RefreshJwtAuthTokenInput!): RefreshJwtAuthTokenPayload
+  # --- core WPGraphQL (verified on 2.x) ---
+  sendPasswordResetEmail(input: SendPasswordResetEmailInput!): SendPasswordResetEmailPayload
+  resetUserPassword(input: ResetUserPasswordInput!): ResetUserPasswordPayload
+}
+
+input LoginInput {
+  clientMutationId: String
+  username: String!
+  password: String!
+}
+type LoginPayload {
+  authToken: String
+  refreshToken: String
+  user: User
+}
+
+input RefreshJwtAuthTokenInput {
+  clientMutationId: String
+  jwtRefreshToken: String!
+}
+type RefreshJwtAuthTokenPayload {
+  authToken: String
+}
+
+# Core: `username` accepts a login OR an email. Returns success (the legacy `user`
+# field is intentionally not selected — it leaks existence; we always show a generic
+# "if an account exists…" message).
+input SendPasswordResetEmailInput {
+  clientMutationId: String
+  username: String!
+}
+type SendPasswordResetEmailPayload {
+  success: Boolean
+}
+
+# Core: completes the reset using the emailed key + login.
+input ResetUserPasswordInput {
+  clientMutationId: String
+  key: String!
+  login: String!
+  password: String!
+}
+type ResetUserPasswordPayload {
+  user: User
 }
 
 # ============================================================================
