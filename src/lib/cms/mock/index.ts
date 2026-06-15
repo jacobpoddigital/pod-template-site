@@ -17,10 +17,16 @@ import {
   CaseStudiesDocument,
   CaseStudyBySlugDocument,
   CaseStudySlugsDocument,
+  LoginDocument,
+  RefreshAuthTokenDocument,
+  ViewerDocument,
+  SendPasswordResetEmailDocument,
+  ResetUserPasswordDocument,
 } from "../generated/graphql";
 import { mockHome, mockPosts, mockChrome } from "./fixtures";
 import { mockBlogPosts, mockCategories, mockTags, mockAuthors } from "./blog";
 import { mockCaseStudies } from "./case-studies";
+import { mockViewer, mockLogin } from "./auth";
 
 // DEV-ONLY GraphQL mock (ADR 0013 amendment). Serves the committed-schema queries
 // from curated fixtures so the template builds + renders with no WordPress. It is
@@ -83,6 +89,12 @@ const HANDLERS: [unknown, (v: Vars) => unknown][] = [
   [CaseStudiesDocument, caseStudiesHandler],
   [CaseStudyBySlugDocument, (v) => ({ caseStudy: mockCaseStudies.find((c) => c.slug === v.slug) ?? null })],
   [CaseStudySlugsDocument, () => ({ caseStudies: { nodes: mockCaseStudies.map((c) => ({ slug: c.slug, date: c.date })) } })],
+  // Auth scaffolding (docs/auth.md) — demo creds member@example.com / password.
+  [LoginDocument, (v) => mockLogin(v)],
+  [RefreshAuthTokenDocument, () => ({ refreshJwtAuthToken: { authToken: "mock-access-token-refreshed" } })],
+  [ViewerDocument, () => ({ viewer: mockViewer })],
+  [SendPasswordResetEmailDocument, () => ({ sendPasswordResetEmail: { success: true } })],
+  [ResetUserPasswordDocument, () => ({ resetUserPassword: { user: { databaseId: mockViewer.databaseId } } })],
   [SiteChromeDocument, () => mockChrome],
 ];
 

@@ -1,0 +1,11 @@
+# The current authenticated user (core WPGraphQL). The Authorization: Bearer header
+# is attached server-side by authedRequest; null when the token is missing/expired.
+query Viewer {
+  viewer {
+    id
+    databaseId
+    name
+    email
+    capabilities
+  }
+}

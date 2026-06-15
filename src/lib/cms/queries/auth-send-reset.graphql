@@ -1,0 +1,8 @@
+# Trigger WordPress's password-reset email (core WPGraphQL). `username` = login or email.
+# We never select the returned user (existence leak) — the UI always shows a generic
+# "if an account exists, we've sent a link" message.
+mutation SendPasswordResetEmail($username: String!) {
+  sendPasswordResetEmail(input: { username: $username }) {
+    success
+  }
+}
