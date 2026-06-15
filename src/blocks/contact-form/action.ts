@@ -10,7 +10,20 @@ const enquirySchema = z.object({
   message: z.string().trim().min(10, "Please add a little more detail (10+ characters)."),
 });
 
-export type ContactState = { ok: boolean; errors?: Record<string, string> };
+// `errors` = per-field messages (validation); `formError` = a form-level failure the user can
+// retry (delivery/network) — kept separate so the UI can render a field error inline AND a
+// top-of-form alert independently. docs/standards.md §5.
+export type ContactState = { ok: boolean; errors?: Record<string, string>; formError?: string };
+
+const DELIVERY_FAILED =
+  "Sorry — we couldn't send your message just now. Please try again, or email us directly.";
+
+// Per client, replace this stub with real delivery (CRM HubSpot/Zoho, email, or WP). A thrown
+// error here is caught in submitContact and shown as a retryable form-level error — NEVER let it
+// bubble to the error boundary (that would discard everything the visitor typed).
+async function deliverEnquiry(data: z.infer<typeof enquirySchema>): Promise<void> {
+  void data; // TODO per client: await crm.createLead(data) / await sendEmail(data) / etc.
+}
 
 // Account-free spam guards (research/2026-06-13-build-gap-analysis §5.1): a honeypot field
 // (hidden from humans; bots fill it) + a min-time-to-submit trap. Both "drop silently" —
@@ -38,8 +51,13 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
     for (const issue of parsed.error.issues) errors[String(issue.path[0])] = issue.message;
   }
   if (formData.get("consent") !== "on") errors.consent = "Please agree to be contacted.";
-  if (Object.keys(errors).length > 0) return { ok: false, errors };
+  if (!parsed.success || Object.keys(errors).length > 0) return { ok: false, errors };
 
-  // TODO per client: deliver the enquiry (email / CRM / WP). Stubbed to success for the starter.
+  // parsed.success is narrowed true here → parsed.data is the validated payload.
+  try {
+    await deliverEnquiry(parsed.data);
+  } catch {
+    return { ok: false, formError: DELIVERY_FAILED }; // retryable — the visitor keeps their input
+  }
   return { ok: true };
 }
