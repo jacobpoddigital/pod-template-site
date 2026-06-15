@@ -18,6 +18,11 @@ type Documents = {
     "query AllPages {\n  pages(first: 100, where: {status: PUBLISH}) {\n    nodes {\n      databaseId\n      title\n      slug\n      uri\n    }\n  }\n}": typeof types.AllPagesDocument,
     "query AllPosts {\n  posts(first: 1000, where: {status: PUBLISH}) {\n    nodes {\n      databaseId\n      slug\n      uri\n      date\n      modified\n    }\n  }\n}": typeof types.AllPostsDocument,
     "query AllTags {\n  tags(first: 200, where: {hideEmpty: true}) {\n    nodes {\n      databaseId\n      name\n      slug\n      count\n    }\n  }\n}": typeof types.AllTagsDocument,
+    "mutation Login($username: String!, $password: String!) {\n  login(input: {username: $username, password: $password}) {\n    authToken\n    refreshToken\n    user {\n      id\n      databaseId\n      name\n      email\n      capabilities\n    }\n  }\n}": typeof types.LoginDocument,
+    "mutation RefreshAuthToken($jwtRefreshToken: String!) {\n  refreshJwtAuthToken(input: {jwtRefreshToken: $jwtRefreshToken}) {\n    authToken\n  }\n}": typeof types.RefreshAuthTokenDocument,
+    "mutation ResetUserPassword($key: String!, $login: String!, $password: String!) {\n  resetUserPassword(input: {key: $key, login: $login, password: $password}) {\n    user {\n      databaseId\n    }\n  }\n}": typeof types.ResetUserPasswordDocument,
+    "mutation SendPasswordResetEmail($username: String!) {\n  sendPasswordResetEmail(input: {username: $username}) {\n    success\n  }\n}": typeof types.SendPasswordResetEmailDocument,
+    "query Viewer {\n  viewer {\n    id\n    databaseId\n    name\n    email\n    capabilities\n  }\n}": typeof types.ViewerDocument,
     "query AuthorBySlug($slug: ID!) {\n  user(id: $slug, idType: SLUG) {\n    databaseId\n    name\n    slug\n    description\n    uri\n    avatar {\n      url\n    }\n    roleTitle\n    teamProfileUrl\n    profileImage {\n      sourceUrl\n      altText\n      mediaDetails {\n        width\n        height\n      }\n    }\n    social {\n      label\n      url\n    }\n    knowsAbout\n  }\n}": typeof types.AuthorBySlugDocument,
     "query AuthorSlugs {\n  users(first: 100, where: {hasPublishedPosts: [POST]}) {\n    nodes {\n      slug\n    }\n  }\n}": typeof types.AuthorSlugsDocument,
     "query BlogPosts($size: Int!, $offset: Int!, $category: String, $tag: String, $search: String, $author: String, $notIn: [ID]) {\n  posts(\n    where: {status: PUBLISH, categoryName: $category, tag: $tag, search: $search, authorName: $author, notIn: $notIn, offsetPagination: {offset: $offset, size: $size}}\n  ) {\n    pageInfo {\n      offsetPagination {\n        total\n      }\n    }\n    nodes {\n      databaseId\n      title\n      slug\n      uri\n      date\n      excerpt\n      content\n      featuredImage {\n        node {\n          sourceUrl\n          altText\n        }\n      }\n      author {\n        node {\n          name\n          slug\n        }\n      }\n      categories {\n        nodes {\n          name\n          slug\n        }\n      }\n    }\n  }\n}": typeof types.BlogPostsDocument,
@@ -34,6 +39,11 @@ const documents: Documents = {
     "query AllPages {\n  pages(first: 100, where: {status: PUBLISH}) {\n    nodes {\n      databaseId\n      title\n      slug\n      uri\n    }\n  }\n}": types.AllPagesDocument,
     "query AllPosts {\n  posts(first: 1000, where: {status: PUBLISH}) {\n    nodes {\n      databaseId\n      slug\n      uri\n      date\n      modified\n    }\n  }\n}": types.AllPostsDocument,
     "query AllTags {\n  tags(first: 200, where: {hideEmpty: true}) {\n    nodes {\n      databaseId\n      name\n      slug\n      count\n    }\n  }\n}": types.AllTagsDocument,
+    "mutation Login($username: String!, $password: String!) {\n  login(input: {username: $username, password: $password}) {\n    authToken\n    refreshToken\n    user {\n      id\n      databaseId\n      name\n      email\n      capabilities\n    }\n  }\n}": types.LoginDocument,
+    "mutation RefreshAuthToken($jwtRefreshToken: String!) {\n  refreshJwtAuthToken(input: {jwtRefreshToken: $jwtRefreshToken}) {\n    authToken\n  }\n}": types.RefreshAuthTokenDocument,
+    "mutation ResetUserPassword($key: String!, $login: String!, $password: String!) {\n  resetUserPassword(input: {key: $key, login: $login, password: $password}) {\n    user {\n      databaseId\n    }\n  }\n}": types.ResetUserPasswordDocument,
+    "mutation SendPasswordResetEmail($username: String!) {\n  sendPasswordResetEmail(input: {username: $username}) {\n    success\n  }\n}": types.SendPasswordResetEmailDocument,
+    "query Viewer {\n  viewer {\n    id\n    databaseId\n    name\n    email\n    capabilities\n  }\n}": types.ViewerDocument,
     "query AuthorBySlug($slug: ID!) {\n  user(id: $slug, idType: SLUG) {\n    databaseId\n    name\n    slug\n    description\n    uri\n    avatar {\n      url\n    }\n    roleTitle\n    teamProfileUrl\n    profileImage {\n      sourceUrl\n      altText\n      mediaDetails {\n        width\n        height\n      }\n    }\n    social {\n      label\n      url\n    }\n    knowsAbout\n  }\n}": types.AuthorBySlugDocument,
     "query AuthorSlugs {\n  users(first: 100, where: {hasPublishedPosts: [POST]}) {\n    nodes {\n      slug\n    }\n  }\n}": types.AuthorSlugsDocument,
     "query BlogPosts($size: Int!, $offset: Int!, $category: String, $tag: String, $search: String, $author: String, $notIn: [ID]) {\n  posts(\n    where: {status: PUBLISH, categoryName: $category, tag: $tag, search: $search, authorName: $author, notIn: $notIn, offsetPagination: {offset: $offset, size: $size}}\n  ) {\n    pageInfo {\n      offsetPagination {\n        total\n      }\n    }\n    nodes {\n      databaseId\n      title\n      slug\n      uri\n      date\n      excerpt\n      content\n      featuredImage {\n        node {\n          sourceUrl\n          altText\n        }\n      }\n      author {\n        node {\n          name\n          slug\n        }\n      }\n      categories {\n        nodes {\n          name\n          slug\n        }\n      }\n    }\n  }\n}": types.BlogPostsDocument,
@@ -76,6 +86,26 @@ export function graphql(source: "query AllPosts {\n  posts(first: 1000, where: {
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query AllTags {\n  tags(first: 200, where: {hideEmpty: true}) {\n    nodes {\n      databaseId\n      name\n      slug\n      count\n    }\n  }\n}"): (typeof documents)["query AllTags {\n  tags(first: 200, where: {hideEmpty: true}) {\n    nodes {\n      databaseId\n      name\n      slug\n      count\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation Login($username: String!, $password: String!) {\n  login(input: {username: $username, password: $password}) {\n    authToken\n    refreshToken\n    user {\n      id\n      databaseId\n      name\n      email\n      capabilities\n    }\n  }\n}"): (typeof documents)["mutation Login($username: String!, $password: String!) {\n  login(input: {username: $username, password: $password}) {\n    authToken\n    refreshToken\n    user {\n      id\n      databaseId\n      name\n      email\n      capabilities\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation RefreshAuthToken($jwtRefreshToken: String!) {\n  refreshJwtAuthToken(input: {jwtRefreshToken: $jwtRefreshToken}) {\n    authToken\n  }\n}"): (typeof documents)["mutation RefreshAuthToken($jwtRefreshToken: String!) {\n  refreshJwtAuthToken(input: {jwtRefreshToken: $jwtRefreshToken}) {\n    authToken\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation ResetUserPassword($key: String!, $login: String!, $password: String!) {\n  resetUserPassword(input: {key: $key, login: $login, password: $password}) {\n    user {\n      databaseId\n    }\n  }\n}"): (typeof documents)["mutation ResetUserPassword($key: String!, $login: String!, $password: String!) {\n  resetUserPassword(input: {key: $key, login: $login, password: $password}) {\n    user {\n      databaseId\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation SendPasswordResetEmail($username: String!) {\n  sendPasswordResetEmail(input: {username: $username}) {\n    success\n  }\n}"): (typeof documents)["mutation SendPasswordResetEmail($username: String!) {\n  sendPasswordResetEmail(input: {username: $username}) {\n    success\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query Viewer {\n  viewer {\n    id\n    databaseId\n    name\n    email\n    capabilities\n  }\n}"): (typeof documents)["query Viewer {\n  viewer {\n    id\n    databaseId\n    name\n    email\n    capabilities\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

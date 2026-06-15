@@ -55,6 +55,11 @@ export {
 } from "./blog";
 export type { BlogPostsOpts } from "./blog";
 
+// Auth WPGraphQL operations (opt-in scaffolding — docs/auth.md). lib/cms owns all
+// WPGraphQL access; the app-layer auth glue (cookies/session/CSRF) calls these.
+export { cmsLogin, cmsRefresh, cmsViewer, cmsSendResetEmail, cmsResetPassword } from "./auth";
+export type { RawViewer } from "./auth";
+
 /** Fetch a page by slug. Returns null when the page does not exist (caller calls notFound()).
  *  `preview` bypasses the ISR cache for draft preview (boilerplate §4). */
 export async function getPage(slug: string, opts: { preview?: boolean } = {}): Promise<Page | null> {

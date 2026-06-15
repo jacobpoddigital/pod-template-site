@@ -1,0 +1,15 @@
+# Exchange username + password for a JWT pair (wp-graphql-jwt-authentication).
+# Called server-side only (src/lib/auth/actions.ts) — the browser never sees this.
+mutation Login($username: String!, $password: String!) {
+  login(input: { username: $username, password: $password }) {
+    authToken
+    refreshToken
+    user {
+      id
+      databaseId
+      name
+      email
+      capabilities
+    }
+  }
+}
