@@ -31,11 +31,15 @@ export type {
   PostListItem,
   BlogPost,
   PaginatedPosts,
+  CaseStudyListItem,
+  CaseStudy,
+  CaseStudyMetric,
+  PaginatedCaseStudies,
 } from "./types";
 export { pageMetadata } from "./metadata";
 
 // On-demand ISR cache tags — the public API the /api/revalidate route imports.
-export { PAGES_TAG, POSTS_TAG, CHROME_TAG } from "./cache-tags";
+export { PAGES_TAG, POSTS_TAG, CHROME_TAG, CASE_STUDIES_TAG } from "./cache-tags";
 
 // The standard blog (workflow/34) — implemented in ./blog (cms-internal), surfaced here.
 export {
@@ -54,6 +58,18 @@ export {
   getAuthorSlugs,
 } from "./blog";
 export type { BlogPostsOpts } from "./blog";
+
+// The example CUSTOM POST TYPE (case_study) — implemented in ./case-studies
+// (cms-internal), surfaced here. Mirrors the blog surface so a CPT is a copy-paste
+// away: register the CPT + ACF group WP-side, add queries, clone this file.
+export {
+  CASE_STUDIES_BASE,
+  CASE_STUDIES_PER_PAGE,
+  getCaseStudies,
+  getCaseStudySlugs,
+  getCaseStudy,
+} from "./case-studies";
+export type { CaseStudiesOpts } from "./case-studies";
 
 // Auth WPGraphQL operations (opt-in scaffolding — docs/auth.md). lib/cms owns all
 // WPGraphQL access; the app-layer auth glue (cookies/session/CSRF) calls these.

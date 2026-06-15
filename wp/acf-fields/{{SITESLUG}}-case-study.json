@@ -1,0 +1,28 @@
+{
+  "key": "group_{{SITESLUG}}_case_study",
+  "title": "Case Study Fields",
+  "show_in_graphql": 1,
+  "graphql_field_name": "caseStudyFields",
+  "map_graphql_types_from_location_rules": 1,
+  "graphql_types": ["CaseStudy"],
+  "_note": "The ACF group for the example CUSTOM POST TYPE (case_study, registered in wp/mu-plugins/pod-case-study-register.php). Exposed to WPGraphQL as caseStudyFields on the CaseStudy type. Field KEYS are site-prefixed ({{SITESLUG}}); field NAMES are the contract the frontend reads (src/lib/cms/case-studies.ts) and MUST NOT change (client, industry, summary, website_url -> websiteUrl, metrics{label,value}). Rename this file to <siteslug>-case-study.json and replace {{SITESLUG}}. Keep, rename, or delete this CPT per client.",
+  "fields": [
+    { "key": "field_{{SITESLUG}}_cs_client", "name": "client", "label": "Client name", "type": "text", "show_in_graphql": 1 },
+    { "key": "field_{{SITESLUG}}_cs_industry", "name": "industry", "label": "Industry", "type": "text", "show_in_graphql": 1 },
+    { "key": "field_{{SITESLUG}}_cs_summary", "name": "summary", "label": "One-line outcome", "type": "text", "instructions": "Shown on the card and as the detail-page standfirst.", "show_in_graphql": 1 },
+    { "key": "field_{{SITESLUG}}_cs_website_url", "name": "website_url", "label": "Client website URL", "type": "url", "graphql_field_name": "websiteUrl", "show_in_graphql": 1 },
+    {
+      "key": "field_{{SITESLUG}}_cs_metrics", "name": "metrics", "label": "Headline metrics", "type": "repeater", "layout": "table", "button_label": "Add metric", "min": 0, "max": 6, "show_in_graphql": 1,
+      "sub_fields": [
+        { "key": "field_{{SITESLUG}}_cs_metric_label", "name": "label", "label": "Label", "type": "text", "instructions": "e.g. Organic traffic", "show_in_graphql": 1 },
+        { "key": "field_{{SITESLUG}}_cs_metric_value", "name": "value", "label": "Value", "type": "text", "instructions": "e.g. +148%", "show_in_graphql": 1 }
+      ]
+    }
+  ],
+  "location": [
+    [
+      { "param": "post_type", "operator": "==", "value": "case_study" }
+    ]
+  ],
+  "active": true
+}

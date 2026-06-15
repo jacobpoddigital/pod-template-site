@@ -14,6 +14,9 @@ import {
   TagBySlugDocument,
   AuthorBySlugDocument,
   AuthorSlugsDocument,
+  CaseStudiesDocument,
+  CaseStudyBySlugDocument,
+  CaseStudySlugsDocument,
   LoginDocument,
   RefreshAuthTokenDocument,
   ViewerDocument,
@@ -22,6 +25,7 @@ import {
 } from "../generated/graphql";
 import { mockHome, mockPosts, mockChrome } from "./fixtures";
 import { mockBlogPosts, mockCategories, mockTags, mockAuthors } from "./blog";
+import { mockCaseStudies } from "./case-studies";
 import { mockViewer, mockLogin } from "./auth";
 
 // DEV-ONLY GraphQL mock (ADR 0013 amendment). Serves the committed-schema queries
@@ -56,6 +60,15 @@ function blogPostsHandler(variables: Vars) {
   return { posts: { pageInfo: { offsetPagination: { total: filtered.length } }, nodes: filtered.slice(offset, offset + size) } };
 }
 
+// Case Study CPT index: offset-paginate the fixtures, same contract as the blog —
+// proves the registered CPT renders offline through the identical mock seam.
+function caseStudiesHandler(variables: Vars) {
+  const { offset = 0, size = 12, notIn } = variables as { offset?: number; size?: number; notIn?: string[] | null };
+  const excluded = new Set((notIn ?? []).map(String));
+  const filtered = mockCaseStudies.filter((c) => !excluded.has(String(c.databaseId)));
+  return { caseStudies: { pageInfo: { offsetPagination: { total: filtered.length } }, nodes: filtered.slice(offset, offset + size) } };
+}
+
 const HANDLERS: [unknown, (v: Vars) => unknown][] = [
   [PageBySlugDocument, (v) => {
     const slug = v.slug as string | undefined;
@@ -73,6 +86,9 @@ const HANDLERS: [unknown, (v: Vars) => unknown][] = [
   [TagBySlugDocument, (v) => ({ tag: mockTags.find((t) => t.slug === v.slug) ?? null })],
   [AuthorBySlugDocument, (v) => ({ user: mockAuthors.find((a) => a.slug === v.slug) ?? null })],
   [AuthorSlugsDocument, () => ({ users: { nodes: mockAuthors.map((a) => ({ slug: a.slug })) } })],
+  [CaseStudiesDocument, caseStudiesHandler],
+  [CaseStudyBySlugDocument, (v) => ({ caseStudy: mockCaseStudies.find((c) => c.slug === v.slug) ?? null })],
+  [CaseStudySlugsDocument, () => ({ caseStudies: { nodes: mockCaseStudies.map((c) => ({ slug: c.slug, date: c.date })) } })],
   // Auth scaffolding (docs/auth.md) — demo creds member@example.com / password.
   [LoginDocument, (v) => mockLogin(v)],
   [RefreshAuthTokenDocument, () => ({ refreshJwtAuthToken: { authToken: "mock-access-token-refreshed" } })],

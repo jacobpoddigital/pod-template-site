@@ -64,6 +64,15 @@ export const siteConfig = {
     /** Show the newest post as a featured article on the index (Great White port). */
     featured: true,
   },
+  /** The example CUSTOM POST TYPE (case_study). Mounted at /case-studies (see
+   *  CASE_STUDIES_BASE in lib/cms). The template ships this CPT as the reference
+   *  pattern — keep, rename, or delete per client.
+   *  TEMPLATE: set title/intro per client. */
+  caseStudies: {
+    /** Index hero heading + standfirst. */
+    title: "Case studies",
+    intro: "Real outcomes from real engagements — the measurement, the build, and the numbers that moved.",
+  },
 } as const;
 
 export type SiteConfig = typeof siteConfig;
