@@ -6,18 +6,21 @@
  *              the server requirements so a misconfigured site fails LOUD in admin instead
  *              of silently never issuing tokens.
  *
- * GO-LIVE GATE (the one unverified step — docs/auth.md §Go-live):
- *   1. Install + activate **wp-graphql-jwt-authentication**
- *      (composer require wp-graphql/wp-graphql-jwt-authentication, or the GitHub release).
+ * GO-LIVE GATE — VERIFIED 2026-06-15 against wp-graphql 2.16.0 + JWT plugin 0.7 (v0.7.2).
+ * Per-site steps (docs/auth.md §Go-live):
+ *   1. Install + activate **wp-graphql-jwt-authentication** from the GitHub RELEASE ZIP
+ *      (`wp plugin install <release-zip-url> --activate`) or composer — it is NOT on wp.org.
  *      It adds the `login` + `refreshJwtAuthToken` mutations the frontend uses. The core
  *      mutations the reset flow uses (sendPasswordResetEmail / resetUserPassword) and
  *      `viewer` are already in WPGraphQL core (verified on 2.x, 2026-06-15).
  *   2. Define the signing secret in wp-config.php (NEVER commit it):
  *        define( 'GRAPHQL_JWT_AUTH_SECRET_KEY', '<long random string>' );
  *      On WP Engine / Atlas set it as an environment secret. Rotating it logs everyone out
- *      (the global revocation lever).
- *   3. Confirm in GraphiQL: `mutation { login(input:{username:"…",password:"…"}){ authToken refreshToken } }`
- *      returns tokens, and a `viewer` query with the Bearer header returns the user.
+ *      (the global revocation lever). Per-user kill switch: updateUser(revokeJwtUserSecret:true)
+ *      — note it BANS the user until an admin un-revokes (the plugin has no clean per-session
+ *      logout; the frontend handles logout revocation with a denylist — docs/auth.md).
+ *   3. Verify the wiring: WPGRAPHQL_URL=<live>/graphql pnpm dlx tsx scripts/verify-auth-live.ts
+ *      (needs a test member user) → must print 11× PASS.
  *
  * No self-registration: the `registerUser` core mutation exists but is NOT exposed by the
  * frontend (decision 2026-06-15). Users are provisioned in wp-admin. To allow self-signup

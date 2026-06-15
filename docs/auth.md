@@ -45,6 +45,7 @@ Browser ──form POST──▶ Next Server Action ──GraphQL (Bearer)──
 | CMS ops (cms-internal) | `src/lib/cms/auth.ts` (login/refresh/viewer/reset) + `authed-request.ts` (Bearer, no-store) — re-exported from `src/lib/cms/index.ts` |
 | Pure config/types (lib) | `src/lib/auth/config.ts` (cookie names/attrs/TTLs), `src/lib/auth/types.ts` |
 | App glue | `src/app/(auth)/_lib/{actions,session,guard}.ts` (Server Actions + session + guards — they touch cms-public, which `lib` may not) |
+| Hardening | `src/app/(auth)/_lib/{rate-limit,revocation}.ts` (login/reset rate-limit + logout refresh-token denylist — Phase 3) |
 | UI | `src/app/(auth)/{login,forgot-password,reset-password}/`, `src/app/account/`, `src/middleware.ts` |
 | WP | `wp/mu-plugins/pod-auth-register.php` (JWT secret assertion + notes) |
 
@@ -71,23 +72,53 @@ JWT plugin**. Dev demo credential: **`member@example.com` / `password`**. `pnpm 
 - **Least privilege**: gate on **capabilities**, re-checked server-side — never trust a
   client-claimed role.
 - **Server-side Zod** on every action (security, not just UX — `docs/standards.md §5`).
+- **Rate-limited** login + password-reset (`_lib/rate-limit.ts`) — brute-force / spam defence.
+- **Revocable logout** (`_lib/revocation.ts`) — a logged-out refresh token can't mint new
+  access tokens (denylisted until expiry). See §Go-live for the in-process-store caveat.
 
-## Go-live gate (the one remaining live step)
+## Go-live gate — VERIFIED 2026-06-15 ✓
 
-The login/refresh half rides on the **`wp-graphql-jwt-authentication`** plugin, which is
-**not yet verified against this project's WPGraphQL 2.x** (the core reset/viewer half WAS
-verified, 2026-06-15). Before a real login site goes live:
+The `wp-graphql-jwt-authentication` plugin is **verified healthy against WPGraphQL 2.x**
+(2.16.0) and wired end-to-end. The full Phase-0 spike + Phase-3 hardening ran on a clean
+local WP; the real `cmsLogin`/`cmsViewer`/`cmsRefresh` scaffolding round-trips against live
+WordPress (11/11 checks — `scripts/verify-auth-live.ts`). Plan + results: HQ `docs/workflow/36`.
 
-1. Install + activate `wp-graphql-jwt-authentication` (composer or GitHub release).
+**Verified plugin set:** `wp-graphql` **2.16.0** + `wp-graphql-jwt-authentication` **0.7**
+(GitHub release `v0.7.2`; wp.org has no installable slug — install from the release zip or
+composer). The `login` / `refreshJwtAuthToken` mutations and the Bearer `viewer` query all
+resolve; bad credentials return an error + null; an expired/anonymous token gives `viewer:null`.
+
+**Per-site go-live steps (every member site):**
+1. Install + activate `wp-graphql-jwt-authentication` from the GitHub release zip
+   (`wp plugin install <release-zip-url> --activate`) or composer. **Not on wp.org.**
 2. Define `GRAPHQL_JWT_AUTH_SECRET_KEY` in wp-config / as an env secret (never commit;
-   rotating it logs everyone out). `pod-auth-register.php` shows an admin error if it's
-   missing while the plugin is active.
-3. In GraphiQL, confirm `login` returns `authToken`/`refreshToken` and a `viewer` query
-   with the Bearer header returns the user. If the plugin is unhealthy on 2.x, evaluate
-   `wp-graphql-headless-login` (also enables social/SSO) — only the `src/lib/cms/auth.ts`
+   rotating it logs **everyone** out — the global revocation lever). `pod-auth-register.php`
+   shows an admin error if it's missing while the plugin is active.
+3. Point `WPGRAPHQL_URL` at the live `/graphql` and run
+   `WPGRAPHQL_URL=… pnpm dlx tsx scripts/verify-auth-live.ts` (needs a test member user) —
+   it must print 11× `PASS`. If the plugin is ever unhealthy on a future 2.x, swap to
+   `wp-graphql-headless-login` (also enables social/SSO) — only `src/lib/cms/auth.ts`
    mutations + the SDL change; the rest of the module is plugin-agnostic.
-4. **Harden before launch**: rate-limit `/login` (brute-force), add lockout/backoff, and
-   wire token **revocation** into `logoutAction` (secret-bump). See `docs/workflow/36` Phase 3.
+
+**Hardening — shipped (Phase 3):**
+- **Login + reset rate-limiting** (`_lib/rate-limit.ts`): 10 logins / 5 resets per IP per
+  15 min, generic "too many attempts" (no leak). Counter clears on a successful login.
+- **Logout revocation** (`_lib/revocation.ts`): on logout the refresh token is denylisted
+  until its natural expiry, and `refreshAccessToken` refuses a denylisted token — so a
+  captured token can't mint new access tokens post-logout.
+
+> **⚠ Both use an in-PROCESS store — a hard cap on a single long-lived instance, but
+> per-lambda on serverless / multi-instance (Vercel).** Before a real multi-instance launch,
+> swap in a shared store: rate-limit → Upstash Redis / Vercel KV; revocation →
+> `setRevocationStore(kvStore)`. The seams are built; only the store impl is missing.
+
+> **The plugin has NO clean per-session revoke** (earned 2026-06-15): `revokeJwtUserSecret`
+> kills outstanding refresh tokens *but bans the user* until an admin un-revokes;
+> `refreshJwtUserSecret` (rotate) doesn't invalidate old tokens at all (the secret value is
+> never compared, only the revoked flag). That's why logout revocation lives Next-side as a
+> denylist. The plugin's account-level levers are still the ops kill switches: per-user
+> **`revokeJwtUserSecret`** (disable an account) and **`GRAPHQL_JWT_AUTH_SECRET_KEY` rotation**
+> (force-logout everyone). Access tokens are short-lived (≤5 min) so they're left to expire.
 
 ## Not in v1 (add later)
 

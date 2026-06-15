@@ -12,6 +12,8 @@ import {
   cookieOptions,
 } from "@/lib/auth/config";
 import type { LoginState, ResetState } from "@/lib/auth/types";
+import { clientIp, checkRateLimit, clearRateLimit, LOGIN_LIMIT, RESET_LIMIT } from "./rate-limit";
+import { revokeRefreshToken, isRefreshTokenRevoked } from "./revocation";
 
 // Auth Server Actions (app layer — they touch cms-public, which lib may not). Credentials
 // touch ONLY the server; tokens go to httpOnly cookies the browser can't read. Every
@@ -51,9 +53,13 @@ const loginSchema = z.object({
 });
 
 const BAD_CREDS = "Incorrect username or password.";
+const RATE_LIMITED = "Too many attempts. Please wait a few minutes and try again.";
 
 export async function loginAction(_prev: LoginState, formData: FormData): Promise<LoginState> {
   await assertSameOrigin();
+  const rlKey = `login:${await clientIp()}`;
+  if (!checkRateLimit(rlKey, LOGIN_LIMIT)) return { ok: false, error: RATE_LIMITED };
+
   const parsed = loginSchema.safeParse({ username: formData.get("username"), password: formData.get("password") });
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid details." };
 
@@ -65,6 +71,7 @@ export async function loginAction(_prev: LoginState, formData: FormData): Promis
   }
   if (!result?.authToken) return { ok: false, error: BAD_CREDS };
 
+  clearRateLimit(rlKey); // success → reset the counter so the user isn't penalised by earlier typos
   await setSessionCookies(result.authToken, result.refreshToken);
   redirect(safeNext(formData.get("next"))); // throws NEXT_REDIRECT — must be outside try
 }
@@ -72,9 +79,19 @@ export async function loginAction(_prev: LoginState, formData: FormData): Promis
 export async function logoutAction(): Promise<void> {
   await assertSameOrigin();
   const jar = await cookies();
+  // Revoke this refresh token server-side BEFORE clearing the cookies, so a captured token can't
+  // mint new access tokens after logout (the plugin offers no per-session revoke — docs/auth.md
+  // §Go-live, revocation.ts). Best-effort: never block logout on the store.
+  const refresh = jar.get(REFRESH_COOKIE)?.value;
+  if (refresh) {
+    try {
+      await revokeRefreshToken(refresh);
+    } catch {
+      /* best-effort — clearing the cookies below is the primary logout */
+    }
+  }
   jar.delete(ACCESS_COOKIE);
   jar.delete(REFRESH_COOKIE);
-  // GO-LIVE: also call a WP revoke/secret-bump so outstanding tokens die (docs/auth.md §Go-live).
   redirect("/");
 }
 
@@ -84,6 +101,7 @@ export async function refreshAccessToken(): Promise<string | null> {
   const jar = await cookies();
   const refresh = jar.get(REFRESH_COOKIE)?.value;
   if (!refresh) return null;
+  if (await isRefreshTokenRevoked(refresh)) return null; // logged-out / revoked token can't refresh
   try {
     const token = await cmsRefresh(refresh);
     if (token) jar.set(ACCESS_COOKIE, token, cookieOptions());
@@ -97,6 +115,9 @@ const forgotSchema = z.object({ username: z.string().trim().min(1, "Enter your u
 
 export async function sendResetAction(_prev: ResetState, formData: FormData): Promise<ResetState> {
   await assertSameOrigin();
+  if (!checkRateLimit(`reset:${await clientIp()}`, RESET_LIMIT)) {
+    return { ok: true, done: true }; // same generic outcome — don't reveal the limit (enumeration)
+  }
   const parsed = forgotSchema.safeParse({ username: formData.get("username") });
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message };
   try {
