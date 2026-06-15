@@ -28,6 +28,10 @@ export const LAYOUTS = ["grid", "slider"] as const;
 export type BlockLayout = (typeof LAYOUTS)[number];
 export const layoutSchema = z.enum(LAYOUTS).nullish();
 
+/** Flip a two-column section (media ↔ content) — Great White's per-section flip
+ *  toggle. `true` = put the copy on the right / media on the left at lg+. */
+export const reverseSchema = z.boolean().nullish();
+
 /** Spread into a section block's zod object: z.object({ ...sectionSettingsFields, … }).
  *  `anchor` gives the section an editor-set id so in-page nav (#anchor) can target it. */
 export const sectionSettingsFields = {
@@ -35,6 +39,7 @@ export const sectionSettingsFields = {
   spacing: spacingSchema,
   container: containerSchema,
   anchor: z.string().nullish(),
+  reverse: reverseSchema,
 } as const;
 
 export interface SectionSettings {
@@ -42,6 +47,14 @@ export interface SectionSettings {
   spacing?: Spacing | null;
   container?: ContainerWidth | null;
   anchor?: string | null;
+  reverse?: boolean | null;
+}
+
+/** Order classes for a flippable two-column section. Apply `.a` to the FIRST
+ *  child (usually the copy) and `.b` to the second (the media/widget). When
+ *  `reverse`, they swap sides at lg+ (mobile order is unchanged). */
+export function flipOrder(reverse?: boolean | null) {
+  return reverse ? { a: "lg:order-2", b: "lg:order-1" } : { a: "", b: "" };
 }
 
 /** Editor `anchor` text → a safe HTML id (lowercase, hyphenated). Empty → "". */
