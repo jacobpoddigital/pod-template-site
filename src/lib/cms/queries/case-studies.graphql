@@ -1,0 +1,42 @@
+# One page of case studies for the index grid. Same offset-pagination shape as the
+# blog (WPGraphQL Offset Pagination addon: offset/size + pageInfo.offsetPagination.total),
+# proving the CPT participates in the exact pagination contract a native post type does.
+# `caseStudyFields` is the ACF group the CPT adds over a native post.
+query CaseStudies($size: Int!, $offset: Int!, $notIn: [ID]) {
+  caseStudies(
+    where: {
+      status: PUBLISH
+      notIn: $notIn
+      offsetPagination: { offset: $offset, size: $size }
+    }
+  ) {
+    pageInfo {
+      offsetPagination {
+        total
+      }
+    }
+    nodes {
+      databaseId
+      title
+      slug
+      uri
+      date
+      excerpt
+      featuredImage {
+        node {
+          sourceUrl
+          altText
+        }
+      }
+      caseStudyFields {
+        client
+        industry
+        summary
+        metrics {
+          label
+          value
+        }
+      }
+    }
+  }
+}

@@ -24,6 +24,14 @@ type RootQuery {
   tag(id: ID!, idType: TermNodeIdTypeEnum): Tag
   user(id: ID!, idType: UserNodeIdTypeEnum): User
   users(first: Int, where: RootQueryToUserConnectionWhereArgs): RootQueryToUserConnection
+  # Custom post type: Case Study (registered in wp/mu-plugins/pod-case-study-register.php
+  # with show_in_graphql + graphql_single_name "caseStudy" / plural "caseStudies"). The
+  # CPT-proves-the-concept slice — mirrors the blog's native-Post pattern but on a
+  # REGISTERED CPT carrying its own ACF group (caseStudyFields). Regenerate the SDL from
+  # live WP once the plugin + ACF group are active; type names follow WPGraphQL's CPT
+  # convention so the hand-authored shapes survive the swap.
+  caseStudies(first: Int, where: RootQueryToCaseStudyConnectionWhereArgs): RootQueryToCaseStudyConnection
+  caseStudy(id: ID!, idType: CaseStudyIdType): CaseStudy
   menuItems(where: RootQueryToMenuItemConnectionWhereArgs): RootQueryToMenuItemConnection
   siteOptions: SiteOptions
 }
@@ -951,4 +959,69 @@ type Page_Pagefields_Blocks_FeatureRows_Rows {
   ctaLabel: String
   ctaUrl: String
   image: MediaItem
+}
+
+# ============================================================================
+# Case Study — CUSTOM POST TYPE (the CPT-proves-the-concept slice).
+# Mirrors the blog's native-Post shape, but on a registered CPT (`case_study`,
+# show_in_graphql) carrying its OWN ACF group `caseStudyFields`. This block is
+# exactly what WPGraphQL + WPGraphQL-for-ACF generate when the CPT + group exist;
+# regenerate from live WP to confirm once provisioned. See workflow on CPTs.
+# ============================================================================
+
+enum CaseStudyIdType {
+  DATABASE_ID
+  ID
+  SLUG
+  URI
+}
+
+# CPT connection where-args. `offsetPagination` needs the free WPGraphQL Offset
+# Pagination addon (same as posts); `search` powers the index filter when added.
+input RootQueryToCaseStudyConnectionWhereArgs {
+  status: PostStatusEnum
+  search: String
+  notIn: [ID]
+  offsetPagination: OffsetPagination
+}
+
+type RootQueryToCaseStudyConnection {
+  nodes: [CaseStudy!]!
+  pageInfo: RootQueryToCaseStudyConnectionPageInfo
+}
+type RootQueryToCaseStudyConnectionPageInfo {
+  offsetPagination: OffsetPaginationPageInfo
+}
+
+# One case study. Native WP fields (title/slug/content/featuredImage/date) PLUS the
+# ACF group exposed as `caseStudyFields` — the part a CPT adds over a native post.
+type CaseStudy {
+  databaseId: Int!
+  title: String
+  slug: String
+  uri: String
+  date: String
+  modified: String
+  excerpt: String
+  # Full rendered CPT body HTML (the narrative) — sanitized + rendered in a prose container.
+  content: String
+  featuredImage: NodeWithFeaturedImageToMediaItemConnectionEdge
+  seo: PostTypeSEO
+  # ACF field group "Case Study Fields" (Show in GraphQL → graphql_field_name
+  # "caseStudyFields"). The structured proof an editor fills in alongside the body.
+  caseStudyFields: CaseStudy_Casestudyfields
+}
+
+type CaseStudy_Casestudyfields {
+  client: String
+  industry: String
+  # One-line outcome shown on the card + hero standfirst.
+  summary: String
+  websiteUrl: String
+  # Headline result numbers — a repeater of label/value pairs (e.g. "Organic traffic" / "+148%").
+  metrics: [CaseStudy_Casestudyfields_Metrics!]
+}
+type CaseStudy_Casestudyfields_Metrics {
+  label: String
+  value: String
 }

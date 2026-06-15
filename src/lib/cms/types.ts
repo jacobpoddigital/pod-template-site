@@ -146,6 +146,62 @@ export interface PaginatedPosts {
   totalPages: number;
 }
 
+// --- Case Study: the example CUSTOM POST TYPE (proves the CPT pattern end-to-end).
+// Native WP fields PLUS the ACF `caseStudyFields` group — the structured part a CPT
+// adds over a native post. Shapes mirror the blog's PostListItem/BlogPost so the CPT
+// and the native blog share the same listing/detail conventions. ---
+
+/** A headline result number on a case study (ACF repeater row). */
+export interface CaseStudyMetric {
+  label: string;
+  value: string;
+}
+
+/** A case study as it appears in the index grid. */
+export interface CaseStudyListItem {
+  databaseId: number;
+  title: string;
+  slug: string;
+  /** Frontend permalink — always /case-studies/<slug> (we own the route). */
+  href: string;
+  date?: string | null;
+  excerpt?: string | null;
+  image?: { sourceUrl: string; altText?: string | null } | null;
+  /** ACF fields surfaced on the card. */
+  client: string | null;
+  industry: string | null;
+  summary: string | null;
+  metrics: CaseStudyMetric[];
+}
+
+/** A single case study for the detail page. `contentHtml` is RAW rendered WP HTML —
+ *  sanitized before injection (same chokepoint as the blog body). */
+export interface CaseStudy {
+  databaseId: number;
+  title: string;
+  slug: string;
+  href: string;
+  date?: string | null;
+  modified?: string | null;
+  contentHtml: string;
+  image: SeoImage | null;
+  client: string | null;
+  industry: string | null;
+  summary: string | null;
+  websiteUrl: string | null;
+  metrics: CaseStudyMetric[];
+  seo?: PageSeo | null;
+}
+
+/** A page of case studies + totals for the index (same shape as PaginatedPosts). */
+export interface PaginatedCaseStudies {
+  items: CaseStudyListItem[];
+  total: number;
+  page: number;
+  perPage: number;
+  totalPages: number;
+}
+
 /** A nav link. `children` drives sub-menus (desktop flyout/mega + mobile drill-down);
  *  `description` is the optional one-liner a mega-menu column link can show. */
 export interface NavItem {

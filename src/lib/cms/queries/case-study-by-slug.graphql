@@ -1,0 +1,61 @@
+# A single case study by slug. Returns the rendered `content` (the narrative, sanitized +
+# rendered in a prose container), the ACF `caseStudyFields` (client/industry/summary/
+# metrics/websiteUrl), and Yoast `seo` — the same per-entry SEO source as pages and posts,
+# proving SEO is source-agnostic across native posts AND custom post types.
+query CaseStudyBySlug($slug: ID!) {
+  caseStudy(id: $slug, idType: SLUG) {
+    databaseId
+    title
+    slug
+    uri
+    date
+    modified
+    content
+    featuredImage {
+      node {
+        sourceUrl
+        altText
+        mediaDetails {
+          width
+          height
+        }
+      }
+    }
+    caseStudyFields {
+      client
+      industry
+      summary
+      websiteUrl
+      metrics {
+        label
+        value
+      }
+    }
+    seo {
+      title
+      metaDesc
+      canonical
+      metaRobotsNoindex
+      metaRobotsNofollow
+      opengraphTitle
+      opengraphDescription
+      opengraphImage {
+        sourceUrl
+        altText
+        mediaDetails {
+          width
+          height
+        }
+      }
+      twitterTitle
+      twitterDescription
+      twitterImage {
+        sourceUrl
+        altText
+      }
+      schema {
+        raw
+      }
+    }
+  }
+}

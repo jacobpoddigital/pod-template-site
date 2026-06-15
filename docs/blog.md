@@ -7,6 +7,10 @@ this template's design system (tokens + type-scale classes, not Great White's CS
 
 Best-practice basis: `web-ai-automation/research/2026-06-13-headless-blog-best-practices.md`.
 
+> The blog uses WordPress's **native `post`** type. For the **custom-post-type** pattern
+> (a registered CPT with its own ACF group → typed GraphQL → SSG routes), see
+> [`docs/custom-post-types.md`](./custom-post-types.md) — the worked `case_study` example.
+
 ## Routes
 
 | Route | What |
