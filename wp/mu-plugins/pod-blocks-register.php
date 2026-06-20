@@ -18,14 +18,26 @@ add_action( 'acf/init', function () {
 	}
 
 	$dir = WP_CONTENT_DIR . '/acf-fields';
-	if ( ! is_dir( $dir ) ) {
-		return;
+	if ( is_dir( $dir ) ) {
+		foreach ( glob( $dir . '/*.json' ) as $file ) {
+			$group = json_decode( (string) file_get_contents( $file ), true );
+			if ( is_array( $group ) && ! empty( $group['key'] ) ) {
+				acf_add_local_field_group( $group );
+			}
+		}
 	}
 
-	foreach ( glob( $dir . '/*.json' ) as $file ) {
-		$group = json_decode( (string) file_get_contents( $file ), true );
-		if ( is_array( $group ) && ! empty( $group['key'] ) ) {
-			acf_add_local_field_group( $group );
+	// The page-blocks group (the `pageFields` flexible-content field) is GENERATED from the
+	// frontend block contract by scripts/generate-acf-blocks.mjs and copied here at provision
+	// time (workflow/29 — "per-client ACF generated at provision time"). It's an ARRAY of
+	// field groups (ACF export format), not a single group, so it's loaded separately.
+	$export = WP_CONTENT_DIR . '/acf-export.json';
+	if ( file_exists( $export ) ) {
+		$groups = json_decode( (string) file_get_contents( $export ), true );
+		foreach ( (array) $groups as $group ) {
+			if ( is_array( $group ) && ! empty( $group['key'] ) ) {
+				acf_add_local_field_group( $group );
+			}
 		}
 	}
 } );
@@ -36,7 +48,7 @@ add_action( 'acf/init', function () {
  * Uses update_field() with the field KEY (not name) to avoid ambiguity when
  * multiple field groups exist on the same post type.
  *
- * IMPORTANT: Replace 'field_{{SITESLUG}}_flexible_content' with this site's
+ * IMPORTANT: Replace 'field_stride_flexible_content' with this site's
  * actual field key from wp/acf-fields/<siteslug>-page-blocks.json.
  *
  * Do NOT use the standard WP REST write path (POST /wp/v2/pages/:id) — it
@@ -56,7 +68,7 @@ add_action( 'rest_api_init', function () {
 			$id = $pages[0]->ID;
 
 			// Replace with the actual field key from this site's acf-fields JSON.
-			$field_key = 'field_{{SITESLUG}}_flexible_content';
+			$field_key = 'field_stride_flexible_content';
 
 			if ( $req->get_method() === 'PUT' ) {
 				$body   = $req->get_json_params();

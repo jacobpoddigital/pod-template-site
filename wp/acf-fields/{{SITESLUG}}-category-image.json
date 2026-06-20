@@ -1,0 +1,23 @@
+{
+  "key": "group_{{SITESLUG}}_category_image",
+  "title": "Category Image",
+  "show_in_graphql": 0,
+  "_note": "Editor UI for the blog category banner/card image (the `categoryImage` field the frontend reads on Category — all-categories.graphql + category-by-slug.graphql). GraphQL is HAND-REGISTERED as Category.categoryImage: MediaItem in wp/mu-plugins/pod-category-image-register.php (so show_in_graphql is 0 here; wpgraphql-acf would otherwise expose it as a connection edge, not the flat MediaItem the committed schema declares). Field NAME `category_image` is the contract the resolver reads; KEY is site-prefixed ({{SITESLUG}}). GENERIC pattern — rename file + key prefix per site.",
+  "fields": [
+    {
+      "key": "field_{{SITESLUG}}_category_image",
+      "name": "category_image",
+      "label": "Category image",
+      "type": "image",
+      "return_format": "id",
+      "preview_size": "medium",
+      "instructions": "Banner / card image for this category archive."
+    }
+  ],
+  "location": [
+    [
+      { "param": "taxonomy", "operator": "==", "value": "category" }
+    ]
+  ],
+  "active": true
+}

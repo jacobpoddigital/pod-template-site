@@ -24,9 +24,9 @@ rest of the template (ADR 0013).
 
 Both are SSG (`dynamic = "error"`, `dynamicParams = false`) — new entries appear on the
 next build/ISR. The frontend **owns the permalink** (`/case-studies/<slug>`), not WP's
-`uri`. (The index keeps the offset-pagination contract for parity with the blog, but
-ships a single grid; add `/case-studies/page/[n]` the same way the blog does if a client
-needs paging.)
+`uri`. (The index uses the same CORE cursor-pagination contract as the blog, but ships a
+single grid; add `/case-studies/page/[n]` the same way the blog does if a client needs
+paging.)
 
 ## The files (the recipe — copy these to add another CPT)
 
@@ -71,7 +71,7 @@ pnpm codegen
    `caseStudy` / `caseStudies` fields and the `CaseStudy` type.
 2. **The ACF group** (`*-case-study.json`) — `show_in_graphql: 1`,
    `graphql_field_name: "caseStudyFields"`, located on `post_type == case_study`.
-3. **WPGraphQL Offset Pagination** addon — same as the blog; `provision.sh` installs it.
+3. **No pagination plugin** — the index uses CORE WPGraphQL cursors (same as the blog).
 
 ## Deleting it (client has no case studies)
 

@@ -1,0 +1,22 @@
+{
+  "key": "group_{{SITESLUG}}_post_fields",
+  "title": "Post Fields (E-E-A-T sources)",
+  "show_in_graphql": 0,
+  "_note": "Editor UI for the article citation list the frontend reads as post.postFields.sources (PostBySlug — workflow/34). GraphQL is HAND-REGISTERED on the Post type (Post_Postfields → sources[label,url,publisher]) in wp/mu-plugins/pod-post-fields-register.php, matching the committed schema's naming (so show_in_graphql is 0 here). Field NAMES are the resolver contract. GENERIC pattern.",
+  "fields": [
+    {
+      "key": "field_{{SITESLUG}}_post_sources", "name": "sources", "label": "Sources / citations", "type": "repeater", "layout": "row", "button_label": "Add source",
+      "sub_fields": [
+        { "key": "field_{{SITESLUG}}_post_sources_label", "name": "label", "label": "Label", "type": "text" },
+        { "key": "field_{{SITESLUG}}_post_sources_url", "name": "url", "label": "URL", "type": "text" },
+        { "key": "field_{{SITESLUG}}_post_sources_publisher", "name": "publisher", "label": "Publisher", "type": "text" }
+      ]
+    }
+  ],
+  "location": [
+    [
+      { "param": "post_type", "operator": "==", "value": "post" }
+    ]
+  ],
+  "active": true
+}

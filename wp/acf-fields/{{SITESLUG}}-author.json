@@ -1,0 +1,30 @@
+{
+  "key": "group_{{SITESLUG}}_author",
+  "title": "Author Profile (E-E-A-T)",
+  "show_in_graphql": 0,
+  "_note": "Editor UI for author E-E-A-T fields the frontend reads FLAT on the User type (AuthorBySlug: roleTitle/teamProfileUrl/profileImage/social/knowsAbout — workflow/34). GraphQL is HAND-REGISTERED on the User type in wp/mu-plugins/pod-author-register.php (so show_in_graphql is 0 here; wpgraphql-acf would nest the group under a sub-field, not the flat shape the committed schema declares — same stance as siteOptions/categoryImage). Field NAMES are the resolver contract. GENERIC pattern.",
+  "fields": [
+    { "key": "field_{{SITESLUG}}_author_role_title", "name": "role_title", "label": "Role / title", "type": "text" },
+    { "key": "field_{{SITESLUG}}_author_team_profile_url", "name": "team_profile_url", "label": "Team profile URL", "type": "text" },
+    { "key": "field_{{SITESLUG}}_author_profile_image", "name": "profile_image", "label": "Profile image", "type": "image", "return_format": "id", "preview_size": "thumbnail" },
+    {
+      "key": "field_{{SITESLUG}}_author_social", "name": "social", "label": "Social links", "type": "repeater", "layout": "table", "button_label": "Add social link",
+      "sub_fields": [
+        { "key": "field_{{SITESLUG}}_author_social_label", "name": "label", "label": "Label", "type": "text" },
+        { "key": "field_{{SITESLUG}}_author_social_url", "name": "url", "label": "URL", "type": "text" }
+      ]
+    },
+    {
+      "key": "field_{{SITESLUG}}_author_knows_about", "name": "knows_about", "label": "Writes about (topics)", "type": "repeater", "layout": "table", "button_label": "Add topic",
+      "sub_fields": [
+        { "key": "field_{{SITESLUG}}_author_knows_about_topic", "name": "topic", "label": "Topic", "type": "text" }
+      ]
+    }
+  ],
+  "location": [
+    [
+      { "param": "user_form", "operator": "==", "value": "all" }
+    ]
+  ],
+  "active": true
+}

@@ -82,16 +82,10 @@ for gqlplugin in wp-graphql wpgraphql-acf; do
   fi
 done
 
-echo "==> Installing WPGraphQL Offset Pagination (path-based /blog/page/N — the standard blog, workflow/34)"
-# Adds `where.offsetPagination { offset size }` + `pageInfo.offsetPagination.total`, which
-# the blog cms layer (getBlogPosts) needs for SEO-clean numbered pagination. Not always on
-# wp.org under this slug; if the install fails, add valu-digital's release manually (non-fatal).
-if ! wpcli "plugin is-installed wp-graphql-offset-pagination" 2>/dev/null; then
-  wpcli "plugin install wp-graphql-offset-pagination --activate" \
-    || echo "    !! Install manually: https://github.com/valu-digital/wp-graphql-offset-pagination (composer or release zip), then 'wp plugin activate wp-graphql-offset-pagination'."
-else
-  wpcli "plugin activate wp-graphql-offset-pagination"
-fi
+# NOTE: no WPGraphQL Offset Pagination plugin. The blog/case-study path-based /blog/page/N
+# pagination uses CORE WPGraphQL cursors (first/after + pageInfo.hasNextPage/endCursor),
+# walked + windowed in the cms layer (getBlogPosts/getCaseStudies). The valu plugin was
+# delisted from wp.org and is unnecessary — cursor is the WPGraphQL-recommended approach.
 # Author E-E-A-T (workflow/34): optionally register an ACF "User" field group (Show in GraphQL)
 # with `roleTitle`, `teamProfileUrl`, `profileImage`, a `social` repeater (label+url → sameAs),
 # and `knowsAbout` (text repeater → Person.knowsAbout + "Writes about"). Regenerate the SDL +
@@ -125,15 +119,29 @@ if [[ -n "${FRONTEND_URL:-}" ]]; then
   wpcli "option update home '$FRONTEND_URL'"
 fi
 
+echo "==> Generating the page-blocks ACF group from the frontend block contract"
+# The `pageFields` flexible-content group is GENERATED from src/lib/cms/schema.graphql
+# (workflow/29 — "per-client ACF generated at provision time"), so WP-ACF can never drift
+# from the frontend block set. Regenerate every provision; pod-blocks-register.php loads it.
+if command -v node >/dev/null 2>&1; then
+  node "$(dirname "$0")/../scripts/generate-acf-blocks.mjs"
+else
+  echo "    !! node not found — using the committed wp/acf-export.json as-is"
+fi
+
 echo "==> Copying mu-plugins and ACF field groups from repo"
 # Copy ALL mu-plugins (*.php), not a named one — pod-chrome-register.php (menus +
 # siteOptions GraphQL) ships alongside pod-blocks-register.php and is required for the
 # header/footer chrome the frontend's getSiteChrome query reads. (Earned 2026-06-12:
 # the chrome plugin existed in the build repo but provision only copied the blocks plugin,
 # so live WP 500'd on the siteOptions query while mock mode passed.)
+# acf-export.json is the generated page-blocks group (loaded by pod-blocks-register.php).
 docker compose run --rm --user root --entrypoint bash cli -c "
   mkdir -p /var/www/html/wp-content/mu-plugins
   cp /opt/pod-wp/mu-plugins/*.php /var/www/html/wp-content/mu-plugins/
+  if [ -f /opt/pod-wp/acf-export.json ]; then
+    cp /opt/pod-wp/acf-export.json /var/www/html/wp-content/acf-export.json
+  fi
   if ls /opt/pod-wp/acf-fields/*.json 1>/dev/null 2>&1; then
     mkdir -p /var/www/html/wp-content/acf-fields
     cp /opt/pod-wp/acf-fields/*.json /var/www/html/wp-content/acf-fields/

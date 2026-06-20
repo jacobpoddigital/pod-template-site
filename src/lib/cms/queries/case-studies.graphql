@@ -1,19 +1,19 @@
-# One page of case studies for the index grid. Same offset-pagination shape as the
-# blog (WPGraphQL Offset Pagination addon: offset/size + pageInfo.offsetPagination.total),
+# One batch of case studies for the index grid. CORE WPGraphQL cursor pagination
+# (`first`/`after` + pageInfo.hasNextPage/endCursor) — NO plugin, same shape as the blog,
 # proving the CPT participates in the exact pagination contract a native post type does.
 # `caseStudyFields` is the ACF group the CPT adds over a native post.
-query CaseStudies($size: Int!, $offset: Int!, $notIn: [ID]) {
+query CaseStudies($first: Int!, $after: String, $notIn: [ID]) {
   caseStudies(
+    first: $first
+    after: $after
     where: {
       status: PUBLISH
       notIn: $notIn
-      offsetPagination: { offset: $offset, size: $size }
     }
   ) {
     pageInfo {
-      offsetPagination {
-        total
-      }
+      hasNextPage
+      endCursor
     }
     nodes {
       databaseId

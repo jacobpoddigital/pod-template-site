@@ -11,7 +11,7 @@ import type { CaseStudyListItem, CaseStudy, PaginatedCaseStudies, CaseStudyMetri
 
 // --- The example CUSTOM POST TYPE (case_study). Mirrors the blog data layer
 // (./blog) but on a REGISTERED CPT exposed to WPGraphQL with its own ACF group.
-// getCaseStudies paginates via the Offset Pagination addon; getCaseStudy returns one
+// getCaseStudies paginates via CORE WPGraphQL cursors (no addon); getCaseStudy returns one
 // entry; getCaseStudySlugs feeds generateStaticParams. All hrefs are FRONTEND paths
 // (we own /case-studies/*, not WP's uri). cms-internal — re-exported from the index. ---
 
@@ -74,22 +74,38 @@ export interface CaseStudiesOpts {
   excludeIds?: number[];
 }
 
-function caseStudyVars(opts: CaseStudiesOpts) {
-  const perPage = opts.perPage ?? CASE_STUDIES_PER_PAGE;
-  const page = Math.max(1, opts.page ?? 1);
-  return {
-    perPage,
-    page,
-    vars: { size: perPage, offset: (page - 1) * perPage, notIn: opts.excludeIds?.map(String) ?? null },
-  };
+// WPGraphQL core caps a single connection request at 100 nodes; walk `after` cursors to
+// fetch the whole set, beating the cap with no plugin (same approach as the blog).
+const CASE_STUDIES_FETCH_BATCH = 100;
+
+/** Every case study (newest-first) via a CORE cursor walk (batched, no addon). `notIn` is
+ *  applied server-side so an excluded entry is absent from the set AND the total. */
+async function fetchAllCaseStudies(opts: CaseStudiesOpts): Promise<CaseStudyListItem[]> {
+  const out: CaseStudyListItem[] = [];
+  let after: string | null = null;
+  for (;;) {
+    const data: CaseStudiesQuery = await cmsRequest(
+      CaseStudiesDocument,
+      { first: CASE_STUDIES_FETCH_BATCH, after, notIn: opts.excludeIds?.map(String) ?? null },
+      [CASE_STUDIES_TAG],
+    );
+    const conn = data.caseStudies;
+    out.push(...(conn?.nodes ?? []).map(toListItem));
+    if (!conn?.pageInfo?.hasNextPage || !conn.pageInfo.endCursor) break;
+    after = conn.pageInfo.endCursor;
+  }
+  return out;
 }
 
-/** One page of case studies + totals. Needs the WPGraphQL Offset Pagination addon. */
+/** One page of case studies + the exact total. CORE WPGraphQL cursor pagination (no
+ *  Offset-Pagination plugin): fetch the set, then window it. */
 export async function getCaseStudies(opts: CaseStudiesOpts = {}): Promise<PaginatedCaseStudies> {
-  const { perPage, page, vars } = caseStudyVars(opts);
-  const data = await cmsRequest(CaseStudiesDocument, vars, [CASE_STUDIES_TAG]);
-  const items = (data.caseStudies?.nodes ?? []).map(toListItem);
-  const total = data.caseStudies?.pageInfo?.offsetPagination?.total ?? items.length;
+  const perPage = opts.perPage ?? CASE_STUDIES_PER_PAGE;
+  const page = Math.max(1, opts.page ?? 1);
+  const all = await fetchAllCaseStudies(opts);
+  const total = all.length;
+  const start = (page - 1) * perPage;
+  const items = all.slice(start, start + perPage);
   return { items, total, page, perPage, totalPages: Math.max(1, Math.ceil(total / perPage)) };
 }
 

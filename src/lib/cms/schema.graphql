@@ -7,7 +7,8 @@
 # Per project: once ACF fields are defined on real WP, REGENERATE this file —
 #   pnpm dlx get-graphql-schema "$WPGRAPHQL_URL" > src/lib/cms/schema.graphql
 # then `pnpm codegen` and commit. Type names below follow WPGraphQL-for-ACF's
-# convention (Page_Pagefields_Blocks_<Layout>), so queries survive the swap.
+# convention (wpgraphql-acf 2.x: PageFieldsBlocks<Layout>Layout); the page-blocks
+# section is GENERATED — see scripts/generate-acf-blocks.mjs + migrate-blocks-2x.mjs.
 
 schema {
   query: RootQuery
@@ -20,7 +21,7 @@ type RootQuery {
   viewer: User
   page(id: ID!, idType: PageIdType): Page
   pages(first: Int, where: RootQueryToPageConnectionWhereArgs): RootQueryToPageConnection
-  posts(first: Int, where: RootQueryToPostConnectionWhereArgs): RootQueryToPostConnection
+  posts(first: Int, after: String, where: RootQueryToPostConnectionWhereArgs): RootQueryToPostConnection
   post(id: ID!, idType: PostIdType): Post
   categories(first: Int, where: RootQueryToCategoryConnectionWhereArgs): RootQueryToCategoryConnection
   category(id: ID!, idType: TermNodeIdTypeEnum): Category
@@ -34,7 +35,7 @@ type RootQuery {
   # REGISTERED CPT carrying its own ACF group (caseStudyFields). Regenerate the SDL from
   # live WP once the plugin + ACF group are active; type names follow WPGraphQL's CPT
   # convention so the hand-authored shapes survive the swap.
-  caseStudies(first: Int, where: RootQueryToCaseStudyConnectionWhereArgs): RootQueryToCaseStudyConnection
+  caseStudies(first: Int, after: String, where: RootQueryToCaseStudyConnectionWhereArgs): RootQueryToCaseStudyConnection
   caseStudy(id: ID!, idType: CaseStudyIdType): CaseStudy
   menuItems(where: RootQueryToMenuItemConnectionWhereArgs): RootQueryToMenuItemConnection
   siteOptions: SiteOptions
@@ -147,11 +148,9 @@ type RootQueryToPageConnection {
 }
 
 # Posts — drives the post_grid block's listing AND the standard blog (workflow/34).
-# `offsetPagination` REQUIRES the free "WPGraphQL Offset Pagination" addon on WP — it
-# powers the blog's path-based /blog/page/[n] (SEO-clean offsets, not cursors). Without
-# the addon this where-field is not in the real schema and the query fails validation —
-# provision.sh installs it (workflow/34). `tag` = tag slug; `search` = full-text;
-# `notIn` excludes the featured post from page 1's grid.
+# Pagination is CORE WPGraphQL cursors (first/after + pageInfo.hasNextPage/endCursor) — NO
+# plugin; getBlogPosts walks them for the path-based /blog/page/[n]. `tag` = tag slug;
+# `search` = full-text; `notIn` excludes the featured post from page 1's grid.
 input RootQueryToPostConnectionWhereArgs {
   status: PostStatusEnum
   categoryName: String
@@ -159,13 +158,6 @@ input RootQueryToPostConnectionWhereArgs {
   search: String
   notIn: [ID]
   authorName: String
-  offsetPagination: OffsetPagination
-}
-
-# WPGraphQL Offset Pagination addon input.
-input OffsetPagination {
-  offset: Int
-  size: Int
 }
 
 type RootQueryToPostConnection {
@@ -173,14 +165,10 @@ type RootQueryToPostConnection {
   pageInfo: RootQueryToPostConnectionPageInfo
 }
 
-# pageInfo.offsetPagination is contributed by the addon — `total` drives page counts.
+# Standard WPGraphQL cursor PageInfo (always present, no addon).
 type RootQueryToPostConnectionPageInfo {
-  offsetPagination: OffsetPaginationPageInfo
-}
-type OffsetPaginationPageInfo {
-  total: Int
-  hasMore: Boolean
-  hasPrevious: Boolean
+  hasNextPage: Boolean!
+  endCursor: String
 }
 
 type Post {
@@ -304,7 +292,7 @@ type Page {
   slug: String
   uri: String
   seo: PostTypeSEO
-  pageFields: Page_Pagefields
+  pageFields: PageFields
 }
 
 # Per-page SEO from Yoast, exposed by the "Add WPGraphQL SEO" plugin (boilerplate §6 —
@@ -332,149 +320,6 @@ type SEOSchema {
   raw: String
 }
 
-# ACF field group "Page Fields" → the `blocks` Flexible Content field.
-type Page_Pagefields {
-  blocks: [Page_Pagefields_Blocks!]
-}
-
-# Flexible Content layouts → a discriminated union (switch on __typename).
-union Page_Pagefields_Blocks =
-    Page_Pagefields_Blocks_Hero
-  | Page_Pagefields_Blocks_FeatureGrid
-  | Page_Pagefields_Blocks_Faq
-  | Page_Pagefields_Blocks_CtaBanner
-  | Page_Pagefields_Blocks_LogoStrip
-  | Page_Pagefields_Blocks_ContactForm
-  | Page_Pagefields_Blocks_MediaText
-  | Page_Pagefields_Blocks_CardGrid
-  | Page_Pagefields_Blocks_ServicesGrid
-  | Page_Pagefields_Blocks_UspBar
-  | Page_Pagefields_Blocks_Reviews
-  | Page_Pagefields_Blocks_RichText
-  | Page_Pagefields_Blocks_Columns
-  | Page_Pagefields_Blocks_Video
-  | Page_Pagefields_Blocks_PostGrid
-  | Page_Pagefields_Blocks_KeyTakeaways
-  | Page_Pagefields_Blocks_StatWithSource
-  | Page_Pagefields_Blocks_ComparisonTable
-  | Page_Pagefields_Blocks_AuthorByline
-  | Page_Pagefields_Blocks_Pricing
-  | Page_Pagefields_Blocks_Team
-  | Page_Pagefields_Blocks_StatsBand
-  | Page_Pagefields_Blocks_TabbedContent
-  | Page_Pagefields_Blocks_ProcessSteps
-  | Page_Pagefields_Blocks_BentoGrid
-  | Page_Pagefields_Blocks_CaseStudies
-  | Page_Pagefields_Blocks_Timeline
-  | Page_Pagefields_Blocks_Newsletter
-  | Page_Pagefields_Blocks_Gallery
-  | Page_Pagefields_Blocks_BeforeAfter
-  | Page_Pagefields_Blocks_Toc
-  | Page_Pagefields_Blocks_IntegrationsGrid
-  | Page_Pagefields_Blocks_PricingMatrix
-  | Page_Pagefields_Blocks_LocationsMap
-  | Page_Pagefields_Blocks_VideoTestimonial
-  | Page_Pagefields_Blocks_FeatureRows
-
-type Page_Pagefields_Blocks_Hero {
-  eyebrow: String
-  heading: String
-  subheading: String
-  ctaLabel: String
-  ctaUrl: String
-  secondaryLabel: String
-  secondaryUrl: String
-  image: MediaItem
-  layout: String
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-
-type Page_Pagefields_Blocks_FeatureGrid {
-  heading: String
-  intro: String
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-  features: [Page_Pagefields_Blocks_FeatureGrid_Features!]
-}
-
-type Page_Pagefields_Blocks_FeatureGrid_Features {
-  title: String
-  body: String
-  icon: String
-}
-
-type Page_Pagefields_Blocks_Faq {
-  heading: String
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-  items: [Page_Pagefields_Blocks_Faq_Items!]
-}
-
-type Page_Pagefields_Blocks_Faq_Items {
-  question: String
-  answer: String
-}
-
-type Page_Pagefields_Blocks_CtaBanner {
-  heading: String
-  body: String
-  ctaLabel: String
-  ctaUrl: String
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-
-type Page_Pagefields_Blocks_LogoStrip {
-  heading: String
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-  logos: [Page_Pagefields_Blocks_LogoStrip_Logos!]
-}
-
-type Page_Pagefields_Blocks_LogoStrip_Logos {
-  name: String
-}
-
-type Page_Pagefields_Blocks_ContactForm {
-  heading: String
-  intro: String
-  submitLabel: String
-  successMessage: String
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-
-# media + text block. `spacing` + `container` are the editor-controlled
-# section_settings (alongside `tone`) — see src/lib/section-settings.ts.
-type Page_Pagefields_Blocks_MediaText {
-  eyebrow: String
-  heading: String
-  body: String
-  ctaLabel: String
-  ctaUrl: String
-  image: MediaItem
-  videoId: String
-  mediaPosition: String
-  mediaRatio: String
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-
 # WordPress MediaItem (an ACF image field). Minimal subset — regenerating the SDL
 # from real WP brings the full type; the block only reads these.
 type MediaItem {
@@ -486,489 +331,6 @@ type MediaItem {
 type MediaDetails {
   width: Int
   height: Int
-}
-
-# --- Tier-1 marketing blocks (workflow/29). All carry the editor section_settings
-# (tone · spacing · container). camelCase here; the query aliases back to snake_case. ---
-
-type Page_Pagefields_Blocks_CardGrid {
-  heading: String
-  intro: String
-  columns: Int
-  layout: String
-  cards: [Page_Pagefields_Blocks_CardGrid_Cards!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_CardGrid_Cards {
-  image: MediaItem
-  title: String
-  body: String
-  linkLabel: String
-  linkUrl: String
-}
-
-type Page_Pagefields_Blocks_ServicesGrid {
-  heading: String
-  intro: String
-  columns: Int
-  layout: String
-  services: [Page_Pagefields_Blocks_ServicesGrid_Services!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_ServicesGrid_Services {
-  image: MediaItem
-  title: String
-  body: String
-  linkLabel: String
-  linkUrl: String
-}
-
-type Page_Pagefields_Blocks_UspBar {
-  columns: Int
-  items: [Page_Pagefields_Blocks_UspBar_Items!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_UspBar_Items {
-  image: MediaItem
-  text: String
-  linkUrl: String
-}
-
-type Page_Pagefields_Blocks_Reviews {
-  heading: String
-  intro: String
-  columns: Int
-  layout: String
-  reviews: [Page_Pagefields_Blocks_Reviews_Reviews!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_Reviews_Reviews {
-  quote: String
-  author: String
-  role: String
-  rating: Int
-  avatar: MediaItem
-  companyLogo: MediaItem
-}
-
-type Page_Pagefields_Blocks_RichText {
-  content: String
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-
-type Page_Pagefields_Blocks_Columns {
-  heading: String
-  intro: String
-  columnCount: Int
-  columns: [Page_Pagefields_Blocks_Columns_Columns!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_Columns_Columns {
-  content: String
-}
-
-type Page_Pagefields_Blocks_Video {
-  heading: String
-  videoId: String
-  facadeImage: MediaItem
-  buttonText: String
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-
-# --- Citation / E-E-A-T blocks (workflow/04 §9). ---
-
-type Page_Pagefields_Blocks_KeyTakeaways {
-  heading: String
-  points: [Page_Pagefields_Blocks_KeyTakeaways_Points!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_KeyTakeaways_Points {
-  text: String
-}
-
-type Page_Pagefields_Blocks_StatWithSource {
-  heading: String
-  intro: String
-  columns: Int
-  stats: [Page_Pagefields_Blocks_StatWithSource_Stats!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_StatWithSource_Stats {
-  value: String
-  label: String
-  source: String
-}
-
-type Page_Pagefields_Blocks_ComparisonTable {
-  heading: String
-  intro: String
-  optionALabel: String
-  optionBLabel: String
-  rows: [Page_Pagefields_Blocks_ComparisonTable_Rows!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_ComparisonTable_Rows {
-  feature: String
-  optionA: String
-  optionB: String
-}
-
-type Page_Pagefields_Blocks_AuthorByline {
-  name: String
-  role: String
-  date: String
-  bio: String
-  profileUrl: String
-  avatar: MediaItem
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-
-# post_grid lists recent posts — the block's ACF fields control the query; the
-# posts themselves are fetched separately (getRecentPosts), not page content.
-type Page_Pagefields_Blocks_PostGrid {
-  heading: String
-  intro: String
-  category: String
-  count: Int
-  columns: Int
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-
-# pricing — plan tiers with an optional monthly/annual toggle; one "featured" plan
-# may be highlighted. Plans carry a nested feature list (repeater within repeater).
-type Page_Pagefields_Blocks_Pricing {
-  heading: String
-  intro: String
-  plans: [Page_Pagefields_Blocks_Pricing_Plans!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_Pricing_Plans {
-  name: String
-  price: String
-  priceAnnual: String
-  period: String
-  description: String
-  featured: Boolean
-  badge: String
-  ctaLabel: String
-  ctaUrl: String
-  features: [Page_Pagefields_Blocks_Pricing_Plans_Features!]
-}
-type Page_Pagefields_Blocks_Pricing_Plans_Features {
-  text: String
-}
-
-# team — profile cards (photo, name, role, bio, social links).
-type Page_Pagefields_Blocks_Team {
-  heading: String
-  intro: String
-  columns: Int
-  members: [Page_Pagefields_Blocks_Team_Members!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_Team_Members {
-  name: String
-  role: String
-  bio: String
-  image: MediaItem
-  linkedinUrl: String
-  twitterUrl: String
-  websiteUrl: String
-}
-
-# stats_band — a clean KPI row (value + label + optional description). Supporting
-# proof only (raw numbers have the lowest recall — KB conversion); not a hero.
-type Page_Pagefields_Blocks_StatsBand {
-  heading: String
-  intro: String
-  columns: Int
-  stats: [Page_Pagefields_Blocks_StatsBand_Stats!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_StatsBand_Stats {
-  value: String
-  label: String
-  description: String
-}
-
-# tabbed_content — labelled tabs, each holding rich-text content.
-type Page_Pagefields_Blocks_TabbedContent {
-  heading: String
-  intro: String
-  tabs: [Page_Pagefields_Blocks_TabbedContent_Tabs!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_TabbedContent_Tabs {
-  label: String
-  content: String
-}
-
-# process_steps — numbered "how it works" steps.
-type Page_Pagefields_Blocks_ProcessSteps {
-  heading: String
-  intro: String
-  steps: [Page_Pagefields_Blocks_ProcessSteps_Steps!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_ProcessSteps_Steps {
-  title: String
-  body: String
-}
-
-# bento_grid — asymmetric mosaic; each tile carries a span (normal/wide/tall/large).
-type Page_Pagefields_Blocks_BentoGrid {
-  heading: String
-  intro: String
-  items: [Page_Pagefields_Blocks_BentoGrid_Items!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_BentoGrid_Items {
-  title: String
-  body: String
-  span: String
-  image: MediaItem
-  linkUrl: String
-}
-
-# case_studies — result cards (client logo + headline metric + one line + link).
-type Page_Pagefields_Blocks_CaseStudies {
-  heading: String
-  intro: String
-  columns: Int
-  items: [Page_Pagefields_Blocks_CaseStudies_Items!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_CaseStudies_Items {
-  metric: String
-  summary: String
-  client: String
-  linkLabel: String
-  linkUrl: String
-  logo: MediaItem
-}
-
-# timeline — vertical chronology (date · title · body).
-type Page_Pagefields_Blocks_Timeline {
-  heading: String
-  intro: String
-  events: [Page_Pagefields_Blocks_Timeline_Events!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_Timeline_Events {
-  date: String
-  title: String
-  body: String
-}
-
-# newsletter — inline email capture (Server Action). Distinct from contact_form.
-type Page_Pagefields_Blocks_Newsletter {
-  heading: String
-  intro: String
-  placeholder: String
-  buttonLabel: String
-  successMessage: String
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-
-# gallery — image grid with a click-to-zoom lightbox.
-type Page_Pagefields_Blocks_Gallery {
-  heading: String
-  intro: String
-  columns: Int
-  images: [Page_Pagefields_Blocks_Gallery_Images!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_Gallery_Images {
-  image: MediaItem
-  caption: String
-}
-
-# before_after — two images with a draggable comparison divider.
-type Page_Pagefields_Blocks_BeforeAfter {
-  heading: String
-  intro: String
-  beforeImage: MediaItem
-  afterImage: MediaItem
-  beforeLabel: String
-  afterLabel: String
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-
-# toc — table of contents / in-page nav; links to section anchors.
-type Page_Pagefields_Blocks_Toc {
-  heading: String
-  items: [Page_Pagefields_Blocks_Toc_Items!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_Toc_Items {
-  label: String
-  target: String
-}
-
-# integrations_grid — logo/app grid with optional links.
-type Page_Pagefields_Blocks_IntegrationsGrid {
-  heading: String
-  intro: String
-  columns: Int
-  items: [Page_Pagefields_Blocks_IntegrationsGrid_Items!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_IntegrationsGrid_Items {
-  name: String
-  url: String
-  logo: MediaItem
-}
-
-# pricing_matrix — feature comparison across up to three plans.
-type Page_Pagefields_Blocks_PricingMatrix {
-  heading: String
-  intro: String
-  planLabels: [Page_Pagefields_Blocks_PricingMatrix_PlanLabels!]
-  rows: [Page_Pagefields_Blocks_PricingMatrix_Rows!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_PricingMatrix_PlanLabels {
-  label: String
-}
-type Page_Pagefields_Blocks_PricingMatrix_Rows {
-  feature: String
-  value1: String
-  value2: String
-  value3: String
-}
-
-# locations_map — address cards + map links (no API key on the client).
-type Page_Pagefields_Blocks_LocationsMap {
-  heading: String
-  intro: String
-  columns: Int
-  locations: [Page_Pagefields_Blocks_LocationsMap_Locations!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_LocationsMap_Locations {
-  name: String
-  address: String
-  mapsUrl: String
-  phone: String
-}
-
-# video_testimonial — testimonials with a click-to-load video (VideoFacade).
-type Page_Pagefields_Blocks_VideoTestimonial {
-  heading: String
-  intro: String
-  columns: Int
-  items: [Page_Pagefields_Blocks_VideoTestimonial_Items!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_VideoTestimonial_Items {
-  videoId: String
-  quote: String
-  author: String
-  role: String
-  facadeImage: MediaItem
-}
-
-# feature_rows — alternating (zig-zag) media + text rows.
-type Page_Pagefields_Blocks_FeatureRows {
-  heading: String
-  intro: String
-  rows: [Page_Pagefields_Blocks_FeatureRows_Rows!]
-  tone: String
-  spacing: String
-  container: String
-  anchor: String
-}
-type Page_Pagefields_Blocks_FeatureRows_Rows {
-  eyebrow: String
-  title: String
-  body: String
-  ctaLabel: String
-  ctaUrl: String
-  image: MediaItem
 }
 
 # ============================================================================
@@ -1046,13 +408,12 @@ enum CaseStudyIdType {
   URI
 }
 
-# CPT connection where-args. `offsetPagination` needs the free WPGraphQL Offset
-# Pagination addon (same as posts); `search` powers the index filter when added.
+# CPT connection where-args. Core WPGraphQL cursor pagination (same as posts, no addon);
+# `search` powers the index filter when added.
 input RootQueryToCaseStudyConnectionWhereArgs {
   status: PostStatusEnum
   search: String
   notIn: [ID]
-  offsetPagination: OffsetPagination
 }
 
 type RootQueryToCaseStudyConnection {
@@ -1060,7 +421,8 @@ type RootQueryToCaseStudyConnection {
   pageInfo: RootQueryToCaseStudyConnectionPageInfo
 }
 type RootQueryToCaseStudyConnectionPageInfo {
-  offsetPagination: OffsetPaginationPageInfo
+  hasNextPage: Boolean!
+  endCursor: String
 }
 
 # One case study. Native WP fields (title/slug/content/featuredImage/date) PLUS the
@@ -1094,4 +456,631 @@ type CaseStudy_Casestudyfields {
 type CaseStudy_Casestudyfields_Metrics {
   label: String
   value: String
+}
+
+# Page Blocks — wpgraphql-acf 2.x (GENERATED: scripts/generate-acf-blocks.mjs + migrate-blocks-2x.mjs).
+
+type PageFields {
+  blocks: [PageFieldsBlocks_Layout]
+}
+
+union PageFieldsBlocks_Layout =
+    PageFieldsBlocksAuthorBylineLayout
+  | PageFieldsBlocksBeforeAfterLayout
+  | PageFieldsBlocksBentoGridLayout
+  | PageFieldsBlocksCardGridLayout
+  | PageFieldsBlocksCaseStudiesLayout
+  | PageFieldsBlocksColumnsLayout
+  | PageFieldsBlocksComparisonTableLayout
+  | PageFieldsBlocksContactFormLayout
+  | PageFieldsBlocksCtaBannerLayout
+  | PageFieldsBlocksFaqLayout
+  | PageFieldsBlocksFeatureGridLayout
+  | PageFieldsBlocksFeatureRowsLayout
+  | PageFieldsBlocksGalleryLayout
+  | PageFieldsBlocksHeroLayout
+  | PageFieldsBlocksIntegrationsGridLayout
+  | PageFieldsBlocksKeyTakeawaysLayout
+  | PageFieldsBlocksLocationsMapLayout
+  | PageFieldsBlocksLogoStripLayout
+  | PageFieldsBlocksMediaTextLayout
+  | PageFieldsBlocksNewsletterLayout
+  | PageFieldsBlocksPostGridLayout
+  | PageFieldsBlocksPricingLayout
+  | PageFieldsBlocksPricingMatrixLayout
+  | PageFieldsBlocksProcessStepsLayout
+  | PageFieldsBlocksReviewsLayout
+  | PageFieldsBlocksRichTextLayout
+  | PageFieldsBlocksServicesGridLayout
+  | PageFieldsBlocksStatWithSourceLayout
+  | PageFieldsBlocksStatsBandLayout
+  | PageFieldsBlocksTabbedContentLayout
+  | PageFieldsBlocksTeamLayout
+  | PageFieldsBlocksTimelineLayout
+  | PageFieldsBlocksTocLayout
+  | PageFieldsBlocksUspBarLayout
+  | PageFieldsBlocksVideoLayout
+  | PageFieldsBlocksVideoTestimonialLayout
+
+type AcfMediaItemConnectionEdge {
+  node: MediaItem
+}
+
+type PageFieldsBlocksAuthorBylineLayout {
+  anchor: String
+  avatar: AcfMediaItemConnectionEdge
+  bio: String
+  container: String
+  date: String
+  name: String
+  profileUrl: String
+  role: String
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksBeforeAfterLayout {
+  afterImage: AcfMediaItemConnectionEdge
+  afterLabel: String
+  anchor: String
+  beforeImage: AcfMediaItemConnectionEdge
+  beforeLabel: String
+  container: String
+  heading: String
+  intro: String
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksBentoGridItems {
+  body: String
+  image: AcfMediaItemConnectionEdge
+  linkUrl: String
+  span: String
+  title: String
+}
+
+type PageFieldsBlocksBentoGridLayout {
+  anchor: String
+  bentoGridItems: [PageFieldsBlocksBentoGridItems]
+  container: String
+  heading: String
+  intro: String
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksCardGridCards {
+  body: String
+  image: AcfMediaItemConnectionEdge
+  linkLabel: String
+  linkUrl: String
+  title: String
+}
+
+type PageFieldsBlocksCardGridLayout {
+  anchor: String
+  cardGridCards: [PageFieldsBlocksCardGridCards]
+  columns: Float
+  container: String
+  heading: String
+  intro: String
+  layout: String
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksCaseStudiesItems {
+  client: String
+  linkLabel: String
+  linkUrl: String
+  logo: AcfMediaItemConnectionEdge
+  metric: String
+  summary: String
+}
+
+type PageFieldsBlocksCaseStudiesLayout {
+  anchor: String
+  caseStudiesItems: [PageFieldsBlocksCaseStudiesItems]
+  columns: Float
+  container: String
+  heading: String
+  intro: String
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksColumnsColumns {
+  content: String
+}
+
+type PageFieldsBlocksColumnsLayout {
+  anchor: String
+  columnCount: Float
+  columnsColumns: [PageFieldsBlocksColumnsColumns]
+  container: String
+  heading: String
+  intro: String
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksComparisonTableRows {
+  feature: String
+  optionA: String
+  optionB: String
+}
+
+type PageFieldsBlocksComparisonTableLayout {
+  anchor: String
+  comparisonTableRows: [PageFieldsBlocksComparisonTableRows]
+  container: String
+  heading: String
+  intro: String
+  optionALabel: String
+  optionBLabel: String
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksContactFormLayout {
+  anchor: String
+  container: String
+  heading: String
+  intro: String
+  spacing: String
+  submitLabel: String
+  successMessage: String
+  tone: String
+}
+
+type PageFieldsBlocksCtaBannerLayout {
+  anchor: String
+  body: String
+  container: String
+  ctaLabel: String
+  ctaUrl: String
+  heading: String
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksFaqItems {
+  answer: String
+  question: String
+}
+
+type PageFieldsBlocksFaqLayout {
+  anchor: String
+  container: String
+  faqItems: [PageFieldsBlocksFaqItems]
+  heading: String
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksFeatureGridFeatures {
+  body: String
+  icon: String
+  title: String
+}
+
+type PageFieldsBlocksFeatureGridLayout {
+  anchor: String
+  container: String
+  featureGridFeatures: [PageFieldsBlocksFeatureGridFeatures]
+  heading: String
+  intro: String
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksFeatureRowsRows {
+  body: String
+  ctaLabel: String
+  ctaUrl: String
+  eyebrow: String
+  image: AcfMediaItemConnectionEdge
+  title: String
+}
+
+type PageFieldsBlocksFeatureRowsLayout {
+  anchor: String
+  container: String
+  featureRowsRows: [PageFieldsBlocksFeatureRowsRows]
+  heading: String
+  intro: String
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksGalleryImages {
+  caption: String
+  image: AcfMediaItemConnectionEdge
+}
+
+type PageFieldsBlocksGalleryLayout {
+  anchor: String
+  columns: Float
+  container: String
+  galleryImages: [PageFieldsBlocksGalleryImages]
+  heading: String
+  intro: String
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksHeroLayout {
+  anchor: String
+  container: String
+  ctaLabel: String
+  ctaUrl: String
+  eyebrow: String
+  heading: String
+  image: AcfMediaItemConnectionEdge
+  layout: String
+  secondaryLabel: String
+  secondaryUrl: String
+  spacing: String
+  subheading: String
+  tone: String
+}
+
+type PageFieldsBlocksIntegrationsGridItems {
+  logo: AcfMediaItemConnectionEdge
+  name: String
+  url: String
+}
+
+type PageFieldsBlocksIntegrationsGridLayout {
+  anchor: String
+  columns: Float
+  container: String
+  heading: String
+  integrationsGridItems: [PageFieldsBlocksIntegrationsGridItems]
+  intro: String
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksKeyTakeawaysPoints {
+  text: String
+}
+
+type PageFieldsBlocksKeyTakeawaysLayout {
+  anchor: String
+  container: String
+  heading: String
+  keyTakeawaysPoints: [PageFieldsBlocksKeyTakeawaysPoints]
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksLocationsMapLocations {
+  address: String
+  mapsUrl: String
+  name: String
+  phone: String
+}
+
+type PageFieldsBlocksLocationsMapLayout {
+  anchor: String
+  columns: Float
+  container: String
+  heading: String
+  intro: String
+  locationsMapLocations: [PageFieldsBlocksLocationsMapLocations]
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksLogoStripLogos {
+  name: String
+}
+
+type PageFieldsBlocksLogoStripLayout {
+  anchor: String
+  container: String
+  heading: String
+  logoStripLogos: [PageFieldsBlocksLogoStripLogos]
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksMediaTextLayout {
+  anchor: String
+  body: String
+  container: String
+  ctaLabel: String
+  ctaUrl: String
+  eyebrow: String
+  heading: String
+  image: AcfMediaItemConnectionEdge
+  mediaPosition: String
+  mediaRatio: String
+  spacing: String
+  tone: String
+  videoId: String
+}
+
+type PageFieldsBlocksNewsletterLayout {
+  anchor: String
+  buttonLabel: String
+  container: String
+  heading: String
+  intro: String
+  placeholder: String
+  spacing: String
+  successMessage: String
+  tone: String
+}
+
+type PageFieldsBlocksPostGridLayout {
+  anchor: String
+  category: String
+  columns: Float
+  container: String
+  count: Float
+  heading: String
+  intro: String
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksPricingPlansPricingPlansFeatures {
+  text: String
+}
+
+type PageFieldsBlocksPricingPlans {
+  badge: String
+  ctaLabel: String
+  ctaUrl: String
+  description: String
+  featured: Boolean
+  name: String
+  period: String
+  price: String
+  priceAnnual: String
+  pricingPlansFeatures: [PageFieldsBlocksPricingPlansPricingPlansFeatures]
+}
+
+type PageFieldsBlocksPricingLayout {
+  anchor: String
+  container: String
+  heading: String
+  intro: String
+  pricingPlans: [PageFieldsBlocksPricingPlans]
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksPricingMatrixPlanLabels {
+  label: String
+}
+
+type PageFieldsBlocksPricingMatrixRows {
+  feature: String
+  value1: String
+  value2: String
+  value3: String
+}
+
+type PageFieldsBlocksPricingMatrixLayout {
+  anchor: String
+  container: String
+  heading: String
+  intro: String
+  pricingMatrixPlanLabels: [PageFieldsBlocksPricingMatrixPlanLabels]
+  pricingMatrixRows: [PageFieldsBlocksPricingMatrixRows]
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksProcessStepsSteps {
+  body: String
+  title: String
+}
+
+type PageFieldsBlocksProcessStepsLayout {
+  anchor: String
+  container: String
+  heading: String
+  intro: String
+  processStepsSteps: [PageFieldsBlocksProcessStepsSteps]
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksReviewsReviews {
+  author: String
+  avatar: AcfMediaItemConnectionEdge
+  companyLogo: AcfMediaItemConnectionEdge
+  quote: String
+  rating: Float
+  role: String
+}
+
+type PageFieldsBlocksReviewsLayout {
+  anchor: String
+  columns: Float
+  container: String
+  heading: String
+  intro: String
+  layout: String
+  reviewsReviews: [PageFieldsBlocksReviewsReviews]
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksRichTextLayout {
+  anchor: String
+  container: String
+  content: String
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksServicesGridServices {
+  body: String
+  image: AcfMediaItemConnectionEdge
+  linkLabel: String
+  linkUrl: String
+  title: String
+}
+
+type PageFieldsBlocksServicesGridLayout {
+  anchor: String
+  columns: Float
+  container: String
+  heading: String
+  intro: String
+  layout: String
+  servicesGridServices: [PageFieldsBlocksServicesGridServices]
+  spacing: String
+  tone: String
+}
+
+type PageFieldsBlocksStatWithSourceStats {
+  label: String
+  source: String
+  value: String
+}
+
+type PageFieldsBlocksStatWithSourceLayout {
+  anchor: String
+  columns: Float
+  container: String
+  heading: String
+  intro: String
+  spacing: String
+  statWithSourceStats: [PageFieldsBlocksStatWithSourceStats]
+  tone: String
+}
+
+type PageFieldsBlocksStatsBandStats {
+  description: String
+  label: String
+  value: String
+}
+
+type PageFieldsBlocksStatsBandLayout {
+  anchor: String
+  columns: Float
+  container: String
+  heading: String
+  intro: String
+  spacing: String
+  statsBandStats: [PageFieldsBlocksStatsBandStats]
+  tone: String
+}
+
+type PageFieldsBlocksTabbedContentTabs {
+  content: String
+  label: String
+}
+
+type PageFieldsBlocksTabbedContentLayout {
+  anchor: String
+  container: String
+  heading: String
+  intro: String
+  spacing: String
+  tabbedContentTabs: [PageFieldsBlocksTabbedContentTabs]
+  tone: String
+}
+
+type PageFieldsBlocksTeamMembers {
+  bio: String
+  image: AcfMediaItemConnectionEdge
+  linkedinUrl: String
+  name: String
+  role: String
+  twitterUrl: String
+  websiteUrl: String
+}
+
+type PageFieldsBlocksTeamLayout {
+  anchor: String
+  columns: Float
+  container: String
+  heading: String
+  intro: String
+  spacing: String
+  teamMembers: [PageFieldsBlocksTeamMembers]
+  tone: String
+}
+
+type PageFieldsBlocksTimelineEvents {
+  body: String
+  date: String
+  title: String
+}
+
+type PageFieldsBlocksTimelineLayout {
+  anchor: String
+  container: String
+  heading: String
+  intro: String
+  spacing: String
+  timelineEvents: [PageFieldsBlocksTimelineEvents]
+  tone: String
+}
+
+type PageFieldsBlocksTocItems {
+  label: String
+  target: String
+}
+
+type PageFieldsBlocksTocLayout {
+  anchor: String
+  container: String
+  heading: String
+  spacing: String
+  tocItems: [PageFieldsBlocksTocItems]
+  tone: String
+}
+
+type PageFieldsBlocksUspBarItems {
+  image: AcfMediaItemConnectionEdge
+  linkUrl: String
+  text: String
+}
+
+type PageFieldsBlocksUspBarLayout {
+  anchor: String
+  columns: Float
+  container: String
+  spacing: String
+  tone: String
+  uspBarItems: [PageFieldsBlocksUspBarItems]
+}
+
+type PageFieldsBlocksVideoLayout {
+  anchor: String
+  buttonText: String
+  container: String
+  facadeImage: AcfMediaItemConnectionEdge
+  heading: String
+  spacing: String
+  tone: String
+  videoId: String
+}
+
+type PageFieldsBlocksVideoTestimonialItems {
+  author: String
+  facadeImage: AcfMediaItemConnectionEdge
+  quote: String
+  role: String
+  videoId: String
+}
+
+type PageFieldsBlocksVideoTestimonialLayout {
+  anchor: String
+  columns: Float
+  container: String
+  heading: String
+  intro: String
+  spacing: String
+  tone: String
+  videoTestimonialItems: [PageFieldsBlocksVideoTestimonialItems]
 }
