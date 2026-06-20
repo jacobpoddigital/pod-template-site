@@ -1,6 +1,18 @@
 import type { NextConfig } from "next";
+import os from "node:os";
 import { loadRedirects } from "./redirects.config";
 import { cspHeader } from "./csp.config";
+
+// Next dev blocks cross-origin requests to its dev resources (/_next/*, HMR) by default, so loading
+// the dev server from a phone via the Mac's LAN IP serves the HTML but BLOCKS the client JS → the
+// page looks right but nothing is interactive. Auto-allow this machine's LAN IPv4s so on-device
+// testing (iPhone Safari etc. on the same Wi-Fi) just works. Dev-only; ignored in production.
+function lanDevOrigins(): string[] {
+  return Object.values(os.networkInterfaces())
+    .flat()
+    .filter((n): n is os.NetworkInterfaceInfo => n != null && n.family === "IPv4" && !n.internal)
+    .map((n) => n.address);
+}
 
 // Security headers applied to every route (checklist §21 — Frontend & API Layer).
 // CSP ships as a sensible default that covers the standard stack (GTM/GA4/Ads + the
@@ -20,6 +32,8 @@ const nextConfig: NextConfig = {
   // Pin the project root — a stray lockfile elsewhere on the machine must not
   // change Turbopack's root inference.
   turbopack: { root: __dirname },
+  // Allow on-device dev testing over the LAN (see lanDevOrigins above).
+  allowedDevOrigins: lanDevOrigins(),
   images: {
     // Remote hosts allowed for next/image. Per project, ADD the client's WordPress /
     // Atlas media host here, e.g. { protocol: "https", hostname: "*.wpenginepowered.com" }
