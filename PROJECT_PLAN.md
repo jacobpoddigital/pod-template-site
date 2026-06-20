@@ -68,6 +68,7 @@
 - [ ] `WPGRAPHQL_URL=http://localhost:{{WP_PORT}}/graphql` in `.env.local` (the sole content layer — no REST `/wp-json`, ADR 0013)
 - [ ] WP application password generated: `docker compose run --rm --user root --entrypoint bash cli -c "wp --allow-root --path=/var/www/html user application-password create admin claude-desktop --porcelain"`
 - [ ] `pnpm build` passes (renders in mock against the committed `src/lib/cms/schema.graphql` with no WP; fail-loud on malformed content — there is no silent fallback, ADR 0013)
+- [ ] **🔴 GATE — LIVE-WP build passes: `rm -rf .next && WPGRAPHQL_URL=http://localhost:{{WP_PORT}}/graphql pnpm build`.** This is the readiness gate that the mock build CANNOT give you: **mock-green ≠ live-green.** It proves the provisioned WP actually answers every committed GraphQL query — page blocks (`pageFields`), chrome (`siteOptions` + PRIMARY/FOOTER menus), `categoryImage`, author E-E-A-T (`roleTitle`/`social`/…), post `sources`, case-study fields, Yoast SEO. A failure here is an **unprovisioned ACF field** — register it WP-side (a mu-plugin + field group; hand-register flat fields, blocks are auto-generated) and rebuild. **Clear `.next` between attempts** — Next's fetch cache serves the stale 500, so you'll see the same error until you clear it. Live builds reveal missing fields ONE AT A TIME. (See FRICTION.md → GraphQL/ACF.)
 - [ ] Port allocation recorded in `clients/{{SLUG}}.md`
 - [ ] **[H] GATE: human confirms local dev runs and pushes initial scaffold commit to `main`**
 - [ ] Hub phase → `build`
