@@ -282,3 +282,15 @@
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
+
+/* iOS Safari auto-zooms the page when a focused text input's font-size is < 16px. Force every form
+   control to ≥16px on mobile so focusing search/filters/etc. never triggers the jarring zoom. The
+   type scale still drives sizing ≥sm; this is unlayered so it wins over `.body-sm` on inputs.
+   (Agency standard — applies to all sites; mirror this rule in every globals.css.) */
+@media (max-width: 639px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}

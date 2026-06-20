@@ -52,10 +52,14 @@ const dialogContentVariants = cva(
   {
     variants: {
       mobile: {
-        // DEFAULT — full-screen on mobile (inset-0, full size, no rounding/border), centred on >=sm.
+        // DEFAULT — full-screen on mobile, centred modal on >=sm. Uses 100dvh (the DYNAMIC viewport
+        // height) top-anchored, NOT h-full/inset-0: on iOS Safari `h-full`/`100vh` fills the LAYOUT
+        // viewport (behind the address-bar/toolbar), so the bottom of the modal — and its content,
+        // e.g. the Add-to-bag button — is hidden under the browser chrome. `100dvh` shrinks with the
+        // visible toolbar so the modal is exactly the visible area.
         fullscreen:
           "w-full max-w-lg rounded-lg p-6 " +
-          "max-sm:inset-0 max-sm:h-full max-sm:max-h-none max-sm:w-full max-sm:max-w-none " +
+          "max-sm:inset-x-0 max-sm:top-0 max-sm:h-[100dvh] max-sm:max-h-none max-sm:w-full max-sm:max-w-none " +
           "max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-none max-sm:border-0",
         // Opt-out — stays a centred card even on mobile (small confirm/alert dialogs).
         centered: "w-full max-w-lg rounded-lg p-6",
