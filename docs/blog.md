@@ -36,12 +36,15 @@ To remount off `/blog`: change `BLOG_BASE` in `src/lib/cms/blog.ts` **and** rena
 
 ## WordPress requirements
 
-1. **WPGraphQL Offset Pagination** addon (`valu-digital/wp-graphql-offset-pagination`) —
-   provides `where.offsetPagination` + `pageInfo.offsetPagination.total`, which path-based
-   pagination needs. `provision.sh` installs it (manual fallback if the wp.org slug is
-   missing). Without it, the `BlogPosts` query fails schema validation on live WP.
+1. **No pagination plugin.** Path-based `/blog/page/[n]` uses CORE WPGraphQL cursors
+   (`first`/`after` + `pageInfo.hasNextPage`/`endCursor`), walked + windowed in
+   `getBlogPosts`. This is the WPGraphQL-recommended approach and needs no addon (the old
+   `valu-digital/wp-graphql-offset-pagination` was delisted from wp.org). Indexability comes
+   from a self-referencing canonical per page + crawlable `<a href>` pager links (see
+   `archiveMetadata` + `blog-pagination.tsx`), not from `rel=prev/next` (Google retired it).
 2. **Category banner image (optional, Great White parity):** register an ACF image field
-   on the Category taxonomy, "Show in GraphQL" ON, GraphQL Field Name `categoryImage`.
+   on the Category taxonomy, "Show in GraphQL" ON, GraphQL Field Name `categoryImage`
+   (the template ships `wp/acf-fields/*-category-image.json` + `pod-category-image-register.php`).
    Then regenerate the SDL (`pnpm dlx get-graphql-schema "$WPGRAPHQL_URL" >
    src/lib/cms/schema.graphql`) and `pnpm codegen`. Categories with no image fall back to
    `blog.bannerImage`, then to a clean muted band.

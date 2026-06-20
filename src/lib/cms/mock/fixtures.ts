@@ -30,7 +30,7 @@ export const mockHome: PageBySlugQuery = {
     pageFields: {
       blocks: [
         {
-          __typename: "Page_Pagefields_Blocks_Hero",
+          __typename: "PageFieldsBlocksHeroLayout",
           eyebrow: "Pod template",
           heading: "A headless WordPress starter, rendered with no backend",
           subheading:
@@ -47,7 +47,7 @@ export const mockHome: PageBySlugQuery = {
           secondary_url: "/blocks",
         },
         {
-          __typename: "Page_Pagefields_Blocks_LogoStrip",
+          __typename: "PageFieldsBlocksLogoStripLayout",
           heading: "Trusted by teams who ship",
           tone: "muted",
           spacing: null,
@@ -62,7 +62,7 @@ export const mockHome: PageBySlugQuery = {
           ],
         },
         {
-          __typename: "Page_Pagefields_Blocks_FeatureGrid",
+          __typename: "PageFieldsBlocksFeatureGridLayout",
           heading: "Everything wired, nothing in your way",
           intro: "The plumbing is done; the content model is yours to define.",
           tone: "default",
@@ -76,7 +76,7 @@ export const mockHome: PageBySlugQuery = {
           ],
         },
         {
-          __typename: "Page_Pagefields_Blocks_Faq",
+          __typename: "PageFieldsBlocksFaqLayout",
           heading: "Common questions",
           tone: "muted",
           spacing: null,
@@ -88,7 +88,7 @@ export const mockHome: PageBySlugQuery = {
           ],
         },
         {
-          __typename: "Page_Pagefields_Blocks_ContactForm",
+          __typename: "PageFieldsBlocksContactFormLayout",
           heading: "Get in touch",
           intro: "The contact block posts through a Next.js Server Action — the writes path.",
           tone: "default",
@@ -99,7 +99,7 @@ export const mockHome: PageBySlugQuery = {
           success_message: "Thanks — we'll be in touch shortly.",
         },
         {
-          __typename: "Page_Pagefields_Blocks_MediaText",
+          __typename: "PageFieldsBlocksMediaTextLayout",
           eyebrow: "Editor-controlled",
           heading: "Set spacing, width and surface in WordPress — no rebuild",
           body: "media_text composes the shared <Section>; the section_settings contract maps each editor choice to a design-system token. The image leads on mobile and swaps sides on desktop via media_position.",
@@ -112,14 +112,14 @@ export const mockHome: PageBySlugQuery = {
           spacing: "default",
           container: "default",
           anchor: null,
-          image: {
+          image: { node: {
             sourceUrl: "https://picsum.photos/seed/podmock/1200/900",
             altText: "Placeholder image",
             mediaDetails: { width: 1200, height: 900 },
-          },
+          } },
         },
         {
-          __typename: "Page_Pagefields_Blocks_StatsBand",
+          __typename: "PageFieldsBlocksStatsBandLayout",
           heading: "By the numbers",
           intro: null,
           columns: 4,
@@ -135,7 +135,7 @@ export const mockHome: PageBySlugQuery = {
           ],
         },
         {
-          __typename: "Page_Pagefields_Blocks_Reviews",
+          __typename: "PageFieldsBlocksReviewsLayout",
           heading: "What clients say",
           intro: "A face and a logo lift testimonial recall — the cheapest credibility win.",
           columns: 3,
@@ -150,7 +150,7 @@ export const mockHome: PageBySlugQuery = {
               author: "Jordan Pearce",
               role: "Marketing Director, Northwind",
               rating: 5,
-              avatar: { sourceUrl: "https://i.pravatar.cc/96?img=12", altText: "", mediaDetails: { width: 96, height: 96 } },
+              avatar: { node: { sourceUrl: "https://i.pravatar.cc/96?img=12", altText: "", mediaDetails: { width: 96, height: 96 } } },
               company_logo: null,
             },
             {
@@ -158,7 +158,7 @@ export const mockHome: PageBySlugQuery = {
               author: "Priya Nair",
               role: "Founder, Acme Studio",
               rating: 5,
-              avatar: { sourceUrl: "https://i.pravatar.cc/96?img=32", altText: "", mediaDetails: { width: 96, height: 96 } },
+              avatar: { node: { sourceUrl: "https://i.pravatar.cc/96?img=32", altText: "", mediaDetails: { width: 96, height: 96 } } },
               company_logo: null,
             },
             {
@@ -172,7 +172,7 @@ export const mockHome: PageBySlugQuery = {
           ],
         },
         {
-          __typename: "Page_Pagefields_Blocks_Team",
+          __typename: "PageFieldsBlocksTeamLayout",
           heading: "The people behind the work",
           intro: null,
           columns: 4,
@@ -181,14 +181,14 @@ export const mockHome: PageBySlugQuery = {
           container: null,
           anchor: null,
           members: [
-            { name: "Sam Rivera", role: "Founder", bio: "Strategy and client partnerships.", linkedin_url: "https://www.linkedin.com", twitter_url: null, website_url: null, image: { sourceUrl: "https://i.pravatar.cc/200?img=15", altText: "", mediaDetails: { width: 200, height: 200 } } },
-            { name: "Alex Chen", role: "Lead Engineer", bio: "Builds the systems that build the sites.", linkedin_url: "https://www.linkedin.com", twitter_url: null, website_url: null, image: { sourceUrl: "https://i.pravatar.cc/200?img=51", altText: "", mediaDetails: { width: 200, height: 200 } } },
-            { name: "Maya Osei", role: "Designer", bio: "Design language and the craft bar.", linkedin_url: null, twitter_url: null, website_url: "https://example.com", image: { sourceUrl: "https://i.pravatar.cc/200?img=45", altText: "", mediaDetails: { width: 200, height: 200 } } },
+            { name: "Sam Rivera", role: "Founder", bio: "Strategy and client partnerships.", linkedin_url: "https://www.linkedin.com", twitter_url: null, website_url: null, image: { node: { sourceUrl: "https://i.pravatar.cc/200?img=15", altText: "", mediaDetails: { width: 200, height: 200 } } } },
+            { name: "Alex Chen", role: "Lead Engineer", bio: "Builds the systems that build the sites.", linkedin_url: "https://www.linkedin.com", twitter_url: null, website_url: null, image: { node: { sourceUrl: "https://i.pravatar.cc/200?img=51", altText: "", mediaDetails: { width: 200, height: 200 } } } },
+            { name: "Maya Osei", role: "Designer", bio: "Design language and the craft bar.", linkedin_url: null, twitter_url: null, website_url: "https://example.com", image: { node: { sourceUrl: "https://i.pravatar.cc/200?img=45", altText: "", mediaDetails: { width: 200, height: 200 } } } },
             { name: "Lee Park", role: "Performance", bio: "Measurement, analytics, Core Web Vitals.", linkedin_url: "https://www.linkedin.com", twitter_url: null, website_url: null, image: null },
           ],
         },
         {
-          __typename: "Page_Pagefields_Blocks_Pricing",
+          __typename: "PageFieldsBlocksPricingLayout",
           heading: "Simple, transparent pricing",
           intro: "Pick a plan that fits — switch to annual to save.",
           tone: "muted",
@@ -211,7 +211,7 @@ export const mockHome: PageBySlugQuery = {
           ],
         },
         {
-          __typename: "Page_Pagefields_Blocks_CtaBanner",
+          __typename: "PageFieldsBlocksCtaBannerLayout",
           heading: "Clone it, brand it, ship it",
           body: "Regenerate the schema from your WP, define ACF, and the same blocks render live.",
           tone: "accent",

@@ -127,31 +127,50 @@ export interface BlogPostsOpts {
   excludeIds?: number[];
 }
 
-function blogVars(opts: BlogPostsOpts) {
-  const perPage = opts.perPage ?? BLOG_PER_PAGE;
-  const page = Math.max(1, opts.page ?? 1);
+// WPGraphQL core caps a single connection request at 100 nodes; we walk `after` cursors
+// to fetch the whole filtered set, beating that cap with no plugin.
+const POSTS_FETCH_BATCH = 100;
+
+// where/cursor variables for one BlogPosts batch (kept out of the walk loop so its
+// complexity stays under the lint ceiling). `notIn` excludes the featured post.
+function postBatchVars(opts: BlogPostsOpts, after: string | null) {
   return {
-    perPage,
-    page,
-    vars: {
-      size: perPage,
-      offset: (page - 1) * perPage,
-      category: opts.categorySlug ?? null,
-      tag: opts.tagSlug ?? null,
-      author: opts.authorSlug ?? null,
-      search: opts.search ?? null,
-      notIn: opts.excludeIds?.map(String) ?? null,
-    },
+    first: POSTS_FETCH_BATCH,
+    after,
+    category: opts.categorySlug ?? null,
+    tag: opts.tagSlug ?? null,
+    author: opts.authorSlug ?? null,
+    search: opts.search ?? null,
+    notIn: opts.excludeIds?.map(String) ?? null,
   };
 }
 
-/** One page of posts + the totals for path-based pagination. Needs the WPGraphQL
- *  Offset Pagination addon on WP (see provision.sh). */
+/** Every post matching a filter, newest-first, via a CORE cursor walk (batched, no addon).
+ *  `notIn` is applied server-side so the excluded (featured) post is absent from the set
+ *  AND the total — matching the old offset behaviour. Plugin-free (workflow/34). */
+async function fetchAllPosts(opts: BlogPostsOpts): Promise<PostListItem[]> {
+  const out: PostListItem[] = [];
+  let after: string | null = null;
+  for (;;) {
+    const data: BlogPostsQuery = await cmsRequest(BlogPostsDocument, postBatchVars(opts, after), [POSTS_TAG]);
+    const conn = data.posts;
+    out.push(...(conn?.nodes ?? []).map(toPostListItem));
+    if (!conn?.pageInfo?.hasNextPage || !conn.pageInfo.endCursor) break;
+    after = conn.pageInfo.endCursor;
+  }
+  return out;
+}
+
+/** One page of posts + the exact total for path-based /blog/page/[n] pagination. Uses
+ *  CORE WPGraphQL cursor pagination (no Offset-Pagination plugin): fetch the filtered set,
+ *  then window it. Total = set length, so the page count is exact. */
 export async function getBlogPosts(opts: BlogPostsOpts = {}): Promise<PaginatedPosts> {
-  const { perPage, page, vars } = blogVars(opts);
-  const data = await cmsRequest(BlogPostsDocument, vars, [POSTS_TAG]);
-  const items = (data.posts?.nodes ?? []).map(toPostListItem);
-  const total = data.posts?.pageInfo?.offsetPagination?.total ?? items.length;
+  const perPage = opts.perPage ?? BLOG_PER_PAGE;
+  const page = Math.max(1, opts.page ?? 1);
+  const all = await fetchAllPosts(opts);
+  const total = all.length;
+  const start = (page - 1) * perPage;
+  const items = all.slice(start, start + perPage);
   return { items, total, page, perPage, totalPages: Math.max(1, Math.ceil(total / perPage)) };
 }
 

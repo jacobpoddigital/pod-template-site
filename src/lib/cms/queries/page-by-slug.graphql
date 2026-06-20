@@ -33,66 +33,119 @@ query PageBySlug($slug: ID!) {
     pageFields {
       blocks {
         __typename
-        ... on Page_Pagefields_Blocks_Hero {
-          eyebrow
-          heading
-          subheading
-          cta_label: ctaLabel
-          cta_url: ctaUrl
-          secondary_label: secondaryLabel
-          secondary_url: secondaryUrl
-          layout
+        ... on PageFieldsBlocksAuthorBylineLayout {
+          name
+          role
+          date
+          bio
+          profile_url: profileUrl
+          avatar {
+            node { sourceUrl altText mediaDetails { width height } }
+          }
           tone
           spacing
           container
           anchor
-          image { ...MediaItemFields }
         }
-        ... on Page_Pagefields_Blocks_FeatureGrid {
+        ... on PageFieldsBlocksBeforeAfterLayout {
           heading
           intro
+          before_image: afterImage {
+            node { sourceUrl altText mediaDetails { width height } }
+          }
+          after_image: beforeImage {
+            node { sourceUrl altText mediaDetails { width height } }
+          }
+          before_label: beforeLabel
+          after_label: afterLabel
           tone
           spacing
           container
           anchor
-          features {
+        }
+        ... on PageFieldsBlocksBentoGridLayout {
+          heading
+          intro
+          items: bentoGridItems {
             title
             body
-            icon
+            span
+            image {
+              node { sourceUrl altText mediaDetails { width height } }
+            }
+            link_url: linkUrl
           }
-        }
-        ... on Page_Pagefields_Blocks_Faq {
-          heading
-          tone
-          spacing
-          container
-          anchor
-          items {
-            question
-            answer
-          }
-        }
-        ... on Page_Pagefields_Blocks_CtaBanner {
-          heading
-          body
-          cta_label: ctaLabel
-          cta_url: ctaUrl
           tone
           spacing
           container
           anchor
         }
-        ... on Page_Pagefields_Blocks_LogoStrip {
+        ... on PageFieldsBlocksCardGridLayout {
           heading
+          intro
+          columns
+          layout
+          cards: cardGridCards {
+            image {
+              node { sourceUrl altText mediaDetails { width height } }
+            }
+            title
+            body
+            link_label: linkLabel
+            link_url: linkUrl
+          }
           tone
           spacing
           container
           anchor
-          logos {
-            name
-          }
         }
-        ... on Page_Pagefields_Blocks_ContactForm {
+        ... on PageFieldsBlocksCaseStudiesLayout {
+          heading
+          intro
+          columns
+          items: caseStudiesItems {
+            metric
+            summary
+            client
+            link_label: linkLabel
+            link_url: linkUrl
+            logo {
+              node { sourceUrl altText mediaDetails { width height } }
+            }
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksColumnsLayout {
+          heading
+          intro
+          column_count: columnCount
+          column_items: columnsColumns {
+            content
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksComparisonTableLayout {
+          heading
+          intro
+          option_a_label: optionALabel
+          option_b_label: optionBLabel
+          rows: comparisonTableRows {
+            feature
+            option_a: optionA
+            option_b: optionB
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksContactFormLayout {
           heading
           intro
           submit_label: submitLabel
@@ -102,12 +155,150 @@ query PageBySlug($slug: ID!) {
           container
           anchor
         }
-        ... on Page_Pagefields_Blocks_MediaText {
+        ... on PageFieldsBlocksCtaBannerLayout {
+          heading
+          body
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksFaqLayout {
+          heading
+          tone
+          spacing
+          container
+          anchor
+          items: faqItems {
+            question
+            answer
+          }
+        }
+        ... on PageFieldsBlocksFeatureGridLayout {
+          heading
+          intro
+          tone
+          spacing
+          container
+          anchor
+          features: featureGridFeatures {
+            title
+            body
+            icon
+          }
+        }
+        ... on PageFieldsBlocksFeatureRowsLayout {
+          heading
+          intro
+          rows: featureRowsRows {
+            eyebrow
+            title
+            body
+            cta_label: ctaLabel
+            cta_url: ctaUrl
+            image {
+              node { sourceUrl altText mediaDetails { width height } }
+            }
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksGalleryLayout {
+          heading
+          intro
+          columns
+          images: galleryImages {
+            image {
+              node { sourceUrl altText mediaDetails { width height } }
+            }
+            caption
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksHeroLayout {
+          eyebrow
+          heading
+          subheading
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
+          image {
+            node { sourceUrl altText mediaDetails { width height } }
+          }
+          layout
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksIntegrationsGridLayout {
+          heading
+          intro
+          columns
+          items: integrationsGridItems {
+            name
+            url
+            logo {
+              node { sourceUrl altText mediaDetails { width height } }
+            }
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksKeyTakeawaysLayout {
+          heading
+          points: keyTakeawaysPoints {
+            text
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksLocationsMapLayout {
+          heading
+          intro
+          columns
+          locations: locationsMapLocations {
+            name
+            address
+            maps_url: mapsUrl
+            phone
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksLogoStripLayout {
+          heading
+          tone
+          spacing
+          container
+          anchor
+          logos: logoStripLogos {
+            name
+          }
+        }
+        ... on PageFieldsBlocksMediaTextLayout {
           eyebrow
           heading
           body
           cta_label: ctaLabel
           cta_url: ctaUrl
+          image {
+            node { sourceUrl altText mediaDetails { width height } }
+          }
           video_id: videoId
           media_position: mediaPosition
           media_ratio: mediaRatio
@@ -115,287 +306,8 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
-          image { ...MediaItemFields }
         }
-        ... on Page_Pagefields_Blocks_CardGrid {
-          heading
-          intro
-          columns
-          layout
-          tone
-          spacing
-          container
-          anchor
-          cards {
-            title
-            body
-            link_label: linkLabel
-            link_url: linkUrl
-            image { ...MediaItemFields }
-          }
-        }
-        ... on Page_Pagefields_Blocks_ServicesGrid {
-          heading
-          intro
-          columns
-          layout
-          tone
-          spacing
-          container
-          anchor
-          services {
-            title
-            body
-            link_label: linkLabel
-            link_url: linkUrl
-            image { ...MediaItemFields }
-          }
-        }
-        ... on Page_Pagefields_Blocks_UspBar {
-          columns
-          tone
-          spacing
-          container
-          anchor
-          items {
-            text
-            link_url: linkUrl
-            image { ...MediaItemFields }
-          }
-        }
-        ... on Page_Pagefields_Blocks_Reviews {
-          heading
-          intro
-          columns
-          layout
-          tone
-          spacing
-          container
-          anchor
-          reviews {
-            quote
-            author
-            role
-            rating
-            avatar { ...MediaItemFields }
-            company_logo: companyLogo { ...MediaItemFields }
-          }
-        }
-        ... on Page_Pagefields_Blocks_RichText {
-          content
-          tone
-          spacing
-          container
-          anchor
-        }
-        ... on Page_Pagefields_Blocks_Columns {
-          heading
-          intro
-          column_count: columnCount
-          tone
-          spacing
-          container
-          anchor
-          column_items: columns {
-            content
-          }
-        }
-        ... on Page_Pagefields_Blocks_Video {
-          heading
-          video_id: videoId
-          button_text: buttonText
-          tone
-          spacing
-          container
-          anchor
-          facade_image: facadeImage { ...MediaItemFields }
-        }
-        ... on Page_Pagefields_Blocks_PostGrid {
-          heading
-          intro
-          category
-          count
-          columns
-          tone
-          spacing
-          container
-          anchor
-        }
-        ... on Page_Pagefields_Blocks_KeyTakeaways {
-          heading
-          tone
-          spacing
-          container
-          anchor
-          points {
-            text
-          }
-        }
-        ... on Page_Pagefields_Blocks_StatWithSource {
-          heading
-          intro
-          columns
-          tone
-          spacing
-          container
-          anchor
-          stats {
-            value
-            label
-            source
-          }
-        }
-        ... on Page_Pagefields_Blocks_ComparisonTable {
-          heading
-          intro
-          option_a_label: optionALabel
-          option_b_label: optionBLabel
-          tone
-          spacing
-          container
-          anchor
-          rows {
-            feature
-            option_a: optionA
-            option_b: optionB
-          }
-        }
-        ... on Page_Pagefields_Blocks_AuthorByline {
-          name
-          role
-          date
-          bio
-          profile_url: profileUrl
-          tone
-          spacing
-          container
-          anchor
-          avatar { ...MediaItemFields }
-        }
-        ... on Page_Pagefields_Blocks_Pricing {
-          heading
-          intro
-          tone
-          spacing
-          container
-          anchor
-          plans {
-            name
-            price
-            price_annual: priceAnnual
-            period
-            description
-            featured
-            badge
-            cta_label: ctaLabel
-            cta_url: ctaUrl
-            features {
-              text
-            }
-          }
-        }
-        ... on Page_Pagefields_Blocks_Team {
-          heading
-          intro
-          columns
-          tone
-          spacing
-          container
-          anchor
-          members {
-            name
-            role
-            bio
-            linkedin_url: linkedinUrl
-            twitter_url: twitterUrl
-            website_url: websiteUrl
-            image { ...MediaItemFields }
-          }
-        }
-        ... on Page_Pagefields_Blocks_StatsBand {
-          heading
-          intro
-          columns
-          tone
-          spacing
-          container
-          anchor
-          stats {
-            value
-            label
-            description
-          }
-        }
-        ... on Page_Pagefields_Blocks_TabbedContent {
-          heading
-          intro
-          tone
-          spacing
-          container
-          anchor
-          tabs {
-            label
-            content
-          }
-        }
-        ... on Page_Pagefields_Blocks_ProcessSteps {
-          heading
-          intro
-          tone
-          spacing
-          container
-          anchor
-          steps {
-            title
-            body
-          }
-        }
-        ... on Page_Pagefields_Blocks_BentoGrid {
-          heading
-          intro
-          tone
-          spacing
-          container
-          anchor
-          items {
-            title
-            body
-            span
-            link_url: linkUrl
-            image { ...MediaItemFields }
-          }
-        }
-        ... on Page_Pagefields_Blocks_CaseStudies {
-          heading
-          intro
-          columns
-          tone
-          spacing
-          container
-          anchor
-          items {
-            metric
-            summary
-            client
-            link_label: linkLabel
-            link_url: linkUrl
-            logo { ...MediaItemFields }
-          }
-        }
-        ... on Page_Pagefields_Blocks_Timeline {
-          heading
-          intro
-          tone
-          spacing
-          container
-          anchor
-          events {
-            date
-            title
-            body
-          }
-        }
-        ... on Page_Pagefields_Blocks_Newsletter {
+        ... on PageFieldsBlocksNewsletterLayout {
           heading
           intro
           placeholder
@@ -406,119 +318,243 @@ query PageBySlug($slug: ID!) {
           container
           anchor
         }
-        ... on Page_Pagefields_Blocks_Gallery {
+        ... on PageFieldsBlocksPostGridLayout {
           heading
           intro
+          category
+          count
           columns
           tone
           spacing
           container
           anchor
-          images {
-            caption
-            image { ...MediaItemFields }
-          }
         }
-        ... on Page_Pagefields_Blocks_BeforeAfter {
+        ... on PageFieldsBlocksPricingLayout {
           heading
           intro
-          before_label: beforeLabel
-          after_label: afterLabel
-          tone
-          spacing
-          container
-          anchor
-          before_image: beforeImage { ...MediaItemFields }
-          after_image: afterImage { ...MediaItemFields }
-        }
-        ... on Page_Pagefields_Blocks_Toc {
-          heading
-          tone
-          spacing
-          container
-          anchor
-          items {
-            label
-            target
-          }
-        }
-        ... on Page_Pagefields_Blocks_IntegrationsGrid {
-          heading
-          intro
-          columns
-          tone
-          spacing
-          container
-          anchor
-          items {
+          plans: pricingPlans {
             name
-            url
-            logo { ...MediaItemFields }
+            price
+            price_annual: priceAnnual
+            period
+            description
+            featured
+            badge
+            cta_label: ctaLabel
+            cta_url: ctaUrl
+            features: pricingPlansFeatures {
+              text
+            }
           }
-        }
-        ... on Page_Pagefields_Blocks_PricingMatrix {
-          heading
-          intro
           tone
           spacing
           container
           anchor
-          plan_labels: planLabels {
+        }
+        ... on PageFieldsBlocksPricingMatrixLayout {
+          heading
+          intro
+          plan_labels: pricingMatrixPlanLabels {
             label
           }
-          rows {
+          rows: pricingMatrixRows {
             feature
             value1
             value2
             value3
           }
-        }
-        ... on Page_Pagefields_Blocks_LocationsMap {
-          heading
-          intro
-          columns
           tone
           spacing
           container
           anchor
-          locations {
-            name
-            address
-            maps_url: mapsUrl
-            phone
+        }
+        ... on PageFieldsBlocksProcessStepsLayout {
+          heading
+          intro
+          steps: processStepsSteps {
+            title
+            body
           }
-        }
-        ... on Page_Pagefields_Blocks_VideoTestimonial {
-          heading
-          intro
-          columns
           tone
           spacing
           container
           anchor
-          items {
+        }
+        ... on PageFieldsBlocksReviewsLayout {
+          heading
+          intro
+          columns
+          layout
+          reviews: reviewsReviews {
+            quote
+            author
+            role
+            rating
+            avatar {
+              node { sourceUrl altText mediaDetails { width height } }
+            }
+            company_logo: companyLogo {
+              node { sourceUrl altText mediaDetails { width height } }
+            }
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksRichTextLayout {
+          content
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksServicesGridLayout {
+          heading
+          intro
+          columns
+          layout
+          services: servicesGridServices {
+            image {
+              node { sourceUrl altText mediaDetails { width height } }
+            }
+            title
+            body
+            link_label: linkLabel
+            link_url: linkUrl
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksStatWithSourceLayout {
+          heading
+          intro
+          columns
+          stats: statWithSourceStats {
+            value
+            label
+            source
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksStatsBandLayout {
+          heading
+          intro
+          columns
+          stats: statsBandStats {
+            value
+            label
+            description
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksTabbedContentLayout {
+          heading
+          intro
+          tabs: tabbedContentTabs {
+            label
+            content
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksTeamLayout {
+          heading
+          intro
+          columns
+          members: teamMembers {
+            name
+            role
+            bio
+            image {
+              node { sourceUrl altText mediaDetails { width height } }
+            }
+            linkedin_url: linkedinUrl
+            twitter_url: twitterUrl
+            website_url: websiteUrl
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksTimelineLayout {
+          heading
+          intro
+          events: timelineEvents {
+            date
+            title
+            body
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksTocLayout {
+          heading
+          items: tocItems {
+            label
+            target
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksUspBarLayout {
+          columns
+          items: uspBarItems {
+            image {
+              node { sourceUrl altText mediaDetails { width height } }
+            }
+            text
+            link_url: linkUrl
+          }
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksVideoLayout {
+          heading
+          video_id: videoId
+          facade_image: facadeImage {
+            node { sourceUrl altText mediaDetails { width height } }
+          }
+          button_text: buttonText
+          tone
+          spacing
+          container
+          anchor
+        }
+        ... on PageFieldsBlocksVideoTestimonialLayout {
+          heading
+          intro
+          columns
+          items: videoTestimonialItems {
             video_id: videoId
             quote
             author
             role
-            facade_image: facadeImage { ...MediaItemFields }
+            facade_image: facadeImage {
+              node { sourceUrl altText mediaDetails { width height } }
+            }
           }
-        }
-        ... on Page_Pagefields_Blocks_FeatureRows {
-          heading
-          intro
           tone
           spacing
           container
           anchor
-          rows {
-            eyebrow
-            title
-            body
-            cta_label: ctaLabel
-            cta_url: ctaUrl
-            image { ...MediaItemFields }
-          }
         }
       }
     }

@@ -36,12 +36,22 @@ import { mockViewer, mockLogin } from "./auth";
 
 type Vars = Record<string, unknown>;
 
-// Blog index/archives: filter + offset-paginate the fixtures so /blog, /blog/page/[n]
+// Mock cursor pagination: the cursor is just the stringified resume-offset, so the cms
+// cursor walk (first/after) works offline exactly as against live WP. `after` null = start.
+function cursorPage<T>(items: readonly T[], first: number, after: string | null | undefined) {
+  const start = after ? Number(after) : 0;
+  const nodes = items.slice(start, start + first);
+  const next = start + nodes.length;
+  const hasNextPage = next < items.length;
+  return { pageInfo: { hasNextPage, endCursor: hasNextPage ? String(next) : null }, nodes };
+}
+
+// Blog index/archives: filter + cursor-paginate the fixtures so /blog, /blog/page/[n]
 // and the category/tag archives all render real pages offline (workflow/34).
 function blogPostsHandler(variables: Vars) {
-  const { offset = 0, size = 12, category, tag, author, search, notIn } = variables as {
-    offset?: number;
-    size?: number;
+  const { first = 100, after = null, category, tag, author, search, notIn } = variables as {
+    first?: number;
+    after?: string | null;
     category?: string | null;
     tag?: string | null;
     author?: string | null;
@@ -57,16 +67,16 @@ function blogPostsHandler(variables: Vars) {
     if (search && !p.title.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
-  return { posts: { pageInfo: { offsetPagination: { total: filtered.length } }, nodes: filtered.slice(offset, offset + size) } };
+  return { posts: cursorPage(filtered, first, after) };
 }
 
-// Case Study CPT index: offset-paginate the fixtures, same contract as the blog —
+// Case Study CPT index: cursor-paginate the fixtures, same contract as the blog —
 // proves the registered CPT renders offline through the identical mock seam.
 function caseStudiesHandler(variables: Vars) {
-  const { offset = 0, size = 12, notIn } = variables as { offset?: number; size?: number; notIn?: string[] | null };
+  const { first = 100, after = null, notIn } = variables as { first?: number; after?: string | null; notIn?: string[] | null };
   const excluded = new Set((notIn ?? []).map(String));
   const filtered = mockCaseStudies.filter((c) => !excluded.has(String(c.databaseId)));
-  return { caseStudies: { pageInfo: { offsetPagination: { total: filtered.length } }, nodes: filtered.slice(offset, offset + size) } };
+  return { caseStudies: cursorPage(filtered, first, after) };
 }
 
 const HANDLERS: [unknown, (v: Vars) => unknown][] = [
