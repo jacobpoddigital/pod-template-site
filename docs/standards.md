@@ -146,6 +146,13 @@ These are codebase-specific musts. They were each a real miss; do not repeat the
 - **Elevation = border, never shadow** (house rule) on both — `border-border`, no `shadow-*`. Close is a **40px padded target** (`size-10`, WCAG 2.5.8), not a bare icon.
 - **z-index comes from the named scale** (`:root` in `globals.css`: 30 sticky-CTA · 40 header · 50 overlays/modals/drawers · 60 skip-link). **Tailwind v4: write `z-[var(--z-modal)]`, NOT `z-[--z-modal]`** — the v3 shorthand silently resolves to `auto` and the overlay renders *under* the header. Grep `z-[--` after any v4 bump.
 
+**Mobile / iOS — these only show up on a real device (a fixed-viewport test passes anyway).** *(Earned 2026-06-20.)*
+- **Full-screen mobile = `100dvh`, NEVER `h-full`/`100vh`/`inset-0`.** On iOS Safari those fill the *layout* viewport (behind the address bar/toolbar), so the bottom of a modal/drawer — and its last control (Add-to-bag) — is hidden under the browser chrome. The `ui/dialog` fullscreen variant uses `max-sm:top-0 max-sm:h-[100dvh]`; do the same for any bespoke full-height mobile surface.
+- **Inputs ≥16px on mobile or iOS auto-zooms on focus.** A global `globals.css` rule forces `input/select/textarea` to 16px under `640px` (unlayered, beats `.body-sm`). Don't style a mobile input below 16px expecting it to hold.
+- **Respect safe-area insets** on full-bleed mobile surfaces — a fixed bottom bar / scroll container near the edge uses `env(safe-area-inset-bottom)` so content clears the home indicator (e.g. the sticky CTA + filter bars, the quick-view body).
+- **Sticky mobile affordance pattern:** a persistent action (sticky CTA, mobile filter button) is a `fixed inset-x-0 bottom-0 z-30 lg:hidden` bar that slides up (`translate-y`) once its inline counterpart scrolls out of view (IntersectionObserver), `inert`+`aria-hidden` while hidden, with bottom safe-area padding. Give the page bottom clearance so the bar never covers content.
+- **Test on the device with Playwright `webkit`** (the Safari engine) + an iPhone device descriptor + touch — `chromium` won't reproduce these. And `next dev` blocks LAN-origin dev resources by default → set `allowedDevOrigins` (auto-set to the machine's LAN IPs in `next.config.ts`).
+
 ---
 
 ## 12. Headless-WP integration — earned on the Website Navigator build (2026-06-12)
