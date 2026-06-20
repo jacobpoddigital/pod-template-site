@@ -139,6 +139,13 @@ These are codebase-specific musts. They were each a real miss; do not repeat the
 - The mechanism ships once: `color-scheme` + `[data-theme]` rules (device-detect default, manual override), the no-flash inline script (`layout.tsx`), `viewport.themeColor`, and the footer `ThemeToggle`. Don't rebuild it per site.
 - Dark surfaces are tinted (never pure `#000`), text is light (not pure white), contrast ≥4.5:1 (KB 01). The footer is a **muted surface** (`bg-surface-muted`), not inverted.
 
+**Overlays — ONE modal/drawer language (don't re-derive per project).** *(Standard set 2026-06-20, Stride Hub — it kept getting hand-rolled.)*
+- **`ui/dialog` (modals) is FULL-SCREEN on mobile + centred on desktop BY DEFAULT** (`DialogContent` `mobile="fullscreen"`). On a phone a centred card modal is the wrong pattern — it must fill the viewport like the drawers. The behaviour lives **in the primitive** (a CVA variant), so you never re-add the `max-sm:inset-0 …` incantation. A small confirm/alert that should stay a centred card opts out with **`mobile="centered"`**. Verify a content modal measures the full viewport (e.g. 390×844) on mobile.
+- **A full-height modal composes as:** `<DialogContent className="flex flex-col gap-0 p-0">` → a `h-[60px] border-b px-6` header carrying `<DialogTitle>` (so the primitive's 40px close is vertically centred) → a `flex-1 overflow-y-auto` body. A desktop `max-h-[90vh]` is fine — the variant resets it to full height on mobile (`max-sm:max-h-none`).
+- **`ui/sheet` (drawers)** = the cart/filter/mobile-nav family: side-anchored, **full-width on mobile** (`w-full max-w-none`, fix the desktop width with `sm:max-w-*`), bordered header + scrollable body + optional bordered footer. Dialog and Sheet share the same overlay theory; pick Sheet for side-anchored panels, Dialog for centred-on-desktop content.
+- **Elevation = border, never shadow** (house rule) on both — `border-border`, no `shadow-*`. Close is a **40px padded target** (`size-10`, WCAG 2.5.8), not a bare icon.
+- **z-index comes from the named scale** (`:root` in `globals.css`: 30 sticky-CTA · 40 header · 50 overlays/modals/drawers · 60 skip-link). **Tailwind v4: write `z-[var(--z-modal)]`, NOT `z-[--z-modal]`** — the v3 shorthand silently resolves to `auto` and the overlay renders *under* the header. Grep `z-[--` after any v4 bump.
+
 ---
 
 ## 12. Headless-WP integration — earned on the Website Navigator build (2026-06-12)
