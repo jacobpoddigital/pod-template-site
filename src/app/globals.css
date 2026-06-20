@@ -28,6 +28,15 @@
   --input: var(--brand-border);
   --ring: var(--brand-primary);
   --radius: var(--brand-radius);
+  /* z-LAYER SCALE (single source of truth — keep elements on these rungs, don't invent ad-hoc):
+       30  sticky CTA bar (below the header so an open header dropdown/nav always wins)
+       40  sticky header  (z-40, set in sticky-header.tsx)
+       50  overlays + modals + drawers (Sheet, Dialog, mobile nav, search dropdown) — ABOVE header
+       60  skip-to-content link on focus (must beat everything)
+     ⚠ Tailwind v4: use `z-[var(--z-modal)]`, NOT `z-[--z-modal]` (the v3 shorthand silently
+     resolves to `auto` → elements render under the header). Grep `z-[--` after any v4 upgrade. */
+  --z-overlay: 50;
+  --z-modal: 50;
 }
 
 @theme inline {

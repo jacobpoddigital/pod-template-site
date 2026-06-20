@@ -3,10 +3,20 @@
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
+import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 // Composite — Radix Dialog. Handles focus trap, ESC dismissal, scroll lock, aria-modal.
 // Never hand-roll — focus management alone justifies using this.
+//
+// AGENCY MODAL STANDARD (don't re-derive per project): DialogContent is FULL-SCREEN on mobile and
+// a centred modal on >=sm BY DEFAULT (`mobile="fullscreen"`) — the same overlay language as the
+// Sheet drawers (cart, filter) and the gallery lightbox, so every modal behaves consistently on a
+// phone. Small confirm/alert dialogs that should stay a centred card on mobile opt out with
+// `mobile="centered"`. Elevation = border (not shadow); the close is a 40px padded target (WCAG
+// 2.5.8). Compose a full-height modal as: <DialogContent className="flex flex-col gap-0 p-0">
+// <header className="h-[60px] border-b px-6"><DialogTitle/></header>
+// <div className="flex-1 overflow-y-auto p-6">…</div> </DialogContent>.
 
 const Dialog = DialogPrimitive.Root;
 const DialogTrigger = DialogPrimitive.Trigger;
@@ -20,7 +30,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      "fixed inset-0 z-[--z-overlay] bg-black/60 backdrop-blur-sm " +
+      "fixed inset-0 z-[var(--z-overlay)] bg-black/60 backdrop-blur-sm " +
       "data-[state=open]:animate-in data-[state=closed]:animate-out " +
       "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
       className
@@ -30,29 +40,50 @@ const DialogOverlay = React.forwardRef<
 ));
 DialogOverlay.displayName = "DialogOverlay";
 
+const dialogContentVariants = cva(
+  // Shared: fixed + centred anchor + animation + border elevation (no shadow — house rule).
+  "fixed left-1/2 top-1/2 z-[var(--z-modal)] -translate-x-1/2 -translate-y-1/2 " +
+    "border border-border bg-background " +
+    "data-[state=open]:animate-in data-[state=closed]:animate-out " +
+    "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 " +
+    "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 " +
+    "data-[state=closed]:slide-out-to-left-1/2 data-[state=open]:slide-in-from-left-1/2 " +
+    "data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-top-[48%]",
+  {
+    variants: {
+      mobile: {
+        // DEFAULT — full-screen on mobile (inset-0, full size, no rounding/border), centred on >=sm.
+        fullscreen:
+          "w-full max-w-lg rounded-lg p-6 " +
+          "max-sm:inset-0 max-sm:h-full max-sm:max-h-none max-sm:w-full max-sm:max-w-none " +
+          "max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-none max-sm:border-0",
+        // Opt-out — stays a centred card even on mobile (small confirm/alert dialogs).
+        centered: "w-full max-w-lg rounded-lg p-6",
+      },
+    },
+    defaultVariants: { mobile: "fullscreen" },
+  }
+);
+
+interface DialogContentProps
+  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>,
+    VariantProps<typeof dialogContentVariants> {}
+
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+  DialogContentProps
+>(({ className, children, mobile, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
-      className={cn(
-        "fixed left-1/2 top-1/2 z-[--z-modal] w-full max-w-lg -translate-x-1/2 -translate-y-1/2 " +
-        "rounded-lg bg-background p-6 shadow-lg " +
-        "data-[state=open]:animate-in data-[state=closed]:animate-out " +
-        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 " +
-        "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 " +
-        "data-[state=closed]:slide-out-to-left-1/2 data-[state=open]:slide-in-from-left-1/2 " +
-        "data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-top-[48%]",
-        className
-      )}
+      className={cn(dialogContentVariants({ mobile }), className)}
       {...props}
     >
       {children}
-      <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 outline-none motion-safe:transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none">
-        <X className="h-4 w-4" />
+      {/* 40px padded hit area (WCAG 2.5.8 target size), icon stays visually small. */}
+      <DialogClose className="absolute right-2.5 top-2.5 inline-flex size-10 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-surface-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none">
+        <X className="h-5 w-5" />
         <span className="sr-only">Close</span>
       </DialogClose>
     </DialogPrimitive.Content>
