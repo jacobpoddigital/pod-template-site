@@ -3,10 +3,10 @@
 # │ Agents may not modify .github/workflows/ (agency policy workflow/06), so this │
 # │ proposed CI lives here. Replace the current ci.yml with the contents below.   │
 # │ Then set the ACF_PRO_URL + ACF_PRO_TOKEN repo secrets (already done for the   │
-# │ three repos on 2026-06-21). See docs/workflow/40 (HQ) for the full rationale. │
+# │ three repos on 2026-06-21). See docs/workflow/39 (HQ) for the full rationale. │
 # └─────────────────────────────────────────────────────────────────────────────┘
 #
-# CI gates (workflow/02 — agents cannot merge violations; docs/workflow/40 for the live gates).
+# CI gates (workflow/02 — agents cannot merge violations; docs/workflow/39 for the live gates).
 #
 #   verify         every PR + push to main — lint + typecheck + build WITHOUT WordPress.
 #                  Fallback content keeps the build green, proving "WP down ≠ site down".

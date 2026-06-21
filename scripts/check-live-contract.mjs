@@ -1,5 +1,5 @@
 // Live-contract check — validate every committed GraphQL document against the LIVE
-// WordPress schema (the live-build CI gate, docs/workflow/40-live-build-ci-gate.md).
+// WordPress schema (the live-build CI gate, docs/workflow/39-live-build-ci-gate.md).
 //
 // THE FAILURE CLASS THIS KILLS: a committed query asks live WP for a field the
 // provisioning never actually created (unprovisioned ACF group, missing plugin,
