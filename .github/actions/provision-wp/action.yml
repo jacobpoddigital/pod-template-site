@@ -1,0 +1,53 @@
+name: Provision local WordPress
+description: >
+  Stand up the repo's docker WordPress stack, fetch ACF Pro from the private vendor
+  bucket, run wp/provision.sh, and expose the live WPGraphQL URL. Shared by the
+  live-contract (PR) and live-build (nightly) jobs. Assumes Node + pnpm are already
+  set up by the calling job (provision.sh runs the ACF generator with node).
+
+inputs:
+  acf-pro-url:
+    description: Token-gated URL to fetch the ACF Pro zip (the acf-vendor R2 Worker).
+    required: true
+  acf-pro-token:
+    description: Bearer token for the ACF Pro fetch.
+    required: true
+  wp-port:
+    description: Host port to bind WordPress on.
+    required: false
+    default: "8081"
+  frontend-url:
+    description: Frontend origin WP 'home' points at (headless canonical/OG/schema).
+    required: false
+    default: "http://localhost:3000"
+
+outputs:
+  graphql-url:
+    description: The live WPGraphQL endpoint.
+    value: ${{ steps.url.outputs.graphql-url }}
+
+runs:
+  using: composite
+  steps:
+    - name: Fetch ACF Pro (private vendor bucket)
+      shell: bash
+      env:
+        ACF_PRO_URL: ${{ inputs.acf-pro-url }}
+        ACF_PRO_TOKEN: ${{ inputs.acf-pro-token }}
+      run: |
+        curl -fsSL -H "Authorization: Bearer ${ACF_PRO_TOKEN}" "${ACF_PRO_URL}" -o wp/acf-pro.zip
+        # Fail fast if the fetch returned an error page instead of a zip.
+        unzip -l wp/acf-pro.zip >/dev/null
+
+    - name: Provision WordPress
+      shell: bash
+      env:
+        WP_PORT: ${{ inputs.wp-port }}
+        ACF_PRO_ZIP: wp/acf-pro.zip
+        FRONTEND_URL: ${{ inputs.frontend-url }}
+      run: bash wp/provision.sh
+
+    - name: Expose GraphQL URL
+      id: url
+      shell: bash
+      run: echo "graphql-url=http://localhost:${{ inputs.wp-port }}/graphql" >> "$GITHUB_OUTPUT"

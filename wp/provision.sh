@@ -159,6 +159,13 @@ wpcli "rewrite structure '/%postname%/'"
 wpcli "rewrite flush --hard"
 wpcli "option update blog_public 0"
 
+echo "==> Enabling WPGraphQL public introspection (local/CI only)"
+# Required for `get-graphql-schema` (per-project SDL regen) AND the live-build CI gate's
+# contract check (scripts/check-live-contract.mjs introspects the provisioned WP). SAFE in
+# production: pod-graphql-hardening.php FILTER-forces public_introspection_enabled='off' when
+# wp_get_environment_type()==='production', overriding this stored option. Idempotent.
+wpcli "option update graphql_general_settings '{\"public_introspection_enabled\":\"on\"}' --format=json"
+
 echo "==> WPGraphQL smoke test"
 GQL_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$WP_URL/graphql" \
   -H 'Content-Type: application/json' --data '{"query":"{__typename}"}')
