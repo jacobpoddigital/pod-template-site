@@ -39,6 +39,10 @@ if [[ -z "$ACF_PRO_ZIP" || ! -f "$ACF_PRO_ZIP" ]]; then
     exit 1
   fi
 fi
+# Docker -v needs an ABSOLUTE host path — a relative one is read as a named volume and errors
+# ("includes invalid characters for a local volume name"). CI passes a repo-relative path
+# (.github/actions/provision-wp sets ACF_PRO_ZIP=wp/acf-pro.zip), so absolutize before the mount.
+[[ "$ACF_PRO_ZIP" = /* ]] || ACF_PRO_ZIP="$(pwd)/$ACF_PRO_ZIP"
 
 echo "==> Starting containers"
 docker compose up -d
