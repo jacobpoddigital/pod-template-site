@@ -49,3 +49,7 @@ next-env.d.ts
 
 # local screenshot/scratch captures (ad-hoc verification)
 .screenshots/
+
+# ACF Pro is a LICENSED binary — fetched from the private vendor bucket at provision/CI
+# time (wp/provision.sh, .github/actions/provision-wp). Never commit it.
+wp/acf-pro.zip

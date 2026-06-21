@@ -1,0 +1,19 @@
+{
+  "_comment": "Backend profiles for `pnpm backend <profile>` (scripts/backend.mjs). NON-SECRET — public GraphQL endpoint URLs + a mode flag, never credentials. The switcher sets WPGRAPHQL_URL/CMS_MODE in the child env (Next does not override already-set process.env), so it never touches .env.local. See workflow/42. TEMPLATE: set the atlas wpgraphqlUrl to the client's WP Engine Atlas endpoint at workflow/40 provisioning.",
+  "default": "local",
+  "profiles": {
+    "local": {
+      "label": "Local Docker WP",
+      "wpgraphqlUrl": "http://localhost:8081/graphql",
+      "wpPort": "8081"
+    },
+    "atlas": {
+      "label": "WP Engine Atlas (shared)",
+      "wpgraphqlUrl": ""
+    },
+    "mock": {
+      "label": "Mock CMS (no WordPress)",
+      "mock": true
+    }
+  }
+}

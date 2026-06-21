@@ -4,10 +4,24 @@
 // "per-client ACF generated at provision time" (workflow/29, HQ FRICTION #70). Keeping it
 // generated guarantees WP-ACF and the frontend never drift.
 //
-// Mapping: String→text · Int→number · Boolean→true_false · MediaItem→image (edge in 2.x) ·
-// [BlockSubType!]→repeater (recursive). Repeater names are LAYOUT-PREFIXED + unique because
-// wpgraphql-acf 2.x derives a GENERIC type per repeater field NAME (faq `items` + usp `items`
-// would collide → PageFieldsBlocksItems) — unique names give each its own type (HQ FRICTION #97).
+// INPUT IS THE 2.x SDL. The committed schema.graphql uses the wpgraphql-acf 2.x naming
+// (`PageFieldsBlocks<Layout>Layout`, repeater sub-types `PageFieldsBlocks<...>`, image fields
+// typed `AcfMediaItemConnectionEdge`). LAYOUTS ARE THE MEMBERS OF THE `PageFieldsBlocks_Layout`
+// UNION — that is the authoritative list. Earlier this scanned for the pre-migration prefix
+// `Page_Pagefields_Blocks_`, which the migrated schema no longer contains, so it silently
+// produced ZERO layouts; provision.sh then overwrote a good acf-export.json with an empty one
+// and every live build 500'd on `pageFields` (mock stayed green). The union-derivation +
+// non-empty guard below kill that failure class (HQ FRICTION — live-build CI gate).
+//
+// Field-name round-trip: snake_case the 2.x camelCase field (faqItems→faq_items,
+// cardGridCards→card_grid_cards); wpgraphql-acf re-camelCases the ACF name back, so the SDL
+// type the queries target is reproduced. Repeater field names are already globally unique in
+// the 2.x schema, so no prefixing is needed here. Sub-field ORDER follows the SDL (alphabetical
+// from introspection) — order is editor-cosmetic only; introspection always alphabetises the
+// SDL regardless of ACF order, so it never affects the GraphQL contract.
+//
+// Mapping: String→text · Int/Float→number · Boolean→true_false ·
+// AcfMediaItemConnectionEdge→image · [PageFieldsBlocks<Sub>]→repeater (recursive).
 //
 // Run: node scripts/generate-acf-blocks.mjs  → writes wp/acf-export.json
 import { readFileSync, writeFileSync } from "node:fs";
@@ -19,27 +33,37 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const sdl = readFileSync(join(root, "src/lib/cms/schema.graphql"), "utf8");
 const ast = parse(sdl);
 
-const PREFIX = "Page_Pagefields_Blocks_";
+const BLOCK_PREFIX = "PageFieldsBlocks"; // 2.x: every block object type starts with this
+const UNION_NAME = "PageFieldsBlocks_Layout"; // members = the flexible-content layouts
+const IMAGE_EDGE = "AcfMediaItemConnectionEdge"; // 2.x exposes ACF image fields as this edge
+
+// All block object types (layouts + repeater sub-types) + the layout union.
 const objects = new Map();
+let union = null;
 for (const def of ast.definitions) {
-  if (def.kind === "ObjectTypeDefinition" && def.name.value.startsWith(PREFIX)) {
+  if (def.kind === "ObjectTypeDefinition" && def.name.value.startsWith(BLOCK_PREFIX)) {
     objects.set(def.name.value, def);
   }
-}
-
-// A block type is a LAYOUT unless it's referenced as the element of a list field (a repeater
-// sub-type). Compute referenced sub-types; layouts = blockTypes − referenced.
-const referenced = new Set();
-for (const def of objects.values()) {
-  for (const f of def.fields) {
-    const inner = listInner(f.type);
-    if (inner && objects.has(inner)) referenced.add(inner);
+  if (def.kind === "UnionTypeDefinition" && def.name.value === UNION_NAME) {
+    union = def;
   }
 }
-const layoutTypes = [...objects.keys()].filter((n) => !referenced.has(n));
+
+// Guard: if the schema doesn't declare the union (or it's empty), REFUSE to write — never
+// silently emit an empty page-blocks group (that is exactly the mock-green/live-500 bug).
+if (!union) {
+  throw new Error(
+    `generate-acf-blocks: union ${UNION_NAME} not found in src/lib/cms/schema.graphql — ` +
+      `regenerate the SDL from live WP (pnpm dlx get-graphql-schema "$WPGRAPHQL_URL" > src/lib/cms/schema.graphql) and retry`,
+  );
+}
+const layoutTypes = union.types.map((t) => t.name.value);
+if (layoutTypes.length === 0) {
+  throw new Error(`generate-acf-blocks: ${UNION_NAME} has 0 members — refusing to write an empty ACF group`);
+}
 
 function listInner(t) {
-  // unwrap NonNull → List → NonNull → Named, return the named type if it was a list
+  // unwrap NonNull → List → NonNull → Named; return the named type only if it was a list
   let node = t;
   if (node.kind === "NonNullType") node = node.type;
   if (node.kind !== "ListType") return null;
@@ -52,50 +76,47 @@ function namedType(t) {
   if (node.kind === "NonNullType") node = node.type;
   return node.kind === "NamedType" ? node.name.value : null;
 }
-// Split on EVERY capital (so optionALabel→option_a_label, matching the zod field names);
-// wpgraphql-acf re-camelCases the ACF name back to the original, so the round-trip holds.
-const snake = (s) => s.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`);
+// Split on EVERY capital (faqItems→faq_items, CardGrid→card_grid); leading "_" stripped so
+// type stems (uppercase-first) and field names (lowercase-first) both round-trip.
+const snake = (s) => s.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`).replace(/^_/, "");
 const title = (s) => snake(s).split("_").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
-const layoutName = (typeName) => snake(typeName.slice(PREFIX.length)).replace(/^_/, ""); // Hero→hero, CardGrid→card_grid
+const layoutName = (typeName) => snake(typeName.slice(BLOCK_PREFIX.length).replace(/Layout$/, ""));
 
-// Build ACF sub_fields for a type's fields. `keyBase` namespaces field keys; `namePrefix`
-// makes repeater NAMES unique across the whole group (collision rule above).
-function subFields(typeDef, keyBase, namePrefix) {
+// Build ACF sub_fields for a type. `keyBase` namespaces scalar field keys; repeaters root
+// their own key at field_pod_<uniqueName> (the 2.x repeater field name is already unique).
+function subFields(typeDef, keyBase) {
   const out = [];
   for (const f of typeDef.fields) {
-    const gqlName = f.name.value; // camelCase as declared in the SDL
-    const acfName = snake(gqlName); // wpgraphql-acf re-camelCases back to gqlName
-    const fk = `${keyBase}_${acfName}`;
+    const acfName = snake(f.name.value);
     const named = namedType(f.type);
     const inner = listInner(f.type);
     if (inner && objects.has(inner)) {
-      // repeater — unique name = namePrefix + field, so its generic 2.x type is unique
-      const repName = `${namePrefix}_${acfName}`;
+      const key = `field_pod_${acfName}`;
       out.push({
-        key: `field_pod_${repName}`,
-        name: repName,
+        key,
+        name: acfName,
         label: title(acfName),
         type: "repeater",
         layout: "block",
         button_label: `Add ${title(acfName)}`,
-        sub_fields: subFields(objects.get(inner), `field_pod_${repName}`, repName),
+        sub_fields: subFields(objects.get(inner), key),
       });
-    } else if (named === "MediaItem") {
-      out.push({ key: fk, name: acfName, label: title(acfName), type: "image", return_format: "id", preview_size: "medium" });
-    } else if (named === "Int") {
-      out.push({ key: fk, name: acfName, label: title(acfName), type: "number" });
+    } else if (named === IMAGE_EDGE) {
+      out.push({ key: `${keyBase}_${acfName}`, name: acfName, label: title(acfName), type: "image", return_format: "id", preview_size: "medium" });
+    } else if (named === "Int" || named === "Float") {
+      out.push({ key: `${keyBase}_${acfName}`, name: acfName, label: title(acfName), type: "number" });
     } else if (named === "Boolean") {
-      out.push({ key: fk, name: acfName, label: title(acfName), type: "true_false", ui: 1 });
+      out.push({ key: `${keyBase}_${acfName}`, name: acfName, label: title(acfName), type: "true_false", ui: 1 });
     } else {
       // String (and anything else scalar) → text; wrapper fields (tone/spacing/...) are String too
-      out.push({ key: fk, name: acfName, label: title(acfName), type: "text" });
+      out.push({ key: `${keyBase}_${acfName}`, name: acfName, label: title(acfName), type: "text" });
     }
   }
   return out;
 }
 
 const layouts = {};
-for (const typeName of layoutTypes.sort()) {
+for (const typeName of [...layoutTypes].sort()) {
   const name = layoutName(typeName);
   const key = `layout_pod_${name}`;
   layouts[key] = {
@@ -103,7 +124,7 @@ for (const typeName of layoutTypes.sort()) {
     name,
     label: title(name),
     display: "block",
-    sub_fields: subFields(objects.get(typeName), `field_pod_${name}`, name),
+    sub_fields: subFields(objects.get(typeName), `field_pod_${name}`),
   };
 }
 
