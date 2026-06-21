@@ -99,6 +99,15 @@ const OPTIONAL_GROUPS = [
     match: (f) => /\/auth-(login|refresh)\.graphql$/.test(f),
     present: () => probe("RootMutation", "login"),
   },
+  {
+    // Commerce queries live in src/lib/commerce/queries (only present in commerce repos).
+    // They need WooGraphQL provisioned (provision-commerce.sh + the vendored Woo zips). When
+    // that isn't installed in this WP (e.g. base CI before Woo-in-CI lands), skip-with-notice
+    // rather than fail — validated for real the moment WooGraphQL is present.
+    label: "commerce (WooGraphQL — opt-in; see docs/commerce.md)",
+    match: (f) => /\/commerce\/queries\//.test(f),
+    present: () => probe("RootQuery", "products"),
+  },
 ];
 function optionalGroupFor(file) {
   return OPTIONAL_GROUPS.find((g) => g.match(file.replace(/\\/g, "/")));
