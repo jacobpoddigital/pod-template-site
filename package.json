@@ -4,6 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "node scripts/dev.mjs",
+    "backend": "node scripts/backend.mjs",
+    "dev:local": "node scripts/backend.mjs local",
+    "dev:atlas": "node scripts/backend.mjs atlas",
+    "dev:mock": "node scripts/backend.mjs mock",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
