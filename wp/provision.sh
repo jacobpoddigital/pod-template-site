@@ -20,9 +20,24 @@ WP_PORT="${WP_PORT:-8081}"
 WP_URL="http://localhost:${WP_PORT}"
 ACF_PRO_ZIP="${ACF_PRO_ZIP:-}"
 
+# Auto-resolve ACF Pro (a licensed binary) when ACF_PRO_ZIP isn't given: local cache →
+# private vendor bucket. CI passes ACF_PRO_ZIP explicitly (.github/actions/provision-wp),
+# so this path is for LOCAL devs — set ACF_PRO_URL (+ ACF_PRO_TOKEN) once (Doppler/shell
+# profile) and provisioning self-fetches + caches to ~/.pod/acf-pro.zip. See docs/workflow/39.
 if [[ -z "$ACF_PRO_ZIP" || ! -f "$ACF_PRO_ZIP" ]]; then
-  echo "ERROR: set ACF_PRO_ZIP to the ACF Pro plugin zip (agency licence)." >&2
-  exit 1
+  POD_CACHE="${HOME}/.pod/acf-pro.zip"
+  if [[ -f "$POD_CACHE" ]]; then
+    ACF_PRO_ZIP="$POD_CACHE"
+    echo "==> Using cached ACF Pro ($ACF_PRO_ZIP)"
+  elif [[ -n "${ACF_PRO_URL:-}" ]]; then
+    echo "==> Fetching ACF Pro from the private vendor bucket → $POD_CACHE"
+    mkdir -p "$(dirname "$POD_CACHE")"
+    curl -fsSL ${ACF_PRO_TOKEN:+-H "Authorization: Bearer ${ACF_PRO_TOKEN}"} "$ACF_PRO_URL" -o "$POD_CACHE"
+    ACF_PRO_ZIP="$POD_CACHE"
+  else
+    echo "ERROR: ACF Pro not found. Set ACF_PRO_ZIP to the zip, OR set ACF_PRO_URL (+ACF_PRO_TOKEN) to auto-fetch from the vendor bucket (docs/workflow/39)." >&2
+    exit 1
+  fi
 fi
 
 echo "==> Starting containers"
@@ -158,6 +173,13 @@ echo "==> Permalinks (WPGraphQL /graphql endpoint needs pretty permalinks)"
 wpcli "rewrite structure '/%postname%/'"
 wpcli "rewrite flush --hard"
 wpcli "option update blog_public 0"
+
+echo "==> Enabling WPGraphQL public introspection (local/CI only)"
+# Required for `get-graphql-schema` (per-project SDL regen) AND the live-build CI gate's
+# contract check (scripts/check-live-contract.mjs introspects the provisioned WP). SAFE in
+# production: pod-graphql-hardening.php FILTER-forces public_introspection_enabled='off' when
+# wp_get_environment_type()==='production', overriding this stored option. Idempotent.
+wpcli "option update graphql_general_settings '{\"public_introspection_enabled\":\"on\"}' --format=json"
 
 echo "==> WPGraphQL smoke test"
 GQL_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$WP_URL/graphql" \
