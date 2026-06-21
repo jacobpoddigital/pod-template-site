@@ -1,9 +1,30 @@
-# CI gate on every PR: lint + typecheck + build (workflow/02 — agents cannot
-# merge violations). Build runs WITHOUT WordPress: fallback content must keep
-# the build green, proving "WP down ≠ site down" on every PR.
+# ┌─────────────────────────────────────────────────────────────────────────────┐
+# │ HUMAN ACTION REQUIRED — copy this file to .github/workflows/ci.yml            │
+# │ Agents may not modify .github/workflows/ (agency policy workflow/06), so this │
+# │ proposed CI lives here. Replace the current ci.yml with the contents below.   │
+# │ Then set the ACF_PRO_URL + ACF_PRO_TOKEN repo secrets (already done for the   │
+# │ three repos on 2026-06-21). See docs/workflow/39 (HQ) for the full rationale. │
+# └─────────────────────────────────────────────────────────────────────────────┘
 #
-# Repo setting required: "Require approval for workflow runs" from outside
-# collaborators, so agent-authored PRs never auto-run CI (workflow/01 §Phase 6).
+# CI gates (workflow/02 — agents cannot merge violations; docs/workflow/39 for the live gates).
+#
+#   verify         every PR + push to main — lint + typecheck + build WITHOUT WordPress.
+#                  Fallback content keeps the build green, proving "WP down ≠ site down".
+#   live-contract  every PR + push to main — provision a REAL WordPress, introspect its
+#                  schema, and validate every committed *.graphql against it. Kills the
+#                  "mock-green ≠ live-green" class: a query asking live WP for a field the
+#                  provisioning never created fails here, naming the exact field — instead
+#                  of a human discovering it field-by-field at build time.
+#   live-build     nightly + manual — provision a real WordPress and run `pnpm build`
+#                  against it. The full-render backstop (adapters/zod/ISR) the fast
+#                  contract check doesn't exercise.
+#
+# The live jobs need the ACF Pro zip (a licensed binary) — fetched from the private
+# acf-vendor R2 Worker via the ACF_PRO_URL + ACF_PRO_TOKEN repo secrets. When those are
+# unset (e.g. a fork), the live jobs SKIP cleanly with a notice rather than failing.
+#
+# Repo setting required: "Require approval for workflow runs" from outside collaborators,
+# so agent-authored PRs never auto-run CI (workflow/01 §Phase 6).
 
 name: CI
 
@@ -11,24 +32,100 @@ on:
   pull_request:
   push:
     branches: [main]
+  schedule:
+    - cron: "0 3 * * *" # nightly 03:00 UTC — live-build full-render backstop
+  workflow_dispatch: {}
 
 jobs:
   verify:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-
       - uses: pnpm/action-setup@v6 # version from package.json "packageManager"
-
       - uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: pnpm
-
       - run: pnpm install --frozen-lockfile
-
       - run: pnpm lint
-
       - run: pnpm typecheck
-
       - run: pnpm build
+
+  live-contract:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Gate on ACF secret
+        id: gate
+        env:
+          ACF_PRO_URL: ${{ secrets.ACF_PRO_URL }}
+        run: |
+          if [ -z "$ACF_PRO_URL" ]; then
+            echo "::notice::ACF_PRO_URL not set — skipping live-contract. Set the ACF_PRO_URL/ACF_PRO_TOKEN secrets to enable the live-build gate."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.gate.outputs.skip != 'true'
+        uses: pnpm/action-setup@v6
+      - if: steps.gate.outputs.skip != 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: pnpm
+      - if: steps.gate.outputs.skip != 'true'
+        run: pnpm install --frozen-lockfile
+
+      - if: steps.gate.outputs.skip != 'true'
+        id: wp
+        uses: ./.github/actions/provision-wp
+        with:
+          acf-pro-url: ${{ secrets.ACF_PRO_URL }}
+          acf-pro-token: ${{ secrets.ACF_PRO_TOKEN }}
+
+      - name: Validate committed queries against live WordPress
+        if: steps.gate.outputs.skip != 'true'
+        run: |
+          pnpm dlx get-graphql-schema "${{ steps.wp.outputs.graphql-url }}" > /tmp/live.graphql
+          node scripts/check-live-contract.mjs /tmp/live.graphql
+
+  live-build:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Gate on ACF secret
+        id: gate
+        env:
+          ACF_PRO_URL: ${{ secrets.ACF_PRO_URL }}
+        run: |
+          if [ -z "$ACF_PRO_URL" ]; then
+            echo "::notice::ACF_PRO_URL not set — skipping live-build."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.gate.outputs.skip != 'true'
+        uses: pnpm/action-setup@v6
+      - if: steps.gate.outputs.skip != 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: pnpm
+      - if: steps.gate.outputs.skip != 'true'
+        run: pnpm install --frozen-lockfile
+
+      - if: steps.gate.outputs.skip != 'true'
+        id: wp
+        uses: ./.github/actions/provision-wp
+        with:
+          acf-pro-url: ${{ secrets.ACF_PRO_URL }}
+          acf-pro-token: ${{ secrets.ACF_PRO_TOKEN }}
+
+      - name: Build against live WordPress
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          WPGRAPHQL_URL: ${{ steps.wp.outputs.graphql-url }}
+        run: pnpm build
