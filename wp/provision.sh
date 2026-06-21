@@ -119,6 +119,15 @@ if [[ -n "${FRONTEND_URL:-}" ]]; then
   wpcli "option update home '$FRONTEND_URL'"
 fi
 
+# Instant content updates: pod-revalidate-webhook.php POSTs the frontend's /api/revalidate on
+# every content change. It needs a shared secret matching REVALIDATE_SECRET on Vercel. Set it
+# here when provided (must equal the value set on the frontend); otherwise the webhook is a
+# no-op until you run `wp option update pod_revalidate_secret '<secret>'`. See workflow/40 §12.
+if [[ -n "${REVALIDATE_SECRET:-}" ]]; then
+  echo "==> Setting pod_revalidate_secret for the content-change -> ISR webhook"
+  wpcli "option update pod_revalidate_secret '$REVALIDATE_SECRET'"
+fi
+
 echo "==> Generating the page-blocks ACF group from the frontend block contract"
 # The `pageFields` flexible-content group is GENERATED from src/lib/cms/schema.graphql
 # (workflow/29 — "per-client ACF generated at provision time"), so WP-ACF can never drift
