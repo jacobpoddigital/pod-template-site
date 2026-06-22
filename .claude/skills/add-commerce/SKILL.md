@@ -45,7 +45,26 @@ Read that first; this skill is the turn-on checklist.
 - **No mock** — to verify commerce UI, run live dev against a provisioned Woo, not a WP-less build.
 
 ## Removing the module
-Delete `src/lib/commerce`, `src/app/(shop)`, the commerce bits of `src/app/account` +
-`src/app/api`, the commerce `src/ui/*` + `src/layout/{cart-button,cart-drawer-body,account-button,
-search-autocomplete}.tsx`, `wp/provision-commerce.sh` + `wp/seed-commerce-demo.php`,
-`codegen.commerce.ts`, and set `siteConfig.commerce = false`. The base template stays green.
+The module is isolated EXCEPT two shared integration files, which must be **reverted** (not just
+left — they import commerce code, so deleting the folders without reverting them breaks the build).
+
+**1. Delete (folder-delete, nothing else depends on these):**
+- `src/lib/commerce/` · `src/app/(shop)/` · `codegen.commerce.ts`
+- `src/app/api/cart/` · `src/app/api/product/` · `src/app/api/account/`
+- the commerce account: `src/app/account/{_components,_lib,addresses,details,downloads,orders}/`
+- commerce primitives: `src/ui/{carousel,switch,quantity-stepper,cart-trust-bar,fit-reassurance,free-shipping-bar}.tsx`
+- commerce chrome: `src/layout/{cart-button,cart-drawer-body,account-button,search-autocomplete,search-action}.tsx`
+- `wp/provision-commerce.sh` + `wp/seed-commerce-demo.php` · this skill + `docs/commerce.md`
+
+**2. Revert these 2 shared files to their non-commerce form:**
+- `src/layout/header.tsx` — remove the `CartButton`/`AccountButton`/`SearchAutocomplete` + `ACCOUNT_ENABLED`
+  imports, the `StoreChrome`/`HeaderPhone` helpers' commerce bits, and the `showSearch` block.
+- `src/app/account/{layout.tsx,page.tsx}` — revert to the auth-module worked-example (drop the
+  `ACCOUNT_ENABLED` branch + the commerce dashboard/shell; keep `requireUser` + the identity view).
+
+**3.** Set `siteConfig.commerce = false` (or drop the flag). Optionally remove the now-unused deps
+(`embla-carousel-react`, `@radix-ui/react-switch`). The base template then builds green with zero
+commerce trace.
+
+> Not removing, just not using it? Leave everything in place with `siteConfig.commerce = false` — it's
+> inert (gated chrome renders nothing, routes are unlinked + dynamic). Only the unused deps remain.
