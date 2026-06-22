@@ -16,6 +16,10 @@
   --popover-foreground: var(--brand-ink);
   --primary: var(--brand-primary);
   --primary-foreground: var(--brand-primary-ink);
+  /* Semantic LINK colour — tracks --primary by default, but a distinct seam so a client can recolour
+     links without moving the whole primary. Re-declared in the tone blocks below so it follows the
+     tone's --primary (else text-link inherits the root value → wrong colour on inverted/accent bg). */
+  --link: var(--primary);
   --secondary: var(--brand-surface-muted);
   --secondary-foreground: var(--brand-ink);
   --muted: var(--brand-surface-muted);
@@ -61,6 +65,10 @@
   --color-ring: var(--ring);
   --color-success: var(--brand-success);
   --color-warning: var(--brand-warning);
+  --color-link: var(--link);
+  /* Raised surface (cards, popovers, dropdowns) — the agency alias the blocks + commerce module read
+     as `bg-surface-raised`. Mirrors --card; was missing from the bridge. */
+  --color-surface-raised: var(--card);
 
   /* the vibrant brand accent (decorative — bg-brand-accent / text-brand-accent) */
   --color-brand-accent: var(--brand-accent);
@@ -266,6 +274,7 @@
   --primary: var(--brand-accent);
   --primary-foreground: var(--brand-accent-ink);
   --ring: var(--brand-accent);
+  --link: var(--primary);
 }
 [data-tone="accent"] {
   --background: var(--brand-accent);
@@ -275,6 +284,7 @@
   --primary: var(--brand-primary);
   --primary-foreground: var(--brand-primary-ink);
   --ring: var(--brand-primary);
+  --link: var(--primary);
 }
 
 /* Keyboard focus ring — visible on every interactive element (KB 05). */
