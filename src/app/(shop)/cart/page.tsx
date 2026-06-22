@@ -47,7 +47,7 @@ export default async function CartPage() {
       {cart.isEmpty ? (
         <div className="mt-8">
           <p className="body text-muted-foreground">Your bag is empty.</p>
-          <ButtonLink href="/shop" className="mt-6">Browse running shoes</ButtonLink>
+          <ButtonLink href="/shop" className="mt-6">Continue shopping</ButtonLink>
         </div>
       ) : (
         <div className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-[1fr_20rem]">
