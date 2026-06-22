@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "codegen": "graphql-codegen --config codegen.ts",
+    "codegen:commerce": "graphql-codegen --config codegen.commerce.ts",
     "gen:acf": "node scripts/generate-acf-blocks.mjs",
     "check:contract": "node scripts/check-live-contract.mjs",
     "lhci": "lhci autorun",
