@@ -46,7 +46,9 @@ function Panel({
     <ul className="h-full w-full shrink-0 overflow-y-auto px-6 py-4" inert={!active}>
       {level.items.map((item, i) =>
         item.children?.length ? (
-          <li key={item.href}>
+          // Composite key: several mega-menu parent items can share href="#" → keying on href alone
+          // collides ("two children with the same key"). The map index disambiguates.
+          <li key={`${item.href}-${i}`}>
             <button
               type="button"
               onClick={() => onDrill([...basePath, i])}
@@ -57,7 +59,7 @@ function Panel({
             </button>
           </li>
         ) : (
-          <li key={item.href}>
+          <li key={`${item.href}-${i}`}>
             <Link
               href={item.href}
               onClick={(e) => onNavigate(item.href, e)}
