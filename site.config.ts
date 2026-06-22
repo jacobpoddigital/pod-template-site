@@ -12,6 +12,11 @@ export const siteConfig = {
   /** Canonical FRONTEND origin. All canonical/og/sitemap URLs use this, never the WP origin. */
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   locale: "en_GB",
+  /** Opt-in WooCommerce storefront chrome (header cart + search). false = brochure site —
+   *  commerce-free sites render no cart/search chrome. The /shop, /cart, /checkout routes
+   *  exist regardless but are inert without a Woo backend (commerceConfigured()). Set true
+   *  per ecom client. The checkout + account areas have their own env gates (config.ts). */
+  commerce: false,
   footer: {
     /** Shown in the © line; the rest of the footer is editor-managed in WP. */
     company: "Pod Digital",
