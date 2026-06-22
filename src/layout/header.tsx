@@ -10,7 +10,9 @@ import { SocialLinks } from "./social-icons";
 import { StickyHeader } from "./sticky-header";
 import { ThemeToggle } from "./theme-toggle";
 import { CartButton } from "./cart-button";
+import { AccountButton } from "./account-button";
 import { SearchAutocomplete } from "./search-autocomplete";
+import { ACCOUNT_ENABLED } from "@/lib/commerce/config";
 import { siteConfig } from "../../site.config";
 import type { SiteChrome } from "@/lib/cms";
 
@@ -38,12 +40,13 @@ function HeaderPhone({ numbers }: { numbers: SiteChrome["phoneNumbers"] }) {
   return null;
 }
 
-// Storefront chrome — basket icon (commerce sites only, opt-in via siteConfig.commerce).
-// The account icon is added by the commerce account module (gated on ACCOUNT_ENABLED).
+// Storefront chrome — account + basket icons (commerce sites only, opt-in via siteConfig.commerce).
+// The account icon additionally requires the commerce account module (ACCOUNT_ENABLED).
 function StoreChrome() {
   if (!siteConfig.commerce) return null;
   return (
     <div className="flex items-center">
+      {ACCOUNT_ENABLED ? <AccountButton /> : null}
       <CartButton />
     </div>
   );
