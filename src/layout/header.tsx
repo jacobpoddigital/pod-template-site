@@ -9,6 +9,8 @@ import { PhoneMenu } from "./phone-menu";
 import { SocialLinks } from "./social-icons";
 import { StickyHeader } from "./sticky-header";
 import { ThemeToggle } from "./theme-toggle";
+import { CartButton } from "./cart-button";
+import { SearchAutocomplete } from "./search-autocomplete";
 import { siteConfig } from "../../site.config";
 import type { SiteChrome } from "@/lib/cms";
 
@@ -17,10 +19,40 @@ import type { SiteChrome } from "@/lib/cms";
 // Client Component leaves (slot-bridge pattern, workflow/02). The header's content
 // never uses "use client".
 
+// Phone affordance — 1 number → tel: link, 2+ → dropdown, 0 → nothing. Extracted so the
+// Header shell stays flat.
+function HeaderPhone({ numbers }: { numbers: SiteChrome["phoneNumbers"] }) {
+  const single = numbers.length === 1 ? numbers[0] : null;
+  if (single) {
+    return (
+      <a
+        href={`tel:${single.number.replace(/\s+/g, "")}`}
+        className="inline-flex h-11 items-center gap-2 rounded-card px-2 body-sm font-medium text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      >
+        <Phone className="h-4 w-4" aria-hidden="true" />
+        <span className="hidden sm:inline">{single.number}</span>
+      </a>
+    );
+  }
+  if (numbers.length > 1) return <PhoneMenu numbers={numbers} />;
+  return null;
+}
+
+// Storefront chrome — basket icon (commerce sites only, opt-in via siteConfig.commerce).
+// The account icon is added by the commerce account module (gated on ACCOUNT_ENABLED).
+function StoreChrome() {
+  if (!siteConfig.commerce) return null;
+  return (
+    <div className="flex items-center">
+      <CartButton />
+    </div>
+  );
+}
+
 export function Header({ chrome }: { chrome: SiteChrome }) {
   const { name } = siteConfig;
   const { logo, nav, headerCta, phoneNumbers, social, socialInHeader } = chrome;
-  const singlePhone = phoneNumbers.length === 1 ? phoneNumbers[0] : null;
+  const showSearch = siteConfig.commerce; // opt-in: storefront sites only
 
   return (
     <StickyHeader>
@@ -39,17 +71,13 @@ export function Header({ chrome }: { chrome: SiteChrome }) {
           </Link>
 
           <div className="flex items-center gap-3 lg:gap-6">
-            {/* Phone — always visible (important on mobile). 1 → tel: link, 2+ → dropdown. */}
-            {singlePhone ? (
-              <a
-                href={`tel:${singlePhone.number.replace(/\s+/g, "")}`}
-                className="inline-flex h-11 items-center gap-2 rounded-card px-2 body-sm font-medium text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <Phone className="h-4 w-4" aria-hidden="true" />
-                <span className="hidden sm:inline">{singlePhone.number}</span>
-              </a>
-            ) : phoneNumbers.length > 1 ? (
-              <PhoneMenu numbers={phoneNumbers} />
+            {/* Phone — always visible (important on mobile). */}
+            <HeaderPhone numbers={phoneNumbers} />
+
+            {showSearch ? (
+              <div className="hidden w-52 md:block lg:w-72">
+                <SearchAutocomplete />
+              </div>
             ) : null}
 
             <DesktopNav nav={nav} />
@@ -67,6 +95,8 @@ export function Header({ chrome }: { chrome: SiteChrome }) {
                 {headerCta.label}
               </ButtonLink>
             ) : null}
+
+            <StoreChrome />
 
             <MobileNavDrawer links={nav} cta={headerCta} />
           </div>
