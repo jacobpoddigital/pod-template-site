@@ -1,0 +1,29 @@
+query ShopFacets {
+  productCategories(first: 100, where: { hideEmpty: true, orderby: NAME }) {
+    nodes { name slug count }
+  }
+  productBrands(first: 100, where: { hideEmpty: true }) {
+    nodes { name slug count }
+  }
+  allPaGender(first: 100) {
+    nodes { name slug count }
+  }
+  allPaDrop(first: 100) {
+    nodes { name slug count }
+  }
+  allPaCushioning(first: 100) {
+    nodes { name slug count }
+  }
+  allPaPronation(first: 100) {
+    nodes { name slug count }
+  }
+  allPaWeight(first: 100) {
+    nodes { name slug count }
+  }
+  allPaWidth(first: 100) {
+    nodes { name slug count }
+  }
+  allPaColour(first: 100) {
+    nodes { name slug count }
+  }
+}

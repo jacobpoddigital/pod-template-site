@@ -1,0 +1,8 @@
+query ProductTag($slug: ID!) {
+  productTag(id: $slug, idType: SLUG) {
+    name
+    slug
+    description
+    count
+  }
+}

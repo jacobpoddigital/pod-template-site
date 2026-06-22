@@ -1,0 +1,30 @@
+query ProductCategories(
+  $first: Int = 12
+  $slug: [String]
+  $parent: Int
+  $hideEmpty: Boolean = true
+  $orderby: TermObjectsConnectionOrderbyEnum = COUNT
+  $order: OrderEnum = DESC
+) {
+  productCategories(
+    first: $first
+    where: {
+      slug: $slug
+      parent: $parent
+      hideEmpty: $hideEmpty
+      orderby: $orderby
+      order: $order
+    }
+  ) {
+    nodes {
+      databaseId
+      name
+      slug
+      count
+      image {
+        sourceUrl
+        altText
+      }
+    }
+  }
+}

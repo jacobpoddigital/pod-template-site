@@ -1,0 +1,247 @@
+query ProductBySlug($slug: ID!) {
+  product(id: $slug, idType: SLUG) {
+    databaseId
+    name
+    slug
+    type
+    sku
+    featured
+    reviewsAllowed
+    dateOnSaleTo
+    productTags {
+      nodes {
+        name
+        slug
+      }
+    }
+    upsell(first: 16) {
+      nodes {
+        slug
+      }
+    }
+    image {
+      sourceUrl
+      altText
+    }
+    ... on VariableProduct {
+      description
+      shortDescription
+      onSale
+      virtual
+      price(format: FORMATTED)
+      regularPrice(format: FORMATTED)
+      salePrice(format: FORMATTED)
+      averageRating
+      reviewCount
+      stockStatus
+      stockQuantity
+      lowStockAmount
+      backorders
+      soldIndividually
+      weight
+      defaultAttributes {
+        nodes {
+          name
+          value
+        }
+      }
+      productCategories {
+        nodes {
+          name
+          slug
+        }
+      }
+      productBrands {
+        nodes {
+          name
+          slug
+        }
+      }
+      allPaDrop { nodes { name } }
+      allPaCushioning { nodes { name } }
+      allPaPronation { nodes { name } }
+      allPaWidth { nodes { name } }
+      allPaColour { nodes { name } }
+      allPaGender { nodes { name } }
+      reviews(first: 12) {
+        averageRating
+        edges {
+          rating
+          node {
+            databaseId
+            content
+            date
+            author {
+              node {
+                name
+              }
+            }
+          }
+        }
+      }
+      galleryImages {
+        nodes {
+          sourceUrl
+          altText
+        }
+      }
+      attributes {
+        nodes {
+          name
+          options
+          variation
+        }
+      }
+      variations(first: 100) {
+        nodes {
+          databaseId
+          name
+          description
+          price(format: FORMATTED)
+          regularPrice(format: FORMATTED)
+          salePrice(format: FORMATTED)
+          onSale
+          stockStatus
+          stockQuantity
+          lowStockAmount
+          backorders
+          image {
+            sourceUrl
+            altText
+          }
+          attributes {
+            nodes {
+              name
+              value
+            }
+          }
+        }
+      }
+    }
+    ... on SimpleProduct {
+      description
+      shortDescription
+      onSale
+      virtual
+      downloadable
+      price(format: FORMATTED)
+      regularPrice(format: FORMATTED)
+      salePrice(format: FORMATTED)
+      averageRating
+      reviewCount
+      stockStatus
+      stockQuantity
+      lowStockAmount
+      backorders
+      soldIndividually
+      weight
+      productCategories {
+        nodes {
+          name
+          slug
+        }
+      }
+      productBrands {
+        nodes {
+          name
+          slug
+        }
+      }
+      allPaDrop { nodes { name } }
+      allPaCushioning { nodes { name } }
+      allPaPronation { nodes { name } }
+      allPaWidth { nodes { name } }
+      allPaColour { nodes { name } }
+      allPaGender { nodes { name } }
+      reviews(first: 12) {
+        averageRating
+        edges {
+          rating
+          node {
+            databaseId
+            content
+            date
+            author {
+              node {
+                name
+              }
+            }
+          }
+        }
+      }
+      galleryImages {
+        nodes {
+          sourceUrl
+          altText
+        }
+      }
+    }
+    ... on ExternalProduct {
+      description
+      shortDescription
+      onSale
+      price(format: FORMATTED)
+      regularPrice(format: FORMATTED)
+      salePrice(format: FORMATTED)
+      averageRating
+      reviewCount
+      externalUrl
+      buttonText
+      productCategories {
+        nodes {
+          name
+          slug
+        }
+      }
+      productBrands {
+        nodes {
+          name
+          slug
+        }
+      }
+    }
+    ... on GroupProduct {
+      description
+      shortDescription
+      onSale
+      price(format: FORMATTED)
+      addToCartText
+      productCategories {
+        nodes {
+          name
+          slug
+        }
+      }
+      products(first: 50) {
+        nodes {
+          databaseId
+          name
+          slug
+          type
+          image {
+            sourceUrl
+            altText
+          }
+          ... on SimpleProduct {
+            onSale
+            price(format: FORMATTED)
+            regularPrice(format: FORMATTED)
+            salePrice(format: FORMATTED)
+            stockStatus
+            stockQuantity
+            backorders
+          }
+          ... on VariableProduct {
+            onSale
+            price(format: FORMATTED)
+            regularPrice(format: FORMATTED)
+            salePrice(format: FORMATTED)
+            stockStatus
+            stockQuantity
+            backorders
+          }
+        }
+      }
+    }
+  }
+}

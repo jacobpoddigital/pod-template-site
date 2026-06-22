@@ -1,0 +1,25 @@
+# Autocomplete / predictive search suggestions — top product matches + matching categories.
+# Deliberately slim (the dropdown only needs thumb/name/price + category labels). This is the
+# SEARCH SEAM: WooGraphQL native search today; Orama can replace getSearchSuggestions' internals
+# later without changing this consumer's shape. (docs/research/2026-06-19-ecommerce-search-bar-ux.md)
+query SearchSuggest($q: String!, $first: Int = 6) {
+  products(first: $first, where: { search: $q, status: "publish" }) {
+    nodes {
+      databaseId
+      name
+      slug
+      image { sourceUrl altText }
+      ... on VariableProduct {
+        price(format: FORMATTED)
+        stockStatus
+      }
+      ... on SimpleProduct {
+        price(format: FORMATTED)
+        stockStatus
+      }
+    }
+  }
+  productCategories(first: 5, where: { search: $q, hideEmpty: true }) {
+    nodes { name slug count }
+  }
+}

@@ -1,0 +1,33 @@
+# Merchant-curated CROSS-SELLS for the cart (Woo "Linked Products → Cross-sells"). Given the
+# product ids currently in the cart, return each cart product's cross-sell slugs; the lib unions +
+# dedupes them, drops anything already in the cart, then fetches full ProductCards by slug (reusing
+# `getFilteredProducts({ slugIn })`, the same pattern as the PDP up-sell rail). crossSell lives on
+# the concrete Simple/Variable product types (not the Product interface); its nodes are a
+# ProductUnion → spread `... on Product { slug }`.
+query CartCrossSells($slugIn: [String]) {
+  products(first: 100, where: { slugIn: $slugIn }) {
+    nodes {
+      ... on Product {
+        slug
+      }
+      ... on SimpleProduct {
+        crossSell(first: 16) {
+          nodes {
+            ... on Product {
+              slug
+            }
+          }
+        }
+      }
+      ... on VariableProduct {
+        crossSell(first: 16) {
+          nodes {
+            ... on Product {
+              slug
+            }
+          }
+        }
+      }
+    }
+  }
+}

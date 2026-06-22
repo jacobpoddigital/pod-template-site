@@ -1,0 +1,25 @@
+# Every product's facet memberships (slugs) — fetched once (unfiltered) so the server can
+# compute DISJUNCTIVE facet counts in JS (count per value = results matching all OTHER active
+# facets, ignoring the value's own facet — the correct count for multi-select facets, and it
+# prevents zero-result combinations). Small payload (slugs only).
+query FacetUniverse {
+  products(first: 200, where: { status: "publish", visibility: CATALOG }) {
+    nodes {
+      databaseId
+      name
+      ... on VariableProduct {
+        stockStatus
+        price(format: RAW)
+        productCategories { nodes { slug } }
+        terms(where: { taxonomies: [PRODUCTBRAND] }) { nodes { slug } }
+        allPaGender { nodes { slug } }
+        allPaDrop { nodes { slug } }
+        allPaCushioning { nodes { slug } }
+        allPaPronation { nodes { slug } }
+        allPaWeight { nodes { slug } }
+        allPaWidth { nodes { slug } }
+        allPaColour { nodes { slug } }
+      }
+    }
+  }
+}
