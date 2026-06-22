@@ -121,7 +121,7 @@ function DrawerEmpty({ onBrowse }: { onBrowse: () => void }) {
     <div className="flex flex-1 flex-col items-center justify-center gap-6 p-6 text-center">
       <p className="body text-muted-foreground">Your bag is empty.</p>
       <Link href="/shop" onClick={onBrowse} className={cn(buttonVariants({ size: "md" }))}>
-        Browse running shoes
+        Continue shopping
       </Link>
     </div>
   );

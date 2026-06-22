@@ -14,7 +14,7 @@ export function ShopToolbar({ total }: { total: number }) {
   return (
     <div className="mb-6 flex items-center justify-between gap-4 border-b border-border pb-4">
       <p className="body-sm text-muted-foreground" aria-live="polite">
-        {total} {total === 1 ? "shoe" : "shoes"}
+        {total} {total === 1 ? "product" : "products"}
       </p>
       {/* Sort lives in the staged "Filter & sort" sheet on mobile → toolbar sort is desktop-only. */}
       <div className="hidden items-center gap-2 lg:flex">

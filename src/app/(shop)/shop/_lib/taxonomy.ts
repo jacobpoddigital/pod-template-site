@@ -1,5 +1,11 @@
 import { Footprints, ShieldCheck, Timer, Mountain, type LucideIcon } from "lucide-react";
 
+// TEMPLATE — DEMO TAXONOMY (replace per client). This is a worked example of a two-axis browse
+// model (gender × type) carried over from the Stride Hub footwear POC; the labels/blurbs/icons
+// below are placeholder content. Rewrite GENDERS + TYPES (and their WP product_cat / pa_gender
+// slugs) to match the client's real catalogue, or delete the [gender]/[type] routes if a single
+// flat /shop is enough. The mechanism is generic; only the data here is shoe-flavoured.
+//
 // Type-first taxonomy (pivot 2026-06-20 from terrain-first). Two browse axes:
 //   - GENDER  → pa_gender attribute (slugs mens / womens — seeded in wp/seed-facets.php)
 //   - TYPE    → product_cat (slugs daily-trainers / stability / racing / trail)

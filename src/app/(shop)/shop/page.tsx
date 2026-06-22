@@ -14,8 +14,8 @@ import { parsePage, paginate } from "./_lib/pagination";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Shop running shoes",
-  description: "Daily trainers, stability, racing and trail running shoes — filter by type, brand, drop, support and cushioning.",
+  title: "Shop",
+  description: "Browse the full range — filter by category, price and the specs that matter.",
   alternates: { canonical: "/shop" },
 };
 
@@ -30,10 +30,10 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
       <BreadcrumbJsonLd items={[{ name: "Home", path: "/" }, { name: "Shop", path: "/shop" }]} />
       <header className="mb-8 max-w-[65ch]">
         <Breadcrumb items={[{ name: "Home", href: "/" }, { name: "Shop" }]} />
-        <h1 className="display-lg text-foreground">Running shoes</h1>
+        <h1 className="display-lg text-foreground">Shop</h1>
         <p className="mt-4 body text-muted-foreground">
-          Every shoe compared on equal footing — filter by how you run, not by brand. Type,
-          heel drop, support, cushioning, weight and width, then dial in fit on the product page.
+          Browse the full range. Filter by category, price and the specs that matter to find
+          the right product.
         </p>
       </header>
 

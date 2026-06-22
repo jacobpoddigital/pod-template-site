@@ -56,7 +56,7 @@ export function ProductResults({
           </>
         ) : (
           <p className="body text-muted-foreground">
-            No shoes match those filters.{" "}
+            No products match those filters.{" "}
             <Link
               href={clearHref}
               className="text-link underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"

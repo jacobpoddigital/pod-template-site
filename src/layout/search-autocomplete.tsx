@@ -12,8 +12,9 @@ import { SEARCH_MIN_CHARS, type SearchSuggestions } from "@/lib/commerce/search-
 // recent + popular searches in the empty state. Calls the server action (WooGraphQL today; Orama
 // later — same shapes). Enter / "see all" → /search?q=.
 
-const POPULAR = ["carbon", "trail", "wide fit", "max cushion"];
-const RECENT_KEY = "stride:recent-searches";
+// TEMPLATE: seed a few popular search terms per client (shown when the box is empty), or leave [].
+const POPULAR: string[] = [];
+const RECENT_KEY = "shop:recent-searches";
 const EMPTY: SearchSuggestions = { products: [], categories: [] };
 
 type Item = { key: string; kind: "category" | "product" | "term" | "all"; label: string; href: string; sub?: string; img?: string | null };
@@ -81,7 +82,7 @@ export function SearchAutocomplete({ className }: { className?: string }) {
   const hasQuery = query.trim().length >= SEARCH_MIN_CHARS;
   const items: Item[] = hasQuery
     ? [
-        ...data.categories.map((c) => ({ key: `c-${c.slug}`, kind: "category" as const, label: c.name, href: `/shop/${c.slug}`, sub: `${c.count} shoes` })),
+        ...data.categories.map((c) => ({ key: `c-${c.slug}`, kind: "category" as const, label: c.name, href: `/shop/${c.slug}`, sub: `${c.count} products` })),
         ...data.products.map((p) => ({ key: `p-${p.id}`, kind: "product" as const, label: p.name, href: `/product/${p.slug}`, sub: p.price ?? undefined, img: p.image?.url })),
         { key: "all", kind: "all" as const, label: `See all results for “${query.trim()}”`, href: `/search?q=${encodeURIComponent(query.trim())}` },
       ]
@@ -153,11 +154,11 @@ export function SearchAutocomplete({ className }: { className?: string }) {
           onFocus={openPanel}
           onKeyDown={onKeyDown}
           role="searchbox"
-          aria-label="Search shoes"
+          aria-label="Search products"
           aria-autocomplete="list"
           aria-controls={listId}
           aria-activedescendant={active >= 0 ? `${listId}-${active}` : undefined}
-          placeholder="Search shoes — e.g. trail, carbon, wide fit"
+          placeholder="Search products…"
           className="h-11 w-full rounded-md border border-border bg-surface pl-9 pr-9 body-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
           // a native search input clears with Esc; we override Esc to close the panel
           autoComplete="off"

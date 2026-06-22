@@ -135,7 +135,7 @@ export function ShopControls({
                   setOpen(false);
                 }}
               >
-                See {count} {count === 1 ? "shoe" : "shoes"}
+                See {count} {count === 1 ? "product" : "products"}
               </Button>
             </div>
           </SheetContent>
