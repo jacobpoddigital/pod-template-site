@@ -1,0 +1,202 @@
+# Customer (My Account) operations — authed WooGraphQL reads/mutations for the gated /account
+# area. Sent with an Authorization: Bearer <JWT> header (the session access token) and NEVER
+# cached (personalised). Totals are requested FORMATTED so the UI shows currency-ready strings.
+
+fragment OrderAddress on CustomerAddress {
+  firstName
+  lastName
+  company
+  address1
+  address2
+  city
+  state
+  postcode
+  country
+  email
+  phone
+}
+
+fragment OrderCard on Order {
+  databaseId
+  orderNumber
+  status
+  date
+  total(format: FORMATTED)
+  needsPayment
+}
+
+fragment LineItemDetail on LineItem {
+  quantity
+  total(format: FORMATTED)
+  subtotal(format: FORMATTED)
+  product {
+    node {
+      databaseId
+      name
+      slug
+      purchaseNote
+      image {
+        sourceUrl
+        altText
+      }
+    }
+  }
+  variation {
+    node {
+      databaseId
+      name
+    }
+  }
+}
+
+# Dashboard — identity + a one-line most-recent order summary.
+query AccountDashboard {
+  customer {
+    databaseId
+    firstName
+    lastName
+    displayName
+    email
+    orderCount
+    orders(first: 1) {
+      nodes {
+        ...OrderCard
+      }
+    }
+  }
+}
+
+# Order history list (cursor-paginated).
+query CustomerOrders($first: Int = 10, $after: String) {
+  customer {
+    orders(first: $first, after: $after) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      nodes {
+        ...OrderCard
+      }
+    }
+  }
+}
+
+# Single order detail (owner-scoped by the Bearer token).
+query CustomerOrder($id: ID!) {
+  order(id: $id, idType: DATABASE_ID) {
+    databaseId
+    orderNumber
+    status
+    date
+    paymentMethodTitle
+    customerNote
+    currency
+    subtotal(format: FORMATTED)
+    shippingTotal(format: FORMATTED)
+    shippingTax(format: FORMATTED)
+    totalTax(format: FORMATTED)
+    discountTotal(format: FORMATTED)
+    total(format: FORMATTED)
+    needsPayment
+    billing {
+      ...OrderAddress
+    }
+    shipping {
+      ...OrderAddress
+    }
+    lineItems {
+      nodes {
+        ...LineItemDetail
+      }
+    }
+    downloadableItems {
+      nodes {
+        name
+        downloadId
+        downloadUrl
+        downloadsRemaining
+        accessExpires
+      }
+    }
+  }
+}
+
+# Saved addresses (billing + shipping).
+query CustomerAddresses {
+  customer {
+    firstName
+    lastName
+    email
+    billing {
+      ...OrderAddress
+    }
+    shipping {
+      ...OrderAddress
+    }
+  }
+}
+
+# Account details (name + email).
+query CustomerDetails {
+  customer {
+    databaseId
+    firstName
+    lastName
+    displayName
+    email
+  }
+}
+
+# Downloads (virtual/downloadable products the customer has access to).
+query CustomerDownloads {
+  customer {
+    downloadableItems(first: 100) {
+      nodes {
+        name
+        downloadId
+        downloadUrl
+        downloadsRemaining
+        accessExpires
+        product {
+          ... on SimpleProduct {
+            databaseId
+            name
+            slug
+          }
+        }
+      }
+    }
+  }
+}
+
+# Mutations — addresses, account details, password. The customer id is implicit from the JWT.
+mutation UpdateCustomerAddresses($billing: CustomerAddressInput, $shipping: CustomerAddressInput) {
+  updateCustomer(input: { billing: $billing, shipping: $shipping }) {
+    customer {
+      billing {
+        ...OrderAddress
+      }
+      shipping {
+        ...OrderAddress
+      }
+    }
+  }
+}
+
+mutation UpdateCustomerDetails($firstName: String, $lastName: String, $email: String) {
+  updateCustomer(input: { firstName: $firstName, lastName: $lastName, email: $email }) {
+    customer {
+      firstName
+      lastName
+      email
+    }
+  }
+}
+
+mutation UpdateCustomerPassword($password: String!) {
+  updateCustomer(input: { password: $password }) {
+    customer {
+      databaseId
+    }
+  }
+}

@@ -1,0 +1,116 @@
+query ProductsFiltered(
+  $first: Int = 48
+  $search: String
+  $categoryIn: [String]
+  $productBrandIn: [String]
+  $attributes: ProductAttributeQueryInput
+  $minPrice: Float
+  $maxPrice: Float
+  $stockStatus: [StockStatusEnum]
+  $visibility: CatalogVisibilityEnum
+  $tagIn: [String]
+  $slugIn: [String]
+  $featured: Boolean
+  $orderby: [ProductsOrderbyInput]
+) {
+  products(
+    first: $first
+    where: {
+      status: "publish"
+      search: $search
+      categoryIn: $categoryIn
+      productBrandIn: $productBrandIn
+      attributes: $attributes
+      minPrice: $minPrice
+      maxPrice: $maxPrice
+      stockStatus: $stockStatus
+      visibility: $visibility
+      tagIn: $tagIn
+      slugIn: $slugIn
+      featured: $featured
+      orderby: $orderby
+    }
+  ) {
+    nodes {
+      databaseId
+      name
+      slug
+      type
+      featured
+      reviewsAllowed
+      image {
+        sourceUrl
+        altText
+      }
+      ... on VariableProduct {
+        onSale
+        price(format: FORMATTED)
+        regularPrice(format: FORMATTED)
+        salePrice(format: FORMATTED)
+        stockStatus
+        stockQuantity
+        backorders
+        weight
+        averageRating
+        reviewCount
+        productCategories {
+          nodes {
+            name
+            slug
+          }
+        }
+        allPaDrop { nodes { name slug } }
+        allPaCushioning { nodes { name slug } }
+        allPaPronation { nodes { name slug } }
+      }
+      ... on SimpleProduct {
+        onSale
+        downloadable
+        price(format: FORMATTED)
+        regularPrice(format: FORMATTED)
+        salePrice(format: FORMATTED)
+        stockStatus
+        stockQuantity
+        backorders
+        weight
+        averageRating
+        reviewCount
+        productCategories {
+          nodes {
+            name
+            slug
+          }
+        }
+        allPaDrop { nodes { name slug } }
+        allPaCushioning { nodes { name slug } }
+        allPaPronation { nodes { name slug } }
+      }
+      ... on ExternalProduct {
+        onSale
+        price(format: FORMATTED)
+        regularPrice(format: FORMATTED)
+        salePrice(format: FORMATTED)
+        averageRating
+        reviewCount
+        productCategories {
+          nodes {
+            name
+            slug
+          }
+        }
+      }
+      ... on GroupProduct {
+        onSale
+        price(format: FORMATTED)
+        averageRating
+        reviewCount
+        productCategories {
+          nodes {
+            name
+            slug
+          }
+        }
+      }
+    }
+  }
+}
