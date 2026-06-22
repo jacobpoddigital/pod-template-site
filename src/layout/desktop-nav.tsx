@@ -22,6 +22,27 @@ function current(href: string, pathname: string): "page" | undefined {
   return href === pathname ? "page" : undefined;
 }
 
+// Keep an open dropdown inside the viewport: when it mounts, shift it left if its right edge would
+// overflow (≥20px gutter), without pushing its left edge off-screen. A wide mega-menu under a
+// right-side trigger otherwise spills past the body and creates a horizontal scrollbar. Generic —
+// works for flyouts + mega menus regardless of trigger position. (Template fix → back-port.)
+const EDGE_GUTTER = 20;
+function useEdgeShift() {
+  return React.useCallback((el: HTMLDivElement | null) => {
+    if (!el) return;
+    // measure after layout so left-0/top-full have resolved
+    requestAnimationFrame(() => {
+      el.style.marginLeft = "0px";
+      const r = el.getBoundingClientRect();
+      let shift = 0;
+      const overflowRight = r.right - (window.innerWidth - EDGE_GUTTER);
+      if (overflowRight > 0) shift = -overflowRight;
+      if (r.left + shift < EDGE_GUTTER) shift = EDGE_GUTTER - r.left; // never off the left edge
+      if (shift) el.style.marginLeft = `${Math.round(shift)}px`;
+    });
+  }, []);
+}
+
 const linkClass =
   "block rounded body-sm font-medium text-ink-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
@@ -54,13 +75,14 @@ function TopLink({ item, pathname }: { item: NavItem; pathname: string }) {
 
 function TopFlyout({ item, pathname }: { item: NavItem; pathname: string }) {
   const children = item.children ?? [];
+  const shiftRef = useEdgeShift();
   return (
-    <NavigationMenu.Item>
+    <NavigationMenu.Item className="relative">
       <NavigationMenu.Trigger className={triggerClass}>
         {item.label}
         <Chevron />
       </NavigationMenu.Trigger>
-      <NavigationMenu.Content className="absolute left-0 top-full mt-2 min-w-56 rounded-card border border-border bg-surface p-2 shadow-card">
+      <NavigationMenu.Content ref={shiftRef} className="absolute left-0 top-full mt-2 min-w-56 rounded-card border border-border bg-surface p-2 shadow-card">
         <ul className="flex flex-col">
           {children.map((c, i) => (
             <li key={`${c.href}-${i}`}>
@@ -138,13 +160,14 @@ const MEGA_COLS: Record<number, string> = { 1: "grid-cols-1", 2: "grid-cols-2", 
 function TopMega({ item, pathname }: { item: NavItem; pathname: string }) {
   const columns = item.children ?? [];
   const cols = MEGA_COLS[Math.min(columns.length, 3)] ?? MEGA_COLS[3];
+  const shiftRef = useEdgeShift();
   return (
-    <NavigationMenu.Item>
+    <NavigationMenu.Item className="relative">
       <NavigationMenu.Trigger className={triggerClass}>
         {item.label}
         <Chevron />
       </NavigationMenu.Trigger>
-      <NavigationMenu.Content className="absolute left-0 top-full mt-2 w-[min(46rem,92vw)] rounded-card border border-border bg-surface p-4 shadow-card">
+      <NavigationMenu.Content ref={shiftRef} className="absolute left-0 top-full mt-2 w-[min(46rem,92vw)] rounded-card border border-border bg-surface p-4 shadow-card">
         <div className={cn("grid gap-x-8 gap-y-5", cols)}>
           {columns.map((g, i) => (
             <MegaColumn key={`${g.href}-${i}`} group={g} pathname={pathname} />
