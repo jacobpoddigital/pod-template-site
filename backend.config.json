@@ -5,11 +5,13 @@
     "local": {
       "label": "Local Docker WP",
       "wpgraphqlUrl": "http://localhost:8081/graphql",
-      "wpPort": "8081"
+      "wpPort": "8081",
+      "cf7FormId": ""
     },
     "atlas": {
       "label": "WP Engine Atlas (shared)",
-      "wpgraphqlUrl": ""
+      "wpgraphqlUrl": "",
+      "cf7FormId": ""
     },
     "mock": {
       "label": "Mock CMS (no WordPress)",

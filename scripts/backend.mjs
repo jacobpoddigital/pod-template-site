@@ -63,6 +63,7 @@ if (profile.mock) {
   env.WPGRAPHQL_URL = profile.wpgraphqlUrl;
   env.CMS_MODE = "live"; // override any CMS_MODE=mock from .env.local
   if (profile.wpPort) env.WP_PORT = profile.wpPort; // keep Hub port-registration accurate
+  if (profile.cf7FormId) env.CF7_FORM_ID = profile.cf7FormId; // contact-form delivery, docs/contact-form.md
 }
 
 const target = profile.mock ? "mock CMS (no WordPress)" : env.WPGRAPHQL_URL;
