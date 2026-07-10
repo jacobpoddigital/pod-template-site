@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { deliverToCf7 } from "@/lib/contact-delivery";
 
 // Server-side validation (docs/standards.md §5: Zod on the server is security, not just UX).
 const enquirySchema = z.object({
@@ -18,11 +19,12 @@ export type ContactState = { ok: boolean; errors?: Record<string, string>; formE
 const DELIVERY_FAILED =
   "Sorry — we couldn't send your message just now. Please try again, or email us directly.";
 
-// Per client, replace this stub with real delivery (CRM HubSpot/Zoho, email, or WP). A thrown
-// error here is caught in submitContact and shown as a retryable form-level error — NEVER let it
-// bubble to the error boundary (that would discard everything the visitor typed).
+// Default delivery: Contact Form 7's REST feedback endpoint (docs/contact-form.md — the
+// agency standard, reusing the plugin every classic-WP site already runs, so no new
+// external service per client). Swap for a CRM call (HubSpot/Zoho) if a client needs one.
 async function deliverEnquiry(data: z.infer<typeof enquirySchema>): Promise<void> {
-  void data; // TODO per client: await crm.createLead(data) / await sendEmail(data) / etc.
+  const delivered = await deliverToCf7(data);
+  if (!delivered) throw new Error("CF7 delivery failed or CF7_FORM_ID is not configured");
 }
 
 // Account-free spam guards (research/2026-06-13-build-gap-analysis §5.1): a honeypot field
