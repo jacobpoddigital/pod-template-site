@@ -48,8 +48,17 @@ add_action( 'acf/init', function () {
  * Uses update_field() with the field KEY (not name) to avoid ambiguity when
  * multiple field groups exist on the same post type.
  *
- * IMPORTANT: Replace 'field_stride_flexible_content' with this site's
- * actual field key from wp/acf-fields/<siteslug>-page-blocks.json.
+ * The field key below ('field_pod_blocks') is NOT a per-site placeholder —
+ * scripts/generate-acf-blocks.mjs hardcodes this exact key when it (re)writes
+ * wp/acf-export.json on every provision, so it's the same on every client site.
+ * A previous version of this file said "replace with this site's actual key",
+ * which caused a real incident (2026-07-16): 5 fresh client sites were cloned
+ * with a stale key ('field_stride_flexible_content') left over from Stride Hub.
+ * Every set_page_sections write "succeeded" (the endpoint's own GET-after-PUT
+ * echoed the in-request value) while silently updating a phantom field that
+ * WPGraphQL/the frontend never read — content looked seeded but never was.
+ * If you ever rename the generated field key in generate-acf-blocks.mjs,
+ * update it here too (there is no other coupling between the two files).
  *
  * Do NOT use the standard WP REST write path (POST /wp/v2/pages/:id) — it
  * silently drops repeater sub-fields inside flexible content layouts.
@@ -67,8 +76,9 @@ add_action( 'rest_api_init', function () {
 			}
 			$id = $pages[0]->ID;
 
-			// Replace with the actual field key from this site's acf-fields JSON.
-			$field_key = 'field_stride_flexible_content';
+			// Must match the key generate-acf-blocks.mjs writes into acf-export.json — see
+			// the class docblock above for why this is a fixed constant, not a per-site value.
+			$field_key = 'field_pod_blocks';
 
 			if ( $req->get_method() === 'PUT' ) {
 				$body   = $req->get_json_params();

@@ -16,9 +16,14 @@ const pkgPath = join(__dirname, "..", "package.json");
 const HUB_URL = process.env.NEXT_PUBLIC_HUB_URL;
 const SLUG = JSON.parse(readFileSync(pkgPath, "utf8")).name.replace("pod-site-", "");
 
-// Parse ports from env or use defaults
+// Parse ports from env or use defaults. Also accept `-p`/`--port` (pnpm dev -p 3002),
+// since it's the natural way to override a port and its absence caused a real incident
+// (2026-07-16): 4 of 5 local client sites silently bound :3000 and crashed with
+// EADDRINUSE because only $PORT was honoured, not the CLI flag passed to `pnpm dev`.
+const argPortIdx = process.argv.findIndex((a) => a === "-p" || a === "--port");
+const argPort = argPortIdx !== -1 ? process.argv[argPortIdx + 1] : undefined;
 const WP_PORT = process.env.WP_PORT ?? "8081";
-const NEXT_PORT = process.env.PORT ?? "3000";
+const NEXT_PORT = argPort ?? process.env.PORT ?? "3000";
 
 async function register() {
   if (!HUB_URL) return;
