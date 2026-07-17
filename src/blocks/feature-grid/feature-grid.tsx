@@ -1,6 +1,7 @@
 import { Zap, ShieldCheck, Sparkles, Clock, Check, Gauge, Lock, Rocket, type LucideIcon } from "lucide-react";
 import { Section } from "@/ui/section";
 import { RichText } from "@/ui/rich-text";
+import { SectionActions } from "@/ui/section-actions";
 import { Eyebrow } from "@/ui/eyebrow";
 import { columnsClass } from "@/lib/section-settings";
 import { Card, CardHeader, CardTitle, CardContent } from "@/ui/card";
@@ -19,7 +20,7 @@ const ICONS: Record<string, LucideIcon> = {
   rocket: Rocket,
 };
 
-export function FeatureGrid({ heading, intro, eyebrow, footnote, columns, tone, spacing, container, features }: FeatureGridProps) {
+export function FeatureGrid({ heading, intro, eyebrow, footnote, cta_label, cta_url, secondary_label, secondary_url, columns, tone, spacing, container, features }: FeatureGridProps) {
   const items = Array.isArray(features) ? features : [];
   if (items.length === 0) return null;
   return (
@@ -53,6 +54,7 @@ export function FeatureGrid({ heading, intro, eyebrow, footnote, columns, tone, 
           );
         })}
       </ul>
+      <SectionActions cta_label={cta_label} cta_url={cta_url} secondary_label={secondary_label} secondary_url={secondary_url} />
       {footnote ? <RichText html={footnote} className="mt-8 body-sm text-ink-muted" /> : null}
     </Section>
   );

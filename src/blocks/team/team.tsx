@@ -3,6 +3,7 @@ import { Section } from "@/ui/section";
 import { Eyebrow } from "@/ui/eyebrow";
 import { SocialLinks } from "@/ui/social-links";
 import { RichText } from "@/ui/rich-text";
+import { SectionActions } from "@/ui/section-actions";
 import { initials } from "@/lib/utils";
 import { sectionProps, columnsClass } from "@/lib/section-settings";
 import type { TeamProps } from "./schema";
@@ -43,6 +44,10 @@ export function Team({
   intro,
   eyebrow,
   footnote,
+  cta_label,
+  cta_url,
+  secondary_label,
+  secondary_url,
   columns,
   members,
   tone,
@@ -71,6 +76,7 @@ export function Team({
           </li>
         ))}
       </ul>
+      <SectionActions cta_label={cta_label} cta_url={cta_url} secondary_label={secondary_label} secondary_url={secondary_url} />
       {footnote ? <RichText html={footnote} className="mt-8 body-sm text-ink-muted" /> : null}
     </Section>
   );

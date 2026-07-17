@@ -1,5 +1,6 @@
 import { Section } from "@/ui/section";
 import { RichText } from "@/ui/rich-text";
+import { SectionActions } from "@/ui/section-actions";
 import { Eyebrow } from "@/ui/eyebrow";
 import { sectionProps, columnsClass } from "@/lib/section-settings";
 import type { ProcessStepsProps } from "./schema";
@@ -9,6 +10,10 @@ export function ProcessSteps({
   intro,
   eyebrow,
   footnote,
+  cta_label,
+  cta_url,
+  secondary_label,
+  secondary_url,
   steps,
   columns,
   tone,
@@ -46,6 +51,7 @@ export function ProcessSteps({
           </li>
         ))}
       </ol>
+      <SectionActions cta_label={cta_label} cta_url={cta_url} secondary_label={secondary_label} secondary_url={secondary_url} />
       {footnote ? <RichText html={footnote} className="mt-8 body-sm text-ink-muted" /> : null}
     </Section>
   );

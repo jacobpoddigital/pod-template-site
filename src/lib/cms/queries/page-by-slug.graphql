@@ -171,6 +171,10 @@ query PageBySlug($slug: ID!) {
         }
         ... on PageFieldsBlocksFaqLayout {
           footnote
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
           eyebrow
           heading
           tone
@@ -184,6 +188,10 @@ query PageBySlug($slug: ID!) {
         }
         ... on PageFieldsBlocksFeatureGridLayout {
           footnote
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
           columns
           eyebrow
           heading
@@ -362,6 +370,10 @@ query PageBySlug($slug: ID!) {
         }
         ... on PageFieldsBlocksPricingMatrixLayout {
           footnote
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
           eyebrow
           heading
           intro
@@ -381,6 +393,10 @@ query PageBySlug($slug: ID!) {
         }
         ... on PageFieldsBlocksProcessStepsLayout {
           footnote
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
           columns
           eyebrow
           heading
@@ -458,6 +474,10 @@ query PageBySlug($slug: ID!) {
         }
         ... on PageFieldsBlocksStatsBandLayout {
           footnote
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
           eyebrow
           heading
           intro
@@ -486,6 +506,10 @@ query PageBySlug($slug: ID!) {
         }
         ... on PageFieldsBlocksTeamLayout {
           footnote
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
           eyebrow
           heading
           intro
@@ -493,7 +517,6 @@ query PageBySlug($slug: ID!) {
           members: teamMembers {
             name
             role
-            badge
             bio
             image {
               node { sourceUrl altText mediaDetails { width height } }

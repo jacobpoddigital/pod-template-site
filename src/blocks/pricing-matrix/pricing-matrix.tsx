@@ -1,5 +1,6 @@
 import { Section } from "@/ui/section";
 import { RichText } from "@/ui/rich-text";
+import { SectionActions } from "@/ui/section-actions";
 import { Eyebrow } from "@/ui/eyebrow";
 import { sectionProps } from "@/lib/section-settings";
 import type { PricingMatrixProps } from "./schema";
@@ -15,6 +16,10 @@ export function PricingMatrix({
   intro,
   eyebrow,
   footnote,
+  cta_label,
+  cta_url,
+  secondary_label,
+  secondary_url,
   plan_labels,
   rows,
   tone,
@@ -65,6 +70,7 @@ export function PricingMatrix({
           </tbody>
         </table>
       </div>
+      <SectionActions cta_label={cta_label} cta_url={cta_url} secondary_label={secondary_label} secondary_url={secondary_url} />
       {footnote ? <RichText html={footnote} className="mt-8 body-sm text-ink-muted" /> : null}
     </Section>
   );

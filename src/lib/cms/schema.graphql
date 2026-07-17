@@ -656,6 +656,10 @@ type PageFieldsBlocksFaqItems {
 
 type PageFieldsBlocksFaqLayout {
   footnote: String
+  ctaLabel: String
+  ctaUrl: String
+  secondaryLabel: String
+  secondaryUrl: String
   eyebrow: String
   anchor: String
   container: String
@@ -673,6 +677,10 @@ type PageFieldsBlocksFeatureGridFeatures {
 
 type PageFieldsBlocksFeatureGridLayout {
   footnote: String
+  ctaLabel: String
+  ctaUrl: String
+  secondaryLabel: String
+  secondaryUrl: String
   columns: Float
   eyebrow: String
   anchor: String
@@ -876,6 +884,10 @@ type PageFieldsBlocksPricingMatrixRows {
 
 type PageFieldsBlocksPricingMatrixLayout {
   footnote: String
+  ctaLabel: String
+  ctaUrl: String
+  secondaryLabel: String
+  secondaryUrl: String
   eyebrow: String
   anchor: String
   container: String
@@ -894,6 +906,10 @@ type PageFieldsBlocksProcessStepsSteps {
 
 type PageFieldsBlocksProcessStepsLayout {
   footnote: String
+  ctaLabel: String
+  ctaUrl: String
+  secondaryLabel: String
+  secondaryUrl: String
   columns: Float
   eyebrow: String
   anchor: String
@@ -979,6 +995,10 @@ type PageFieldsBlocksStatsBandStats {
 
 type PageFieldsBlocksStatsBandLayout {
   footnote: String
+  ctaLabel: String
+  ctaUrl: String
+  secondaryLabel: String
+  secondaryUrl: String
   eyebrow: String
   anchor: String
   columns: Float
@@ -1017,6 +1037,10 @@ type PageFieldsBlocksTeamMembers {
 
 type PageFieldsBlocksTeamLayout {
   footnote: String
+  ctaLabel: String
+  ctaUrl: String
+  secondaryLabel: String
+  secondaryUrl: String
   eyebrow: String
   anchor: String
   columns: Float

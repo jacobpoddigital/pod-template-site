@@ -1,5 +1,6 @@
 import { Section } from "@/ui/section";
 import { RichText } from "@/ui/rich-text";
+import { SectionActions } from "@/ui/section-actions";
 import { Eyebrow } from "@/ui/eyebrow";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/ui/accordion";
 import { sectionProps } from "@/lib/section-settings";
@@ -18,7 +19,7 @@ function faqJsonLd(items: { question: string; answer: string }[]) {
   };
 }
 
-export function Faq({ heading, eyebrow, footnote, items, tone, spacing, container }: FaqProps) {
+export function Faq({ heading, eyebrow, footnote, cta_label, cta_url, secondary_label, secondary_url, items, tone, spacing, container }: FaqProps) {
   const list = Array.isArray(items) ? items : [];
   if (list.length === 0) return null;
   return (
@@ -38,6 +39,7 @@ export function Faq({ heading, eyebrow, footnote, items, tone, spacing, containe
         ))}
       </Accordion>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(list)) }} />
+      <SectionActions cta_label={cta_label} cta_url={cta_url} secondary_label={secondary_label} secondary_url={secondary_url} />
       {footnote ? <RichText html={footnote} className="mt-8 body-sm text-ink-muted" /> : null}
     </Section>
   );
