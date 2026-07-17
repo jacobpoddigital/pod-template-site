@@ -5,6 +5,7 @@ import { sectionSettingsFields } from "@/lib/section-settings";
 // pricing block for buyers who want a full feature-by-feature view. ACF names 1:1.
 export const pricingMatrixSchema = z.object({
   ...sectionSettingsFields,
+  eyebrow: z.string().nullish(),
   heading: z.string().nullish(),
   intro: z.string().nullish(),
   plan_labels: z.array(z.object({ label: z.string().min(1) })).nullish(),

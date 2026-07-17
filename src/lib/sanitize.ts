@@ -12,6 +12,10 @@ const OPTIONS: sanitizeHtml.IOptions = {
   allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "h1", "h2", "iframe"]),
   allowedAttributes: {
     ...sanitizeHtml.defaults.allowedAttributes,
+    // Allow `class` on any element so WP WYSIWYG content can carry styling hooks — the
+    // CONTENT escape hatch (workflow/29): editors add `<span class="badge">…</span>` etc.,
+    // styled by the content-utility classes in globals.css. Classes don't execute → no XSS.
+    "*": ["class"],
     img: ["src", "srcset", "sizes", "alt", "width", "height", "loading"],
     iframe: ["src", "width", "height", "allow", "allowfullscreen", "title", "loading"],
     a: ["href", "name", "target", "rel"],

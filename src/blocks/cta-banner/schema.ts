@@ -3,6 +3,7 @@ import { sectionSettingsFields } from "@/lib/section-settings";
 
 export const ctaBannerSchema = z.object({
   ...sectionSettingsFields,
+  eyebrow: z.string().nullish(),
   heading: z.string().min(1),
   body: z.string().nullish(),
   cta_label: z.string().min(1),

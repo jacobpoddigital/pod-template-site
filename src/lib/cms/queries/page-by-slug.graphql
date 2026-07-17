@@ -156,6 +156,7 @@ query PageBySlug($slug: ID!) {
           anchor
         }
         ... on PageFieldsBlocksCtaBannerLayout {
+          eyebrow
           heading
           body
           cta_label: ctaLabel
@@ -166,6 +167,7 @@ query PageBySlug($slug: ID!) {
           anchor
         }
         ... on PageFieldsBlocksFaqLayout {
+          eyebrow
           heading
           tone
           spacing
@@ -177,6 +179,8 @@ query PageBySlug($slug: ID!) {
           }
         }
         ... on PageFieldsBlocksFeatureGridLayout {
+          columns
+          eyebrow
           heading
           intro
           tone
@@ -352,6 +356,7 @@ query PageBySlug($slug: ID!) {
           anchor
         }
         ... on PageFieldsBlocksPricingMatrixLayout {
+          eyebrow
           heading
           intro
           plan_labels: pricingMatrixPlanLabels {
@@ -369,6 +374,8 @@ query PageBySlug($slug: ID!) {
           anchor
         }
         ... on PageFieldsBlocksProcessStepsLayout {
+          columns
+          eyebrow
           heading
           intro
           steps: processStepsSteps {
@@ -443,6 +450,7 @@ query PageBySlug($slug: ID!) {
           anchor
         }
         ... on PageFieldsBlocksStatsBandLayout {
+          eyebrow
           heading
           intro
           columns
@@ -469,12 +477,14 @@ query PageBySlug($slug: ID!) {
           anchor
         }
         ... on PageFieldsBlocksTeamLayout {
+          eyebrow
           heading
           intro
           columns
           members: teamMembers {
             name
             role
+            badge
             bio
             image {
               node { sourceUrl altText mediaDetails { width height } }

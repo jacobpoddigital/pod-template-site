@@ -635,6 +635,7 @@ type PageFieldsBlocksContactFormLayout {
 }
 
 type PageFieldsBlocksCtaBannerLayout {
+  eyebrow: String
   anchor: String
   body: String
   container: String
@@ -651,6 +652,7 @@ type PageFieldsBlocksFaqItems {
 }
 
 type PageFieldsBlocksFaqLayout {
+  eyebrow: String
   anchor: String
   container: String
   faqItems: [PageFieldsBlocksFaqItems]
@@ -666,6 +668,8 @@ type PageFieldsBlocksFeatureGridFeatures {
 }
 
 type PageFieldsBlocksFeatureGridLayout {
+  columns: Float
+  eyebrow: String
   anchor: String
   container: String
   featureGridFeatures: [PageFieldsBlocksFeatureGridFeatures]
@@ -866,6 +870,7 @@ type PageFieldsBlocksPricingMatrixRows {
 }
 
 type PageFieldsBlocksPricingMatrixLayout {
+  eyebrow: String
   anchor: String
   container: String
   heading: String
@@ -882,6 +887,8 @@ type PageFieldsBlocksProcessStepsSteps {
 }
 
 type PageFieldsBlocksProcessStepsLayout {
+  columns: Float
+  eyebrow: String
   anchor: String
   container: String
   heading: String
@@ -964,6 +971,7 @@ type PageFieldsBlocksStatsBandStats {
 }
 
 type PageFieldsBlocksStatsBandLayout {
+  eyebrow: String
   anchor: String
   columns: Float
   container: String
@@ -1000,6 +1008,7 @@ type PageFieldsBlocksTeamMembers {
 }
 
 type PageFieldsBlocksTeamLayout {
+  eyebrow: String
   anchor: String
   columns: Float
   container: String

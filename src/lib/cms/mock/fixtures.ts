@@ -63,6 +63,7 @@ export const mockHome: PageBySlugQuery = {
         },
         {
           __typename: "PageFieldsBlocksFeatureGridLayout",
+          eyebrow: null,
           heading: "Everything wired, nothing in your way",
           intro: "The plumbing is done; the content model is yours to define.",
           tone: "default",
@@ -77,6 +78,7 @@ export const mockHome: PageBySlugQuery = {
         },
         {
           __typename: "PageFieldsBlocksFaqLayout",
+          eyebrow: null,
           heading: "Common questions",
           tone: "muted",
           spacing: null,
@@ -120,6 +122,7 @@ export const mockHome: PageBySlugQuery = {
         },
         {
           __typename: "PageFieldsBlocksStatsBandLayout",
+          eyebrow: null,
           heading: "By the numbers",
           intro: null,
           columns: 4,
@@ -173,6 +176,7 @@ export const mockHome: PageBySlugQuery = {
         },
         {
           __typename: "PageFieldsBlocksTeamLayout",
+          eyebrow: null,
           heading: "The people behind the work",
           intro: null,
           columns: 4,
@@ -212,6 +216,7 @@ export const mockHome: PageBySlugQuery = {
         },
         {
           __typename: "PageFieldsBlocksCtaBannerLayout",
+          eyebrow: null,
           heading: "Clone it, brand it, ship it",
           body: "Regenerate the schema from your WP, define ACF, and the same blocks render live.",
           tone: "accent",

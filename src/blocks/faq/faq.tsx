@@ -1,4 +1,5 @@
 import { Section } from "@/ui/section";
+import { Eyebrow } from "@/ui/eyebrow";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/ui/accordion";
 import { sectionProps } from "@/lib/section-settings";
 import type { FaqProps } from "./schema";
@@ -16,13 +17,16 @@ function faqJsonLd(items: { question: string; answer: string }[]) {
   };
 }
 
-export function Faq({ heading, items, tone, spacing, container }: FaqProps) {
+export function Faq({ heading, eyebrow, items, tone, spacing, container }: FaqProps) {
   const list = Array.isArray(items) ? items : [];
   if (list.length === 0) return null;
   return (
     <Section dataBlock="faq" {...sectionProps({ tone, spacing, container })}>
-      {heading ? (
-        <h2 className="mb-8 display-md text-ink">{heading}</h2>
+      {eyebrow || heading ? (
+        <div className="mb-8">
+          {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
+          {heading ? <h2 className="display-md text-ink">{heading}</h2> : null}
+        </div>
       ) : null}
       <Accordion type="single" collapsible className="mx-auto max-w-3xl">
         {list.map((i, idx) => (
