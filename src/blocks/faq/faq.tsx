@@ -34,7 +34,9 @@ export function Faq({ heading, eyebrow, footnote, cta_label, cta_url, secondary_
         {list.map((i, idx) => (
           <AccordionItem key={`${i.question}-${idx}`} value={`faq-${idx}`}>
             <AccordionTrigger>{i.question}</AccordionTrigger>
-            <AccordionContent>{i.answer}</AccordionContent>
+            <AccordionContent>
+              <RichText html={i.answer} className="[&_p]:mt-0 [&_p+p]:mt-3 [&_ul]:mt-3 [&_a]:underline" />
+            </AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>
