@@ -46,6 +46,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksBeforeAfterLayout {
           heading
@@ -62,6 +63,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksBentoGridLayout {
           heading
@@ -79,6 +81,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksCardGridLayout {
           heading
@@ -98,6 +101,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksCaseStudiesLayout {
           heading
@@ -117,6 +121,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksColumnsLayout {
           heading
@@ -129,6 +134,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksComparisonTableLayout {
           heading
@@ -144,6 +150,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksContactFormLayout {
           heading
@@ -154,16 +161,20 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksCtaBannerLayout {
           heading
           body
           cta_label: ctaLabel
           cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
           tone
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksFaqLayout {
           heading
@@ -171,6 +182,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
           items: faqItems {
             question
             answer
@@ -183,6 +195,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
           features: featureGridFeatures {
             title
             body
@@ -206,6 +219,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksGalleryLayout {
           heading
@@ -221,6 +235,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksHeroLayout {
           eyebrow
@@ -238,6 +253,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksIntegrationsGridLayout {
           heading
@@ -254,6 +270,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksKeyTakeawaysLayout {
           heading
@@ -264,6 +281,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksLocationsMapLayout {
           heading
@@ -279,6 +297,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksLogoStripLayout {
           heading
@@ -286,6 +305,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
           logos: logoStripLogos {
             name
           }
@@ -306,6 +326,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksNewsletterLayout {
           heading
@@ -317,6 +338,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksPostGridLayout {
           heading
@@ -328,6 +350,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksPricingLayout {
           heading
@@ -350,6 +373,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksPricingMatrixLayout {
           heading
@@ -367,6 +391,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksProcessStepsLayout {
           heading
@@ -379,6 +404,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksReviewsLayout {
           heading
@@ -401,6 +427,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksRichTextLayout {
           content
@@ -408,6 +435,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksServicesGridLayout {
           heading
@@ -427,6 +455,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksStatWithSourceLayout {
           heading
@@ -441,6 +470,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksStatsBandLayout {
           heading
@@ -455,6 +485,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksTabbedContentLayout {
           heading
@@ -467,6 +498,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksTeamLayout {
           heading
@@ -487,6 +519,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksTimelineLayout {
           heading
@@ -500,6 +533,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksTocLayout {
           heading
@@ -511,6 +545,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksUspBarLayout {
           columns
@@ -525,6 +560,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksVideoLayout {
           heading
@@ -537,6 +573,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
         ... on PageFieldsBlocksVideoTestimonialLayout {
           heading
@@ -555,6 +592,7 @@ query PageBySlug($slug: ID!) {
           spacing
           container
           anchor
+          custom_class: customClass
         }
       }
     }

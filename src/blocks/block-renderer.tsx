@@ -1,5 +1,6 @@
 import { registry } from "./registry";
 import { toAnchorId } from "@/lib/section-settings";
+import { cn } from "@/lib/utils";
 import type { CmsBlock } from "@/lib/cms";
 
 // Renders any CMS page: maps each ACF Flexible Content row to its registered
@@ -22,8 +23,12 @@ export function BlockRenderer({ blocks }: { blocks: CmsBlock[] }) {
         const props = entry.schema.parse(block.data);
         const key = `${block.layout}-${index}`;
         const anchor = toAnchorId(typeof props.anchor === "string" ? props.anchor : "");
-        return anchor ? (
-          <div key={key} id={anchor} className="scroll-mt-24">
+        // Governed escape hatch (workflow/29): an editor-set `custom_class` is applied here on a
+        // wrapper — one place, so every block (current + future) gets scoped-CSS restyling for free,
+        // no per-block wiring. Scoped CSS then targets `.<class> [data-block="…"] …`.
+        const customClass = typeof props.custom_class === "string" ? props.custom_class : "";
+        return anchor || customClass ? (
+          <div key={key} id={anchor || undefined} className={cn(anchor && "scroll-mt-24", customClass) || undefined}>
             <entry.Component {...props} />
           </div>
         ) : (

@@ -41,6 +41,7 @@ export const mockHome: PageBySlugQuery = {
           spacing: null,
           container: null,
           anchor: null,
+          custom_class: null,
           cta_label: "Get started",
           cta_url: "#",
           secondary_label: "View the blocks",
@@ -53,6 +54,7 @@ export const mockHome: PageBySlugQuery = {
           spacing: null,
           container: null,
           anchor: null,
+          custom_class: null,
           logos: [
             { name: "Northwind" },
             { name: "Acme" },
@@ -69,6 +71,7 @@ export const mockHome: PageBySlugQuery = {
           spacing: null,
           container: null,
           anchor: "services",
+          custom_class: null,
           features: [
             { title: "GraphQL data layer", body: "graphql-request + codegen, typed end to end.", icon: "Boxes" },
             { title: "Builds offline", body: "Committed schema + dev mock — no WP needed to iterate.", icon: "PlugZap" },
@@ -82,6 +85,7 @@ export const mockHome: PageBySlugQuery = {
           spacing: null,
           container: null,
           anchor: null,
+          custom_class: null,
           items: [
             { question: "Do I need WordPress to run this?", answer: "No — the dev mock renders blocks against the committed schema. Point WPGRAPHQL_URL at real WP when you have it." },
             { question: "How do I add a block?", answer: "Follow the /new-block recipe: ACF layout + schema + component + registry entry + a query fragment." },
@@ -95,6 +99,7 @@ export const mockHome: PageBySlugQuery = {
           spacing: null,
           container: null,
           anchor: null,
+          custom_class: null,
           submit_label: "Send message",
           success_message: "Thanks — we'll be in touch shortly.",
         },
@@ -112,6 +117,7 @@ export const mockHome: PageBySlugQuery = {
           spacing: "default",
           container: "default",
           anchor: null,
+          custom_class: null,
           image: { node: {
             sourceUrl: "https://picsum.photos/seed/podmock/1200/900",
             altText: "Placeholder image",
@@ -127,6 +133,7 @@ export const mockHome: PageBySlugQuery = {
           spacing: null,
           container: null,
           anchor: null,
+          custom_class: null,
           stats: [
             { value: "10+ yrs", label: "In business", description: null },
             { value: "200+", label: "Sites shipped", description: null },
@@ -144,6 +151,7 @@ export const mockHome: PageBySlugQuery = {
           spacing: null,
           container: null,
           anchor: null,
+          custom_class: null,
           reviews: [
             {
               quote: "They rebuilt our site and organic traffic doubled in a quarter.",
@@ -180,6 +188,7 @@ export const mockHome: PageBySlugQuery = {
           spacing: null,
           container: null,
           anchor: null,
+          custom_class: null,
           members: [
             { name: "Sam Rivera", role: "Founder", bio: "Strategy and client partnerships.", linkedin_url: "https://www.linkedin.com", twitter_url: null, website_url: null, image: { node: { sourceUrl: "https://i.pravatar.cc/200?img=15", altText: "", mediaDetails: { width: 200, height: 200 } } } },
             { name: "Alex Chen", role: "Lead Engineer", bio: "Builds the systems that build the sites.", linkedin_url: "https://www.linkedin.com", twitter_url: null, website_url: null, image: { node: { sourceUrl: "https://i.pravatar.cc/200?img=51", altText: "", mediaDetails: { width: 200, height: 200 } } } },
@@ -195,6 +204,7 @@ export const mockHome: PageBySlugQuery = {
           spacing: null,
           container: null,
           anchor: null,
+          custom_class: null,
           plans: [
             {
               name: "Starter", price: "£499", price_annual: "£4,990", period: null, description: "For a clean brochure site.", featured: false, badge: null, cta_label: "Choose Starter", cta_url: "#",
@@ -218,8 +228,11 @@ export const mockHome: PageBySlugQuery = {
           spacing: null,
           container: null,
           anchor: null,
+          custom_class: null,
           cta_label: "Read the build guide",
           cta_url: "#",
+          secondary_label: null,
+          secondary_url: null,
         },
       ],
     },

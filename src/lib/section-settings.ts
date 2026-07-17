@@ -40,6 +40,11 @@ export const sectionSettingsFields = {
   container: containerSchema,
   anchor: z.string().nullish(),
   reverse: reverseSchema,
+  // Governed escape hatch (workflow/29 §Block composition): a bespoke class on THIS section
+  // instance, set in WP. Restyle a section's LOOK via scoped CSS (`[data-block="x"].my-class …`)
+  // without forking the block — for styling VARIATIONS only (alignment, one-off emphasis, spacing
+  // tweak), never for missing CONTENT (that forks). Applied to <Section className> via sectionProps.
+  custom_class: z.string().nullish(),
 } as const;
 
 export interface SectionSettings {
@@ -48,6 +53,7 @@ export interface SectionSettings {
   container?: ContainerWidth | null;
   anchor?: string | null;
   reverse?: boolean | null;
+  custom_class?: string | null;
 }
 
 /** Order classes for a flippable two-column section. Apply `.a` to the FIRST
@@ -81,6 +87,8 @@ export function sectionProps(s: SectionSettings) {
     tone: s.tone ?? undefined,
     padding: SPACING_TO_PADDING[s.spacing ?? "default"],
     container: s.container ?? "default",
+    // custom_class (governed escape hatch) → the section's extra className for scoped CSS.
+    className: s.custom_class ?? undefined,
   } as const;
 }
 

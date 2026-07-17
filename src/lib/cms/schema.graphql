@@ -508,6 +508,7 @@ type AcfMediaItemConnectionEdge {
 
 type PageFieldsBlocksAuthorBylineLayout {
   anchor: String
+  customClass: String
   avatar: AcfMediaItemConnectionEdge
   bio: String
   container: String
@@ -523,6 +524,7 @@ type PageFieldsBlocksBeforeAfterLayout {
   afterImage: AcfMediaItemConnectionEdge
   afterLabel: String
   anchor: String
+  customClass: String
   beforeImage: AcfMediaItemConnectionEdge
   beforeLabel: String
   container: String
@@ -542,6 +544,7 @@ type PageFieldsBlocksBentoGridItems {
 
 type PageFieldsBlocksBentoGridLayout {
   anchor: String
+  customClass: String
   bentoGridItems: [PageFieldsBlocksBentoGridItems]
   container: String
   heading: String
@@ -560,6 +563,7 @@ type PageFieldsBlocksCardGridCards {
 
 type PageFieldsBlocksCardGridLayout {
   anchor: String
+  customClass: String
   cardGridCards: [PageFieldsBlocksCardGridCards]
   columns: Float
   container: String
@@ -581,6 +585,7 @@ type PageFieldsBlocksCaseStudiesItems {
 
 type PageFieldsBlocksCaseStudiesLayout {
   anchor: String
+  customClass: String
   caseStudiesItems: [PageFieldsBlocksCaseStudiesItems]
   columns: Float
   container: String
@@ -596,6 +601,7 @@ type PageFieldsBlocksColumnsColumns {
 
 type PageFieldsBlocksColumnsLayout {
   anchor: String
+  customClass: String
   columnCount: Float
   columnsColumns: [PageFieldsBlocksColumnsColumns]
   container: String
@@ -613,6 +619,7 @@ type PageFieldsBlocksComparisonTableRows {
 
 type PageFieldsBlocksComparisonTableLayout {
   anchor: String
+  customClass: String
   comparisonTableRows: [PageFieldsBlocksComparisonTableRows]
   container: String
   heading: String
@@ -625,6 +632,7 @@ type PageFieldsBlocksComparisonTableLayout {
 
 type PageFieldsBlocksContactFormLayout {
   anchor: String
+  customClass: String
   container: String
   heading: String
   intro: String
@@ -636,11 +644,14 @@ type PageFieldsBlocksContactFormLayout {
 
 type PageFieldsBlocksCtaBannerLayout {
   anchor: String
+  customClass: String
   body: String
   container: String
   ctaLabel: String
   ctaUrl: String
   heading: String
+  secondaryLabel: String
+  secondaryUrl: String
   spacing: String
   tone: String
 }
@@ -652,6 +663,7 @@ type PageFieldsBlocksFaqItems {
 
 type PageFieldsBlocksFaqLayout {
   anchor: String
+  customClass: String
   container: String
   faqItems: [PageFieldsBlocksFaqItems]
   heading: String
@@ -667,6 +679,7 @@ type PageFieldsBlocksFeatureGridFeatures {
 
 type PageFieldsBlocksFeatureGridLayout {
   anchor: String
+  customClass: String
   container: String
   featureGridFeatures: [PageFieldsBlocksFeatureGridFeatures]
   heading: String
@@ -686,6 +699,7 @@ type PageFieldsBlocksFeatureRowsRows {
 
 type PageFieldsBlocksFeatureRowsLayout {
   anchor: String
+  customClass: String
   container: String
   featureRowsRows: [PageFieldsBlocksFeatureRowsRows]
   heading: String
@@ -701,6 +715,7 @@ type PageFieldsBlocksGalleryImages {
 
 type PageFieldsBlocksGalleryLayout {
   anchor: String
+  customClass: String
   columns: Float
   container: String
   galleryImages: [PageFieldsBlocksGalleryImages]
@@ -712,6 +727,7 @@ type PageFieldsBlocksGalleryLayout {
 
 type PageFieldsBlocksHeroLayout {
   anchor: String
+  customClass: String
   container: String
   ctaLabel: String
   ctaUrl: String
@@ -734,6 +750,7 @@ type PageFieldsBlocksIntegrationsGridItems {
 
 type PageFieldsBlocksIntegrationsGridLayout {
   anchor: String
+  customClass: String
   columns: Float
   container: String
   heading: String
@@ -749,6 +766,7 @@ type PageFieldsBlocksKeyTakeawaysPoints {
 
 type PageFieldsBlocksKeyTakeawaysLayout {
   anchor: String
+  customClass: String
   container: String
   heading: String
   keyTakeawaysPoints: [PageFieldsBlocksKeyTakeawaysPoints]
@@ -765,6 +783,7 @@ type PageFieldsBlocksLocationsMapLocations {
 
 type PageFieldsBlocksLocationsMapLayout {
   anchor: String
+  customClass: String
   columns: Float
   container: String
   heading: String
@@ -780,6 +799,7 @@ type PageFieldsBlocksLogoStripLogos {
 
 type PageFieldsBlocksLogoStripLayout {
   anchor: String
+  customClass: String
   container: String
   heading: String
   logoStripLogos: [PageFieldsBlocksLogoStripLogos]
@@ -789,6 +809,7 @@ type PageFieldsBlocksLogoStripLayout {
 
 type PageFieldsBlocksMediaTextLayout {
   anchor: String
+  customClass: String
   body: String
   container: String
   ctaLabel: String
@@ -805,6 +826,7 @@ type PageFieldsBlocksMediaTextLayout {
 
 type PageFieldsBlocksNewsletterLayout {
   anchor: String
+  customClass: String
   buttonLabel: String
   container: String
   heading: String
@@ -817,6 +839,7 @@ type PageFieldsBlocksNewsletterLayout {
 
 type PageFieldsBlocksPostGridLayout {
   anchor: String
+  customClass: String
   category: String
   columns: Float
   container: String
@@ -846,6 +869,7 @@ type PageFieldsBlocksPricingPlans {
 
 type PageFieldsBlocksPricingLayout {
   anchor: String
+  customClass: String
   container: String
   heading: String
   intro: String
@@ -867,6 +891,7 @@ type PageFieldsBlocksPricingMatrixRows {
 
 type PageFieldsBlocksPricingMatrixLayout {
   anchor: String
+  customClass: String
   container: String
   heading: String
   intro: String
@@ -883,6 +908,7 @@ type PageFieldsBlocksProcessStepsSteps {
 
 type PageFieldsBlocksProcessStepsLayout {
   anchor: String
+  customClass: String
   container: String
   heading: String
   intro: String
@@ -902,6 +928,7 @@ type PageFieldsBlocksReviewsReviews {
 
 type PageFieldsBlocksReviewsLayout {
   anchor: String
+  customClass: String
   columns: Float
   container: String
   heading: String
@@ -914,6 +941,7 @@ type PageFieldsBlocksReviewsLayout {
 
 type PageFieldsBlocksRichTextLayout {
   anchor: String
+  customClass: String
   container: String
   content: String
   spacing: String
@@ -930,6 +958,7 @@ type PageFieldsBlocksServicesGridServices {
 
 type PageFieldsBlocksServicesGridLayout {
   anchor: String
+  customClass: String
   columns: Float
   container: String
   heading: String
@@ -948,6 +977,7 @@ type PageFieldsBlocksStatWithSourceStats {
 
 type PageFieldsBlocksStatWithSourceLayout {
   anchor: String
+  customClass: String
   columns: Float
   container: String
   heading: String
@@ -965,6 +995,7 @@ type PageFieldsBlocksStatsBandStats {
 
 type PageFieldsBlocksStatsBandLayout {
   anchor: String
+  customClass: String
   columns: Float
   container: String
   heading: String
@@ -981,6 +1012,7 @@ type PageFieldsBlocksTabbedContentTabs {
 
 type PageFieldsBlocksTabbedContentLayout {
   anchor: String
+  customClass: String
   container: String
   heading: String
   intro: String
@@ -1001,6 +1033,7 @@ type PageFieldsBlocksTeamMembers {
 
 type PageFieldsBlocksTeamLayout {
   anchor: String
+  customClass: String
   columns: Float
   container: String
   heading: String
@@ -1018,6 +1051,7 @@ type PageFieldsBlocksTimelineEvents {
 
 type PageFieldsBlocksTimelineLayout {
   anchor: String
+  customClass: String
   container: String
   heading: String
   intro: String
@@ -1033,6 +1067,7 @@ type PageFieldsBlocksTocItems {
 
 type PageFieldsBlocksTocLayout {
   anchor: String
+  customClass: String
   container: String
   heading: String
   spacing: String
@@ -1048,6 +1083,7 @@ type PageFieldsBlocksUspBarItems {
 
 type PageFieldsBlocksUspBarLayout {
   anchor: String
+  customClass: String
   columns: Float
   container: String
   spacing: String
@@ -1057,6 +1093,7 @@ type PageFieldsBlocksUspBarLayout {
 
 type PageFieldsBlocksVideoLayout {
   anchor: String
+  customClass: String
   buttonText: String
   container: String
   facadeImage: AcfMediaItemConnectionEdge
@@ -1076,6 +1113,7 @@ type PageFieldsBlocksVideoTestimonialItems {
 
 type PageFieldsBlocksVideoTestimonialLayout {
   anchor: String
+  customClass: String
   columns: Float
   container: String
   heading: String
