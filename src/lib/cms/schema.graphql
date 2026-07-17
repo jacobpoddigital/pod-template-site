@@ -641,7 +641,10 @@ type PageFieldsBlocksCtaBannerLayout {
   container: String
   ctaLabel: String
   ctaUrl: String
+  footnote: String
   heading: String
+  secondaryLabel: String
+  secondaryUrl: String
   spacing: String
   tone: String
 }

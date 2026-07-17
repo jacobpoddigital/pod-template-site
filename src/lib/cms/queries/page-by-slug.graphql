@@ -161,6 +161,9 @@ query PageBySlug($slug: ID!) {
           body
           cta_label: ctaLabel
           cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
+          footnote
           tone
           spacing
           container

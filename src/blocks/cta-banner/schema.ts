@@ -8,6 +8,9 @@ export const ctaBannerSchema = z.object({
   body: z.string().nullish(),
   cta_label: z.string().min(1),
   cta_url: z.string().min(1),
+  secondary_label: z.string().nullish(),
+  secondary_url: z.string().nullish(),
+  footnote: z.string().nullish(),
 });
 
 export type CtaBannerProps = z.infer<typeof ctaBannerSchema>;
