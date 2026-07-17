@@ -1,4 +1,5 @@
 import { Section } from "@/ui/section";
+import { RichText } from "@/ui/rich-text";
 import { Eyebrow } from "@/ui/eyebrow";
 import { sectionProps } from "@/lib/section-settings";
 import type { PricingMatrixProps } from "./schema";
@@ -13,6 +14,7 @@ export function PricingMatrix({
   heading,
   intro,
   eyebrow,
+  footnote,
   plan_labels,
   rows,
   tone,
@@ -63,6 +65,7 @@ export function PricingMatrix({
           </tbody>
         </table>
       </div>
+      {footnote ? <RichText html={footnote} className="mt-8 body-sm text-ink-muted" /> : null}
     </Section>
   );
 }

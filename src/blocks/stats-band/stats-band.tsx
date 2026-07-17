@@ -1,4 +1,5 @@
 import { Section } from "@/ui/section";
+import { RichText } from "@/ui/rich-text";
 import { Eyebrow } from "@/ui/eyebrow";
 import { sectionProps, columnsClass } from "@/lib/section-settings";
 import type { StatsBandProps } from "./schema";
@@ -10,6 +11,7 @@ export function StatsBand({
   heading,
   intro,
   eyebrow,
+  footnote,
   columns,
   stats,
   tone,
@@ -44,6 +46,7 @@ export function StatsBand({
           </li>
         ))}
       </ul>
+      {footnote ? <RichText html={footnote} className="mt-8 body-sm text-ink-muted" /> : null}
     </Section>
   );
 }

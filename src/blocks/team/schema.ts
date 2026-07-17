@@ -7,6 +7,7 @@ import { imageSchema } from "@/lib/media";
 export const teamSchema = z.object({
   ...sectionSettingsFields,
   eyebrow: z.string().nullish(),
+  footnote: z.string().nullish(),
   heading: z.string().nullish(),
   intro: z.string().nullish(),
   columns: z.number().nullish(),

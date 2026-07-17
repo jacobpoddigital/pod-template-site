@@ -6,6 +6,7 @@ import { sectionSettingsFields } from "@/lib/section-settings";
 export const pricingMatrixSchema = z.object({
   ...sectionSettingsFields,
   eyebrow: z.string().nullish(),
+  footnote: z.string().nullish(),
   heading: z.string().nullish(),
   intro: z.string().nullish(),
   plan_labels: z.array(z.object({ label: z.string().min(1) })).nullish(),

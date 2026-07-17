@@ -1,4 +1,5 @@
 import { Section } from "@/ui/section";
+import { RichText } from "@/ui/rich-text";
 import { Eyebrow } from "@/ui/eyebrow";
 import { sectionProps, columnsClass } from "@/lib/section-settings";
 import type { ProcessStepsProps } from "./schema";
@@ -7,6 +8,7 @@ export function ProcessSteps({
   heading,
   intro,
   eyebrow,
+  footnote,
   steps,
   columns,
   tone,
@@ -44,6 +46,7 @@ export function ProcessSteps({
           </li>
         ))}
       </ol>
+      {footnote ? <RichText html={footnote} className="mt-8 body-sm text-ink-muted" /> : null}
     </Section>
   );
 }

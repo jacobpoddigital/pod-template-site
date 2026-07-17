@@ -655,6 +655,7 @@ type PageFieldsBlocksFaqItems {
 }
 
 type PageFieldsBlocksFaqLayout {
+  footnote: String
   eyebrow: String
   anchor: String
   container: String
@@ -671,6 +672,7 @@ type PageFieldsBlocksFeatureGridFeatures {
 }
 
 type PageFieldsBlocksFeatureGridLayout {
+  footnote: String
   columns: Float
   eyebrow: String
   anchor: String
@@ -873,6 +875,7 @@ type PageFieldsBlocksPricingMatrixRows {
 }
 
 type PageFieldsBlocksPricingMatrixLayout {
+  footnote: String
   eyebrow: String
   anchor: String
   container: String
@@ -890,6 +893,7 @@ type PageFieldsBlocksProcessStepsSteps {
 }
 
 type PageFieldsBlocksProcessStepsLayout {
+  footnote: String
   columns: Float
   eyebrow: String
   anchor: String
@@ -974,6 +978,7 @@ type PageFieldsBlocksStatsBandStats {
 }
 
 type PageFieldsBlocksStatsBandLayout {
+  footnote: String
   eyebrow: String
   anchor: String
   columns: Float
@@ -1011,6 +1016,7 @@ type PageFieldsBlocksTeamMembers {
 }
 
 type PageFieldsBlocksTeamLayout {
+  footnote: String
   eyebrow: String
   anchor: String
   columns: Float

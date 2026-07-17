@@ -42,6 +42,7 @@ export function Team({
   heading,
   intro,
   eyebrow,
+  footnote,
   columns,
   members,
   tone,
@@ -70,6 +71,7 @@ export function Team({
           </li>
         ))}
       </ul>
+      {footnote ? <RichText html={footnote} className="mt-8 body-sm text-ink-muted" /> : null}
     </Section>
   );
 }

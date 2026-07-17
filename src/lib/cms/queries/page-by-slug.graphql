@@ -170,6 +170,7 @@ query PageBySlug($slug: ID!) {
           anchor
         }
         ... on PageFieldsBlocksFaqLayout {
+          footnote
           eyebrow
           heading
           tone
@@ -182,6 +183,7 @@ query PageBySlug($slug: ID!) {
           }
         }
         ... on PageFieldsBlocksFeatureGridLayout {
+          footnote
           columns
           eyebrow
           heading
@@ -359,6 +361,7 @@ query PageBySlug($slug: ID!) {
           anchor
         }
         ... on PageFieldsBlocksPricingMatrixLayout {
+          footnote
           eyebrow
           heading
           intro
@@ -377,6 +380,7 @@ query PageBySlug($slug: ID!) {
           anchor
         }
         ... on PageFieldsBlocksProcessStepsLayout {
+          footnote
           columns
           eyebrow
           heading
@@ -453,6 +457,7 @@ query PageBySlug($slug: ID!) {
           anchor
         }
         ... on PageFieldsBlocksStatsBandLayout {
+          footnote
           eyebrow
           heading
           intro
@@ -480,6 +485,7 @@ query PageBySlug($slug: ID!) {
           anchor
         }
         ... on PageFieldsBlocksTeamLayout {
+          footnote
           eyebrow
           heading
           intro

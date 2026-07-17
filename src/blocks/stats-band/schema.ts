@@ -7,6 +7,7 @@ import { sectionSettingsFields } from "@/lib/section-settings";
 export const statsBandSchema = z.object({
   ...sectionSettingsFields,
   eyebrow: z.string().nullish(),
+  footnote: z.string().nullish(),
   heading: z.string().nullish(),
   intro: z.string().nullish(),
   columns: z.number().nullish(),
