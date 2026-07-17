@@ -11,13 +11,13 @@ export function CtaBanner({ heading, eyebrow, body, cta_label, cta_url, secondar
     <Section dataBlock="cta_banner" {...sectionProps({ tone: tone ?? "inverted", spacing, container })}>
       <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
         {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
-        <h2 className="display-md">{heading}</h2>
-        {body ? <p className="max-w-[65ch] body-lg text-muted-foreground">{body}</p> : null}
+        <h2 className="display-md text-ink">{heading}</h2>
+        {body ? <p className="max-w-[65ch] body-lg text-ink-muted">{body}</p> : null}
         <div className="flex flex-wrap items-center justify-center gap-4">
           <ButtonLink href={cta_url}>{cta_label}</ButtonLink>
           {secondary ? <ButtonLink href={secondary_url!} variant="ghost">{secondary_label}</ButtonLink> : null}
         </div>
-        {footnote ? <RichText html={footnote} className="body-sm text-muted-foreground [&_p]:mt-0" /> : null}
+        {footnote ? <RichText html={footnote} className="body-sm text-ink-muted [&_p]:mt-0" /> : null}
       </div>
     </Section>
   );
