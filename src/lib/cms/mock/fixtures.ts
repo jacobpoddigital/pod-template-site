@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- dev-only demo content: a full page's worth of seed data (not logic). */
 import type { PageBySlugQuery } from "../generated/graphql";
 
 // DEV-ONLY demo content (ADR 0013 amendment — dev mock, NOT shipped fallback

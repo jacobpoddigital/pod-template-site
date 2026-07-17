@@ -58,6 +58,17 @@ query PageBySlug($slug: ID!) {
           }
           before_label: beforeLabel
           after_label: afterLabel
+          pairs: beforeAfterPairs {
+            before_image: beforeImage {
+              node { sourceUrl altText mediaDetails { width height } }
+            }
+            after_image: afterImage {
+              node { sourceUrl altText mediaDetails { width height } }
+            }
+            before_label: beforeLabel
+            after_label: afterLabel
+            caption
+          }
           tone
           spacing
           container

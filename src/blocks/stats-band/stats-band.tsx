@@ -1,7 +1,7 @@
 import { Section } from "@/ui/section";
 import { RichText } from "@/ui/rich-text";
 import { SectionActions } from "@/ui/section-actions";
-import { Eyebrow } from "@/ui/eyebrow";
+import { SectionHeader } from "@/ui/section-header";
 import { sectionProps, columnsClass } from "@/lib/section-settings";
 import type { StatsBandProps } from "./schema";
 
@@ -28,15 +28,7 @@ export function StatsBand({
 
   return (
     <Section dataBlock="stats_band" {...sectionProps({ tone, spacing, container })}>
-      {eyebrow || heading || intro ? (
-        <div className="mb-12 max-w-2xl">
-          {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
-          {heading ? <h2 className="display-md text-ink">{heading}</h2> : null}
-          {intro ? (
-            <p className="mt-4 max-w-[min(65ch,90vw)] body-lg text-ink-muted">{intro}</p>
-          ) : null}
-        </div>
-      ) : null}
+      <SectionHeader eyebrow={eyebrow} heading={heading} intro={intro} className="mb-12" />
 
       <ul role="list" className={`grid gap-8 ${columnsClass(columns ?? items.length)}`}>
         {items.map((s, i) => (

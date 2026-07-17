@@ -525,11 +525,20 @@ type PageFieldsBlocksBeforeAfterLayout {
   anchor: String
   beforeImage: AcfMediaItemConnectionEdge
   beforeLabel: String
+  beforeAfterPairs: [PageFieldsBlocksBeforeAfterPairs]
   container: String
   heading: String
   intro: String
   spacing: String
   tone: String
+}
+
+type PageFieldsBlocksBeforeAfterPairs {
+  beforeImage: AcfMediaItemConnectionEdge
+  afterImage: AcfMediaItemConnectionEdge
+  beforeLabel: String
+  afterLabel: String
+  caption: String
 }
 
 type PageFieldsBlocksBentoGridItems {

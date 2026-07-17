@@ -1,7 +1,7 @@
 import { Section } from "@/ui/section";
 import { RichText } from "@/ui/rich-text";
 import { SectionActions } from "@/ui/section-actions";
-import { Eyebrow } from "@/ui/eyebrow";
+import { SectionHeader } from "@/ui/section-header";
 import { sectionProps } from "@/lib/section-settings";
 import type { PricingMatrixProps } from "./schema";
 
@@ -32,15 +32,7 @@ export function PricingMatrix({
 
   return (
     <Section dataBlock="pricing_matrix" {...sectionProps({ tone, spacing, container })}>
-      {eyebrow || heading || intro ? (
-        <div className="mb-10 max-w-2xl">
-          {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
-          {heading ? <h2 className="display-md text-ink">{heading}</h2> : null}
-          {intro ? (
-            <p className="mt-4 max-w-[min(65ch,90vw)] body-lg text-ink-muted">{intro}</p>
-          ) : null}
-        </div>
-      ) : null}
+      <SectionHeader eyebrow={eyebrow} heading={heading} intro={intro} className="mb-10" />
 
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-left">

@@ -27,7 +27,9 @@ export function BeforeAfterSlider({
         <Image src={before.src} alt={before.alt} fill sizes="100vw" className="object-cover" />
         <div
           className="absolute inset-0"
-          style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
+          // Reveal the AFTER image on the RIGHT (before-left / after-right — matches the corner labels
+          // + natural left→right reading). Clip the after layer from the LEFT by `pos`%.
+          style={{ clipPath: `inset(0 0 0 ${pos}%)` }}
         >
           <Image src={after.src} alt={after.alt} fill sizes="100vw" className="object-cover" />
         </div>
