@@ -7,6 +7,14 @@ import { addItem, StoreApiError } from "@/lib/commerce/cart";
 // product that isn't already in the cart, hence this separate route.
 export const dynamic = "force-dynamic";
 
+// Surface Woo's stock/quantity message to the shopper; mask raw nonce/HTTP failures.
+function addErrorMessage(e: unknown): string {
+  if (e instanceof StoreApiError && e.code.startsWith("woocommerce_rest_") && !e.code.includes("nonce")) {
+    return e.message;
+  }
+  return "Couldn't add that to your bag — please try again.";
+}
+
 export async function POST(req: Request) {
   let body: { id?: unknown; quantity?: unknown };
   try {
@@ -23,11 +31,6 @@ export async function POST(req: Request) {
     const cart = await addItem(id, quantity);
     return NextResponse.json(cart, { headers: { "Cache-Control": "no-store" } });
   } catch (e) {
-    // Surface Woo's stock/quantity message to the shopper; mask raw nonce/HTTP failures.
-    const message =
-      e instanceof StoreApiError && e.code.startsWith("woocommerce_rest_") && !e.code.includes("nonce")
-        ? e.message
-        : "Couldn't add that to your bag — please try again.";
-    return NextResponse.json({ error: message }, { status: 502 });
+    return NextResponse.json({ error: addErrorMessage(e) }, { status: 502 });
   }
 }
