@@ -163,6 +163,12 @@ The first full client-style site built on this template end-to-end. These were e
 - Repeaters inside a layout go **GENERIC**: `PageFieldsBlocksItems`, not `…Hero…Items`.
 - **Always regenerate the SDL from the live endpoint** before trusting block typenames: `pnpm dlx get-graphql-schema $WPGRAPHQL_URL > src/lib/cms/schema.graphql`. The adapter maps `__typename` → block key, so the names must match reality, not memory.
 
+**Block naming — bespoke client blocks carry the `_<client>` suffix.** *(agency standard — applies to every build; back-ported from Website Navigator 2026-06-12, tightened 2026-07-16.)*
+- A section built **specifically for this client**, with no equivalent in the shared template library, is named with the client suffix throughout: dir `*-<client>/`, ACF layout `*_<client>`, GraphQL `PageFieldsBlocks*<Client>Layout` (match live-schema casing), registry key `*_<client>`, `dataBlock="*_<client>"`, seed `acf_fc_layout => '*_<client>'`, and repeater sub-fields `*_<client>_<field>`.
+- **Any new field added for one client also forks the block — it never lands on a shared block.** Needing a field a shared block (e.g. `hero`, `cta_banner`) doesn't have is not a reason to add an optional prop to the shared version. Duplicate the whole block into a `_<client>` variant (all existing fields + the new one(s)), and point that instance's content at the bespoke layout. The shared block stays exactly as every other site uses it — no drifting pile of client-specific optional fields on a block every site shares.
+- Rule of thumb: **shared/reusable → plain template name; anything client-specific, including a single added field → `_<client>`.** A bespoke block that later proves genuinely generic (more than one client wants it) graduates to the template under its plain name — drop the suffix, delete the fork, migrate content.
+- This keeps bespoke sections **visibly distinct** from shared template blocks everywhere they appear — the ACF layout picker, the seed, the GraphQL schema, the registry.
+
 **ACF image = a connection edge, not a flat object.**
 - wpgraphql-acf 2.x exposes an ACF image field as `AcfMediaItemConnectionEdge`. Query it as `image { node { sourceUrl altText mediaDetails { width height } } }` and **flatten `.node` in the adapter**. Querying `image { altText }` flat fails codegen.
 - The client's WP/Atlas media host must be added to `next.config` `images.remotePatterns` (per project) or `<Image>` throws at runtime.

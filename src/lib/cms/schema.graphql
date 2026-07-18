@@ -525,11 +525,20 @@ type PageFieldsBlocksBeforeAfterLayout {
   anchor: String
   beforeImage: AcfMediaItemConnectionEdge
   beforeLabel: String
+  beforeAfterPairs: [PageFieldsBlocksBeforeAfterPairs]
   container: String
   heading: String
   intro: String
   spacing: String
   tone: String
+}
+
+type PageFieldsBlocksBeforeAfterPairs {
+  beforeImage: AcfMediaItemConnectionEdge
+  afterImage: AcfMediaItemConnectionEdge
+  beforeLabel: String
+  afterLabel: String
+  caption: String
 }
 
 type PageFieldsBlocksBentoGridItems {
@@ -635,12 +644,16 @@ type PageFieldsBlocksContactFormLayout {
 }
 
 type PageFieldsBlocksCtaBannerLayout {
+  eyebrow: String
   anchor: String
   body: String
   container: String
   ctaLabel: String
   ctaUrl: String
+  footnote: String
   heading: String
+  secondaryLabel: String
+  secondaryUrl: String
   spacing: String
   tone: String
 }
@@ -651,6 +664,12 @@ type PageFieldsBlocksFaqItems {
 }
 
 type PageFieldsBlocksFaqLayout {
+  footnote: String
+  ctaLabel: String
+  ctaUrl: String
+  secondaryLabel: String
+  secondaryUrl: String
+  eyebrow: String
   anchor: String
   container: String
   faqItems: [PageFieldsBlocksFaqItems]
@@ -666,6 +685,13 @@ type PageFieldsBlocksFeatureGridFeatures {
 }
 
 type PageFieldsBlocksFeatureGridLayout {
+  footnote: String
+  ctaLabel: String
+  ctaUrl: String
+  secondaryLabel: String
+  secondaryUrl: String
+  columns: Float
+  eyebrow: String
   anchor: String
   container: String
   featureGridFeatures: [PageFieldsBlocksFeatureGridFeatures]
@@ -866,6 +892,12 @@ type PageFieldsBlocksPricingMatrixRows {
 }
 
 type PageFieldsBlocksPricingMatrixLayout {
+  footnote: String
+  ctaLabel: String
+  ctaUrl: String
+  secondaryLabel: String
+  secondaryUrl: String
+  eyebrow: String
   anchor: String
   container: String
   heading: String
@@ -882,6 +914,13 @@ type PageFieldsBlocksProcessStepsSteps {
 }
 
 type PageFieldsBlocksProcessStepsLayout {
+  footnote: String
+  ctaLabel: String
+  ctaUrl: String
+  secondaryLabel: String
+  secondaryUrl: String
+  columns: Float
+  eyebrow: String
   anchor: String
   container: String
   heading: String
@@ -964,6 +1003,12 @@ type PageFieldsBlocksStatsBandStats {
 }
 
 type PageFieldsBlocksStatsBandLayout {
+  footnote: String
+  ctaLabel: String
+  ctaUrl: String
+  secondaryLabel: String
+  secondaryUrl: String
+  eyebrow: String
   anchor: String
   columns: Float
   container: String
@@ -1000,6 +1045,12 @@ type PageFieldsBlocksTeamMembers {
 }
 
 type PageFieldsBlocksTeamLayout {
+  footnote: String
+  ctaLabel: String
+  ctaUrl: String
+  secondaryLabel: String
+  secondaryUrl: String
+  eyebrow: String
   anchor: String
   columns: Float
   container: String

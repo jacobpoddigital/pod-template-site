@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- dev-only demo content: a full page's worth of seed data (not logic). */
 import type { PageBySlugQuery } from "../generated/graphql";
 
 // DEV-ONLY demo content (ADR 0013 amendment — dev mock, NOT shipped fallback
@@ -63,6 +64,13 @@ export const mockHome: PageBySlugQuery = {
         },
         {
           __typename: "PageFieldsBlocksFeatureGridLayout",
+          footnote: null,
+          cta_label: null,
+          cta_url: null,
+          secondary_label: null,
+          secondary_url: null,
+          columns: null,
+          eyebrow: null,
           heading: "Everything wired, nothing in your way",
           intro: "The plumbing is done; the content model is yours to define.",
           tone: "default",
@@ -77,6 +85,12 @@ export const mockHome: PageBySlugQuery = {
         },
         {
           __typename: "PageFieldsBlocksFaqLayout",
+          footnote: null,
+          cta_label: null,
+          cta_url: null,
+          secondary_label: null,
+          secondary_url: null,
+          eyebrow: null,
           heading: "Common questions",
           tone: "muted",
           spacing: null,
@@ -120,6 +134,12 @@ export const mockHome: PageBySlugQuery = {
         },
         {
           __typename: "PageFieldsBlocksStatsBandLayout",
+          footnote: null,
+          cta_label: null,
+          cta_url: null,
+          secondary_label: null,
+          secondary_url: null,
+          eyebrow: null,
           heading: "By the numbers",
           intro: null,
           columns: 4,
@@ -173,6 +193,12 @@ export const mockHome: PageBySlugQuery = {
         },
         {
           __typename: "PageFieldsBlocksTeamLayout",
+          footnote: null,
+          cta_label: null,
+          cta_url: null,
+          secondary_label: null,
+          secondary_url: null,
+          eyebrow: null,
           heading: "The people behind the work",
           intro: null,
           columns: 4,
@@ -212,6 +238,10 @@ export const mockHome: PageBySlugQuery = {
         },
         {
           __typename: "PageFieldsBlocksCtaBannerLayout",
+          secondary_label: null,
+          secondary_url: null,
+          footnote: null,
+          eyebrow: null,
           heading: "Clone it, brand it, ship it",
           body: "Regenerate the schema from your WP, define ACF, and the same blocks render live.",
           tone: "accent",

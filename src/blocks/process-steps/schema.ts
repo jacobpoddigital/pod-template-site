@@ -5,6 +5,13 @@ import { sectionSettingsFields } from "@/lib/section-settings";
 // ordered list so the numbering is semantic, not decorative. ACF names 1:1.
 export const processStepsSchema = z.object({
   ...sectionSettingsFields,
+  eyebrow: z.string().nullish(),
+  footnote: z.string().nullish(),
+  cta_label: z.string().nullish(),
+  cta_url: z.string().nullish(),
+  secondary_label: z.string().nullish(),
+  secondary_url: z.string().nullish(),
+  columns: z.number().nullish(),
   heading: z.string().nullish(),
   intro: z.string().nullish(),
   steps: z

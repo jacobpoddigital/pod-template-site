@@ -304,3 +304,15 @@
     font-size: 16px;
   }
 }
+
+/* ── Content-utility classes for WYSIWYG content (the CONTENT escape hatch — workflow/29) ──
+   WP editors add classed HTML into rich fields (`<span class="badge">…</span>`); these style
+   the hooks. Curated + token-backed (never freeform CSS). The content counterpart to custom_class. */
+.badge {
+  @apply mb-2 mr-1 inline-block rounded-full border border-border bg-surface-muted px-3 py-1 text-ink-muted;
+  font-size: var(--brand-text-label);
+  line-height: var(--brand-text-label-leading);
+  font-weight: var(--brand-text-label-weight);
+  letter-spacing: var(--brand-text-label-tracking);
+  text-transform: uppercase;
+}

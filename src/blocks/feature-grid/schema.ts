@@ -6,6 +6,13 @@ const feature = z.object({ title: z.string(), body: z.string(), icon: z.string()
 
 export const featureGridSchema = z.object({
   ...sectionSettingsFields,
+  eyebrow: z.string().nullish(),
+  footnote: z.string().nullish(),
+  cta_label: z.string().nullish(),
+  cta_url: z.string().nullish(),
+  secondary_label: z.string().nullish(),
+  secondary_url: z.string().nullish(),
+  columns: z.number().nullish(),
   heading: z.string().nullish(),
   intro: z.string().nullish(),
   features: z.array(feature).nullish(),

@@ -1,4 +1,7 @@
 import { Section } from "@/ui/section";
+import { RichText } from "@/ui/rich-text";
+import { SectionActions } from "@/ui/section-actions";
+import { SectionHeader } from "@/ui/section-header";
 import { sectionProps, columnsClass } from "@/lib/section-settings";
 import type { StatsBandProps } from "./schema";
 
@@ -8,6 +11,12 @@ import type { StatsBandProps } from "./schema";
 export function StatsBand({
   heading,
   intro,
+  eyebrow,
+  footnote,
+  cta_label,
+  cta_url,
+  secondary_label,
+  secondary_url,
   columns,
   stats,
   tone,
@@ -19,14 +28,7 @@ export function StatsBand({
 
   return (
     <Section dataBlock="stats_band" {...sectionProps({ tone, spacing, container })}>
-      {heading || intro ? (
-        <div className="mb-12 max-w-2xl">
-          {heading ? <h2 className="display-md text-ink">{heading}</h2> : null}
-          {intro ? (
-            <p className="mt-4 max-w-[min(65ch,90vw)] body-lg text-ink-muted">{intro}</p>
-          ) : null}
-        </div>
-      ) : null}
+      <SectionHeader eyebrow={eyebrow} heading={heading} intro={intro} className="mb-12" />
 
       <ul role="list" className={`grid gap-8 ${columnsClass(columns ?? items.length)}`}>
         {items.map((s, i) => (
@@ -41,6 +43,8 @@ export function StatsBand({
           </li>
         ))}
       </ul>
+      <SectionActions cta_label={cta_label} cta_url={cta_url} secondary_label={secondary_label} secondary_url={secondary_url} />
+      {footnote ? <RichText html={footnote} className="mt-8 body-sm text-ink-muted" /> : null}
     </Section>
   );
 }
