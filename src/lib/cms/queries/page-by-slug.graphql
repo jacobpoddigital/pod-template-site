@@ -58,6 +58,17 @@ query PageBySlug($slug: ID!) {
           }
           before_label: beforeLabel
           after_label: afterLabel
+          pairs: beforeAfterPairs {
+            before_image: beforeImage {
+              node { sourceUrl altText mediaDetails { width height } }
+            }
+            after_image: afterImage {
+              node { sourceUrl altText mediaDetails { width height } }
+            }
+            before_label: beforeLabel
+            after_label: afterLabel
+            caption
+          }
           tone
           spacing
           container
@@ -156,16 +167,26 @@ query PageBySlug($slug: ID!) {
           anchor
         }
         ... on PageFieldsBlocksCtaBannerLayout {
+          eyebrow
           heading
           body
           cta_label: ctaLabel
           cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
+          footnote
           tone
           spacing
           container
           anchor
         }
         ... on PageFieldsBlocksFaqLayout {
+          footnote
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
+          eyebrow
           heading
           tone
           spacing
@@ -177,6 +198,13 @@ query PageBySlug($slug: ID!) {
           }
         }
         ... on PageFieldsBlocksFeatureGridLayout {
+          footnote
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
+          columns
+          eyebrow
           heading
           intro
           tone
@@ -352,6 +380,12 @@ query PageBySlug($slug: ID!) {
           anchor
         }
         ... on PageFieldsBlocksPricingMatrixLayout {
+          footnote
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
+          eyebrow
           heading
           intro
           plan_labels: pricingMatrixPlanLabels {
@@ -369,6 +403,13 @@ query PageBySlug($slug: ID!) {
           anchor
         }
         ... on PageFieldsBlocksProcessStepsLayout {
+          footnote
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
+          columns
+          eyebrow
           heading
           intro
           steps: processStepsSteps {
@@ -443,6 +484,12 @@ query PageBySlug($slug: ID!) {
           anchor
         }
         ... on PageFieldsBlocksStatsBandLayout {
+          footnote
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
+          eyebrow
           heading
           intro
           columns
@@ -469,6 +516,12 @@ query PageBySlug($slug: ID!) {
           anchor
         }
         ... on PageFieldsBlocksTeamLayout {
+          footnote
+          cta_label: ctaLabel
+          cta_url: ctaUrl
+          secondary_label: secondaryLabel
+          secondary_url: secondaryUrl
+          eyebrow
           heading
           intro
           columns

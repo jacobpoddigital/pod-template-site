@@ -1,11 +1,21 @@
 import { Section } from "@/ui/section";
-import { sectionProps } from "@/lib/section-settings";
+import { RichText } from "@/ui/rich-text";
+import { SectionActions } from "@/ui/section-actions";
+import { Eyebrow } from "@/ui/eyebrow";
+import { sectionProps, columnsClass } from "@/lib/section-settings";
 import type { ProcessStepsProps } from "./schema";
 
 export function ProcessSteps({
   heading,
   intro,
+  eyebrow,
+  footnote,
+  cta_label,
+  cta_url,
+  secondary_label,
+  secondary_url,
   steps,
+  columns,
   tone,
   spacing,
   container,
@@ -15,8 +25,9 @@ export function ProcessSteps({
 
   return (
     <Section dataBlock="process_steps" {...sectionProps({ tone, spacing, container })}>
-      {heading || intro ? (
+      {eyebrow || heading || intro ? (
         <div className="mb-12 max-w-2xl">
+          {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
           {heading ? <h2 className="display-md text-ink">{heading}</h2> : null}
           {intro ? (
             <p className="mt-4 max-w-[min(65ch,90vw)] body-lg text-ink-muted">{intro}</p>
@@ -24,7 +35,7 @@ export function ProcessSteps({
         </div>
       ) : null}
 
-      <ol className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <ol className={`grid gap-8 ${columnsClass(columns)}`}>
         {items.map((s, i) => (
           <li key={`${s.title}-${i}`} className="relative">
             <span
@@ -40,6 +51,8 @@ export function ProcessSteps({
           </li>
         ))}
       </ol>
+      <SectionActions cta_label={cta_label} cta_url={cta_url} secondary_label={secondary_label} secondary_url={secondary_url} />
+      {footnote ? <RichText html={footnote} className="mt-8 body-sm text-ink-muted" /> : null}
     </Section>
   );
 }

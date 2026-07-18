@@ -1,6 +1,9 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/ui/avatar";
 import { Section } from "@/ui/section";
+import { Eyebrow } from "@/ui/eyebrow";
 import { SocialLinks } from "@/ui/social-links";
+import { RichText } from "@/ui/rich-text";
+import { SectionActions } from "@/ui/section-actions";
 import { initials } from "@/lib/utils";
 import { sectionProps, columnsClass } from "@/lib/section-settings";
 import type { TeamProps } from "./schema";
@@ -29,7 +32,7 @@ function MemberView({ m }: { m: Member }) {
       <h3 className="mt-4 display-xs text-ink">{m.name}</h3>
       {m.role ? <p className="mt-1 label text-brand-accent">{m.role}</p> : null}
       {m.bio ? (
-        <p className="mt-3 max-w-[min(40ch,90vw)] body-sm text-ink-muted">{m.bio}</p>
+        <RichText html={m.bio} className="mt-3 max-w-[min(40ch,90vw)] body-sm" />
       ) : null}
       {links.length ? <SocialLinks links={links} className="mt-3 justify-center" /> : null}
     </div>
@@ -39,6 +42,12 @@ function MemberView({ m }: { m: Member }) {
 export function Team({
   heading,
   intro,
+  eyebrow,
+  footnote,
+  cta_label,
+  cta_url,
+  secondary_label,
+  secondary_url,
   columns,
   members,
   tone,
@@ -50,8 +59,9 @@ export function Team({
 
   return (
     <Section dataBlock="team" {...sectionProps({ tone, spacing, container })}>
-      {heading || intro ? (
+      {eyebrow || heading || intro ? (
         <div className="mb-12 max-w-2xl">
+          {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
           {heading ? <h2 className="display-md text-ink">{heading}</h2> : null}
           {intro ? (
             <p className="mt-4 max-w-[min(65ch,90vw)] body-lg text-ink-muted">{intro}</p>
@@ -66,6 +76,8 @@ export function Team({
           </li>
         ))}
       </ul>
+      <SectionActions cta_label={cta_label} cta_url={cta_url} secondary_label={secondary_label} secondary_url={secondary_url} />
+      {footnote ? <RichText html={footnote} className="mt-8 body-sm text-ink-muted" /> : null}
     </Section>
   );
 }
