@@ -24,7 +24,11 @@ const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+  // microphone=(self): the Website Avatar voice widget calls getUserMedia() and is
+  // becoming a standard build feature, so the mic is opened for the site's own origin by
+  // default. A denied mic (microphone=()) blocks getUserMedia *before* the permission
+  // prompt — no mic dialog appears at all. Camera/geolocation stay locked. See docs/security.md.
+  { key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=()" },
   cspHeader(),
 ];
 
