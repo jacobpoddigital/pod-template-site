@@ -1,4 +1,9 @@
-import { Zap, ShieldCheck, Sparkles, Clock, Check, Gauge, Lock, Rocket, type LucideIcon } from "lucide-react";
+import {
+  Zap, ShieldCheck, Sparkles, Clock, Check, Gauge, Lock, Rocket,
+  // Logistics / fulfilment vocabulary (shared — reusable across sites)
+  Package, Workflow, Gift, RotateCcw, Warehouse, Handshake, Truck, Boxes, Network, MapPin,
+  type LucideIcon,
+} from "lucide-react";
 import { Section } from "@/ui/section";
 import { RichText } from "@/ui/rich-text";
 import { SectionActions } from "@/ui/section-actions";
@@ -18,6 +23,17 @@ const ICONS: Record<string, LucideIcon> = {
   gauge: Gauge,
   lock: Lock,
   rocket: Rocket,
+  // Logistics / fulfilment
+  package: Package,
+  integration: Workflow,
+  gift: Gift,
+  returns: RotateCcw,
+  inventory: Warehouse,
+  onboarding: Handshake,
+  truck: Truck,
+  boxes: Boxes,
+  network: Network,
+  "map-pin": MapPin,
 };
 
 export function FeatureGrid({ heading, intro, eyebrow, footnote, cta_label, cta_url, secondary_label, secondary_url, columns, tone, spacing, container, features }: FeatureGridProps) {
