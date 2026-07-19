@@ -4,6 +4,7 @@ import { GraphQLClient } from "graphql-request";
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { reportError } from "@/lib/observability/report-error";
 import { ACCESS_COOKIE } from "@/lib/auth/config";
+import { siteConfig } from "../../../site.config";
 
 // Commerce GraphQL client — self-contained (the bolt-on never reaches into cms internals;
 // enforced by the boundaries lint rule). Reads hit the same WPGRAPHQL_URL endpoint with
@@ -16,7 +17,10 @@ const endpoint = process.env.WPGRAPHQL_URL;
 // `pnpm build` with no WP. Routes still build (dynamicParams renders them on demand);
 // they're simply not pre-rendered. The runtime read path still fails loud (below).
 export function commerceConfigured(): boolean {
-  return Boolean(endpoint);
+  // Gate on the brochure opt-in AND the endpoint: a non-commerce site (commerce:false) shares the
+  // same WPGRAPHQL_URL for content but has no WooGraphQL, so an endpoint-only check would try to
+  // pre-render the shop routes and fail the build.
+  return Boolean(endpoint) && siteConfig.commerce;
 }
 
 export async function commerceRequest<TResult>(

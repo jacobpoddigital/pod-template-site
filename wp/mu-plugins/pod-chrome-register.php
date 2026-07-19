@@ -86,8 +86,13 @@ add_action( 'graphql_register_types', function () {
 		'type'        => 'SiteOptions',
 		'description' => 'Editor-managed header/footer chrome.',
 		'resolve'     => function () {
-			$social = get_field( 'social', 'option' ) ?: [];
-			$phones = get_field( 'phone_numbers', 'option' ) ?: [];
+			// is_array (not just `?: []`): ACF can return a truthy non-array (e.g. a repeat-count
+			// string) for an empty repeater, which crashes array_map below and 500s the whole
+			// siteOptions query — mock stays green, live build fails.
+			$social = get_field( 'social', 'option' );
+			$social = is_array( $social ) ? $social : [];
+			$phones = get_field( 'phone_numbers', 'option' );
+			$phones = is_array( $phones ) ? $phones : [];
 			return [
 				'logo'           => get_field( 'logo', 'option' ), // attachment ID (return_format: id)
 				'strapline'      => get_field( 'strapline', 'option' ) ?: null,

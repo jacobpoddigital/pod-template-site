@@ -39,9 +39,15 @@ const nextConfig: NextConfig = {
   // Allow on-device dev testing over the LAN (see lanDevOrigins above).
   allowedDevOrigins: lanDevOrigins(),
   images: {
+    // Next 16's image optimizer refuses upstreams that resolve to a private/loopback IP
+    // (SSRF protection). Local headless WP is http://localhost:<port>, so in DEV we skip
+    // optimization and let the browser load the CMS image directly. Production WP is a
+    // public host (Atlas / client domain) and optimizes normally.
+    unoptimized: process.env.NODE_ENV !== "production",
     // Remote hosts allowed for next/image. Per project, ADD the client's WordPress /
     // Atlas media host here, e.g. { protocol: "https", hostname: "*.wpenginepowered.com" }
-    // or the client's domain. picsum is the dev/gallery sample placeholder only.
+    // or the client's domain (REQUIRED — prod optimizes and 400s an unlisted host).
+    // picsum is the dev/gallery sample placeholder only.
     remotePatterns: [
       { protocol: "https", hostname: "picsum.photos" },
       { protocol: "https", hostname: "fastly.picsum.photos" },

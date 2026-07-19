@@ -16,7 +16,10 @@ cd "$(dirname "$0")/.."
 # TEMPLATE: fill these in per-client
 SITE_TITLE="{{CLIENT_NAME}} (local)"
 SITE_SLUG="{{SITE_SLUG}}"
-WP_PORT="${WP_PORT:-8081}"
+# EXPORT so `docker compose` (below) inherits it — docker-compose.yml reads ${WP_PORT:-8081}
+# from the environment, not this script's shell vars. Without the export, compose ignores a
+# per-client WP_PORT set here and binds 8081 (collides when several sites run locally).
+export WP_PORT="${WP_PORT:-8081}"
 WP_URL="http://localhost:${WP_PORT}"
 ACF_PRO_ZIP="${ACF_PRO_ZIP:-}"
 
